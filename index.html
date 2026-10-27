@@ -14,7 +14,7 @@
             --accent-gold: #B8977E;     /* 柔銅金：點綴線條、圖標、重要按鈕 */
             --accent-gold-light: #f3ece6;
             --border-color: #E2E8E2;    /* 質感邊框 */
-            --glass-bg: rgba(249, 251, 249, 0.9);
+            --glass-bg: rgba(249, 251, 249, 0.92);
             
             /* --- 標楷體字型家族 --- */
             --font-kai: "標楷體", "BiauKai", "DFKai-SB", "STKaiti", "Kaiti SC", serif;
@@ -33,7 +33,7 @@
 
         /* === 導覽列 Navbar === */
         .navbar {
-            padding: 22px 6%;
+            padding: 18px 5%;
             display: flex; 
             justify-content: space-between; 
             align-items: center;
@@ -47,24 +47,24 @@
         }
 
         .navbar.scrolled {
-            padding: 15px 6%;
+            padding: 12px 5%;
             box-shadow: 0 4px 20px rgba(26, 48, 33, 0.06);
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: bold;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             color: var(--dark-forest);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .logo-icon {
             color: var(--accent-gold);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -75,19 +75,18 @@
         .nav-center {
             display: flex;
             align-items: center;
-            gap: 24px;
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 22px;
+            gap: 20px;
         }
 
         .nav-links a {
             text-decoration: none; 
             color: var(--dark-forest);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: 0.3s; 
             position: relative;
             display: flex; 
@@ -98,7 +97,7 @@
 
         .nav-links a i {
             color: var(--sage-green);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: color 0.3s;
         }
 
@@ -124,7 +123,18 @@
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+        }
+
+        /* 漢堡選單按鈕 (手機版用) */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--dark-forest);
+            cursor: pointer;
+            padding: 5px;
         }
 
         /* 登入按鈕 */
@@ -132,15 +142,15 @@
             background: transparent;
             border: 1px solid var(--dark-forest);
             color: var(--dark-forest);
-            padding: 7px 22px;
-            font-size: 0.9rem;
+            padding: 6px 18px;
+            font-size: 0.85rem;
             font-family: var(--font-kai);
             cursor: pointer;
             border-radius: 30px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             letter-spacing: 0.08em;
         }
 
@@ -153,42 +163,41 @@
         /* 使用者登入後頭像選單 */
         .user-profile-menu {
             position: relative;
-            display: none; /* 登入後切換為 flex */
+            display: none; 
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
         }
 
         .user-avatar {
-            width: 38px;
-            height: 38px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             background: var(--dark-forest);
             color: var(--accent-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 0.9rem;
             border: 1.5px solid var(--accent-gold);
-            transition: 0.3s;
         }
 
         .user-name {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--dark-forest);
             font-weight: bold;
         }
 
         .user-dropdown {
             position: absolute;
-            top: 48px;
+            top: 45px;
             right: 0;
             background: var(--off-white);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            width: 180px;
-            padding: 8px 0;
+            width: 170px;
+            padding: 6px 0;
             display: none;
             flex-direction: column;
             z-index: 1001;
@@ -200,10 +209,10 @@
         }
 
         .user-dropdown a, .user-dropdown button {
-            padding: 10px 20px;
+            padding: 10px 16px;
             color: var(--dark-forest);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-family: var(--font-kai);
             background: none;
             border: none;
@@ -212,7 +221,7 @@
             transition: 0.2s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .user-dropdown a:hover, .user-dropdown button:hover {
@@ -222,8 +231,8 @@
 
         /* === 主視覺 Hero === */
         .hero {
-            height: 68vh;
-            min-height: 480px;
+            height: 60vh;
+            min-height: 400px;
             display: flex; 
             align-items: center; 
             justify-content: center;
@@ -241,58 +250,58 @@
         }
 
         .hero-content h1 {
-            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-size: clamp(2rem, 4.5vw, 3.6rem);
             font-weight: normal;
-            letter-spacing: 0.28em;
-            margin-bottom: 22px;
+            letter-spacing: 0.2em;
+            margin-bottom: 18px;
             text-shadow: 2px 2px 12px rgba(0,0,0,0.4);
         }
 
         .hero-content p {
-            font-size: 1.05rem; 
-            letter-spacing: 0.35em;
+            font-size: clamp(0.95rem, 2vw, 1.05rem); 
+            letter-spacing: 0.25em;
             opacity: 0.92;
-            line-height: 2;
+            line-height: 1.8;
         }
 
         /* === 內容佈局 === */
         .container { 
             max-width: 1140px; 
             margin: 0 auto; 
-            padding: 80px 5%; 
+            padding: 60px 5%; 
         }
 
         .section-title {
             text-align: center;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: normal;
-            margin-bottom: 60px;
+            margin-bottom: 45px;
             color: var(--dark-forest);
-            letter-spacing: 0.22em;
+            letter-spacing: 0.2em;
             position: relative;
         }
 
         .section-title::after {
             content: '';
             display: block;
-            width: 45px;
+            width: 40px;
             height: 2px;
             background: var(--accent-gold);
-            margin: 16px auto 0;
+            margin: 14px auto 0;
         }
 
         /* 文章與服務卡片網格 */
         .article-grid {
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-            gap: 45px 35px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 35px 30px;
         }
 
         .article-card {
             background: #ffffff;
             border: 1px solid var(--border-color);
             border-top: 2px solid var(--dark-forest); 
-            padding: 32px 28px;
+            padding: 28px 24px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -301,7 +310,7 @@
         }
 
         .article-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(26, 48, 33, 0.08);
             border-top-color: var(--accent-gold);
         }
@@ -309,15 +318,15 @@
         .card-header {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 18px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .card-icon {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: var(--accent-gold);
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: rgba(184, 151, 126, 0.12);
             display: flex;
@@ -332,18 +341,18 @@
         }
 
         .article-card h3 { 
-            font-size: 1.35rem; 
+            font-size: 1.25rem; 
             font-weight: normal; 
             color: var(--dark-forest);
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
         }
 
         .article-card p { 
-            font-size: 0.95rem; 
+            font-size: 0.9rem; 
             color: var(--sage-green); 
-            margin-bottom: 28px; 
+            margin-bottom: 24px; 
             text-align: justify; 
-            line-height: 1.85;
+            line-height: 1.8;
             flex-grow: 1;
         }
 
@@ -353,12 +362,13 @@
             text-decoration: none; 
             color: var(--dark-forest);
             border: 1px solid var(--dark-forest);
-            padding: 8px 26px; 
-            font-size: 0.88rem;
+            padding: 7px 22px; 
+            font-size: 0.85rem;
             transition: all 0.3s;
             width: fit-content;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             background: transparent;
+            border-radius: 2px;
         }
 
         .btn-minimal:hover {
@@ -368,20 +378,20 @@
 
         /* === 語錄區 === */
         .quote-block {
-            padding: 100px 5%; 
+            padding: 80px 5%; 
             text-align: center; 
             border-top: 1px solid var(--border-color);
             background: rgba(242, 246, 242, 0.5);
         }
 
         blockquote {
-            font-size: 1.55rem; 
-            line-height: 2.1; 
+            font-size: clamp(1.2rem, 3vw, 1.55rem); 
+            line-height: 2; 
             color: var(--dark-forest);
             max-width: 820px; 
             margin: 0 auto; 
-            padding: 0 20px;
-            letter-spacing: 0.15em;
+            padding: 0 15px;
+            letter-spacing: 0.12em;
         }
 
         /* === 登入/註冊 Modal === */
@@ -398,6 +408,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            padding: 15px;
         }
 
         .modal-overlay.active {
@@ -409,9 +420,9 @@
             background: var(--off-white);
             border: 1px solid var(--border-color);
             width: 100%;
-            max-width: 440px;
+            max-width: 420px;
             border-radius: 8px;
-            padding: 35px 32px;
+            padding: 30px 25px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             position: relative;
             transform: translateY(20px);
@@ -424,11 +435,11 @@
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 18px;
+            right: 18px;
             background: none;
             border: none;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--sage-green);
             cursor: pointer;
             transition: 0.2s;
@@ -438,26 +449,25 @@
             color: var(--dark-forest);
         }
 
-        /* Modal 分頁選擇器 */
         .auth-tabs {
             display: flex;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
 
         .auth-tab {
             flex: 1;
-            padding: 12px 0;
+            padding: 10px 0;
             text-align: center;
             background: none;
             border: none;
             font-family: var(--font-kai);
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--sage-green);
             cursor: pointer;
             position: relative;
             transition: 0.3s;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
         }
 
         .auth-tab.active {
@@ -475,18 +485,17 @@
             background: var(--accent-gold);
         }
 
-        /* 表單元素 */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             position: relative;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--dark-forest);
-            margin-bottom: 8px;
-            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+            letter-spacing: 0.06em;
         }
 
         .input-wrapper {
@@ -499,17 +508,17 @@
             position: absolute;
             left: 14px;
             color: var(--sage-green);
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 14px 12px 40px;
+            padding: 11px 14px 11px 38px;
             background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             font-family: var(--font-kai);
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             color: var(--dark-forest);
             transition: 0.3s;
             outline: none;
@@ -525,15 +534,15 @@
             right: 14px;
             color: var(--sage-green);
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         .form-options {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
-            margin-bottom: 24px;
+            font-size: 0.82rem;
+            margin-bottom: 20px;
             color: var(--sage-green);
         }
 
@@ -554,19 +563,18 @@
             color: var(--accent-gold);
         }
 
-        /* 送出按鈕 */
         .btn-submit {
             width: 100%;
-            padding: 12px;
+            padding: 11px;
             background: var(--dark-forest);
             color: var(--off-white);
             border: none;
             border-radius: 4px;
             font-family: var(--font-kai);
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: 0.3s;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
         }
 
         .btn-submit:hover {
@@ -574,10 +582,9 @@
             box-shadow: 0 4px 12px rgba(26, 48, 33, 0.2);
         }
 
-        /* 社群 / 訪客快速登入 */
         .social-divider {
             text-align: center;
-            margin: 25px 0 20px;
+            margin: 22px 0 16px;
             position: relative;
         }
 
@@ -591,31 +598,31 @@
 
         .social-divider span {
             background: var(--off-white);
-            padding: 0 12px;
+            padding: 0 10px;
             position: relative;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: var(--sage-green);
         }
 
         .social-btns {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .btn-social {
             flex: 1;
-            padding: 9px;
+            padding: 8px;
             background: #ffffff;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             font-family: var(--font-kai);
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--dark-forest);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             transition: 0.3s;
         }
 
@@ -628,23 +635,23 @@
         .footer {
             background-color: var(--dark-forest);
             color: var(--off-white);
-            padding: 50px 5% 40px;
+            padding: 45px 5% 35px;
             text-align: center; 
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
+            font-size: 0.88rem;
+            letter-spacing: 0.08em;
         }
 
         .footer-logo {
-            font-size: 1.3rem;
-            margin-bottom: 12px;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
             color: var(--accent-gold);
         }
 
         .footer-nav {
-            margin: 20px 0;
+            margin: 18px 0;
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 20px;
             flex-wrap: wrap;
         }
 
@@ -653,7 +660,7 @@
             opacity: 0.8;
             text-decoration: none;
             transition: 0.3s;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
         }
 
         .footer-nav a:hover {
@@ -661,7 +668,54 @@
             color: var(--accent-gold);
         }
 
-        /* 動畫 */
+        /* === 手機響應式媒體查詢 (Mobile Responsive) === */
+        @media (max-width: 960px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-center {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--off-white);
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: 0 10px 25px rgba(26, 48, 33, 0.08);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.35s ease-in-out;
+            }
+
+            .nav-center.active {
+                max-height: 380px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px 7%;
+                gap: 16px;
+                width: 100%;
+            }
+
+            .nav-links a {
+                font-size: 1rem;
+                width: 100%;
+                padding-bottom: 8px;
+                border-bottom: 1px dashed var(--border-color);
+            }
+
+            .nav-links a::after {
+                display: none;
+            }
+
+            .hero {
+                height: 50vh;
+                min-height: 360px;
+            }
+        }
+
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -670,14 +724,6 @@
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 響應式 */
-        @media (max-width: 960px) {
-            .nav-links { display: none; }
-            .navbar { padding: 18px 5%; }
-            .hero-content h1 { font-size: 2.2rem; }
-            .article-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -691,7 +737,7 @@
             <span>我的口袋導遊</span>
         </a>
 
-        <div class="nav-center">
+        <div class="nav-center" id="navCenterMenu">
             <div class="nav-links">
                 <a href="航班.html"><i class="fas fa-plane"></i> 航班 Search</a>
                 <a href="住宿.html"><i class="fas fa-hotel"></i> 住宿 Hotel</a>
@@ -713,7 +759,7 @@
             <div class="user-profile-menu" id="userProfileMenu">
                 <div class="user-avatar" id="avatarInitial">旅</div>
                 <span class="user-name" id="userNameDisplay">貴賓</span>
-                <i class="fas fa-chevron-down" style="font-size: 0.75rem; color: var(--sage-green);"></i>
+                <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--sage-green);"></i>
 
                 <div class="user-dropdown" id="userDropdown">
                     <a href="#profile"><i class="far fa-id-card"></i> 個人行程資料</a>
@@ -721,6 +767,11 @@
                     <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
                 </div>
             </div>
+
+            <!-- 手機漢堡選單按鈕 -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </nav>
 
@@ -816,7 +867,7 @@
     <!-- 語錄區 -->
     <section class="quote-block">
         <blockquote>「大海在呼喚，我必前往。每一波浪潮中，都藏著等待述說的故事。」</blockquote>
-        <p style="margin-top:22px; color: var(--accent-gold); letter-spacing: 0.2em;">— 夏威夷古諺</p>
+        <p style="margin-top:18px; color: var(--accent-gold); letter-spacing: 0.15em; font-size: 0.95rem;">— 夏威夷古諺</p>
     </section>
 
     <!-- 登入 / 註冊彈窗 (Modal) -->
@@ -858,7 +909,7 @@
                 <button type="submit" class="btn-submit">開啟我的旅程</button>
             </form>
 
-            <!-- 註冊表單 (預設隱藏) -->
+            <!-- 註冊表單 -->
             <form id="registerForm" style="display: none;" onsubmit="handleAuthSubmit(event, 'register')">
                 <div class="form-group">
                     <label for="regName">您的稱呼 / 暱稱</label>
@@ -888,7 +939,7 @@
             </form>
 
             <div class="social-divider">
-                <span>快速登入體騐</span>
+                <span>快速登入體驗</span>
             </div>
 
             <div class="social-btns">
@@ -923,11 +974,33 @@
         // 頁面滾動與 Navbar 樣式改變
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('mainNavbar');
-            if (window.scrollY > 40) {
+            if (window.scrollY > 30) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
             }
+        });
+
+        // 手機版漢堡選單 Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navCenterMenu = document.getElementById('navCenterMenu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            navCenterMenu.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (navCenterMenu.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+            }
+        });
+
+        // 點擊導覽連結後自動收合選單 (手機版友善)
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navCenterMenu.classList.remove('active');
+                mobileMenuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            });
         });
 
         // 登入/註冊 Modal 元素控制
@@ -939,12 +1012,10 @@
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
 
-        // 開啟 Modal
         openAuthBtn.addEventListener('click', () => {
             authModal.classList.add('active');
         });
 
-        // 關閉 Modal
         closeAuthBtn.addEventListener('click', () => {
             authModal.classList.remove('active');
         });
@@ -1027,15 +1098,13 @@
             userDropdown.classList.remove('active');
         });
 
-        // 登出帳號
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('pocket_guide_user');
             userProfileMenu.style.display = 'none';
             openAuthBtn.style.display = 'flex';
-            userDropdown.classList.remove('active');
         });
 
-        // 頁面載入時檢查登入狀態
+        // 頁面載入時檢查是否已登入
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('pocket_guide_user');
             if (savedUser) {
