@@ -14,7 +14,7 @@
             --accent-gold: #B8977E;     /* 柔銅金：點綴線條、圖標、重要按鈕 */
             --accent-gold-light: #f3ece6;
             --border-color: #E2E8E2;    /* 質感邊框 */
-            --glass-bg: rgba(249, 251, 249, 0.9);
+            --glass-bg: rgba(249, 251, 249, 0.92);
             
             /* --- 標楷體字型家族 --- */
             --font-kai: "標楷體", "BiauKai", "DFKai-SB", "STKaiti", "Kaiti SC", serif;
@@ -35,7 +35,7 @@
 
         /* === 導覽列 Navbar === */
         .navbar {
-            padding: 22px 6%;
+            padding: 18px 5%;
             display: flex; 
             justify-content: space-between; 
             align-items: center;
@@ -49,24 +49,24 @@
         }
 
         .navbar.scrolled {
-            padding: 15px 6%;
+            padding: 12px 5%;
             box-shadow: 0 4px 20px rgba(26, 48, 33, 0.06);
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: bold;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             color: var(--dark-forest);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .logo-icon {
             color: var(--accent-gold);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -77,19 +77,18 @@
         .nav-center {
             display: flex;
             align-items: center;
-            gap: 24px;
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 22px;
+            gap: 20px;
         }
 
         .nav-links a {
             text-decoration: none; 
             color: var(--dark-forest);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: 0.3s; 
             position: relative;
             display: flex; 
@@ -100,7 +99,7 @@
 
         .nav-links a i {
             color: var(--sage-green);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: color 0.3s;
         }
 
@@ -126,7 +125,18 @@
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+        }
+
+        /* 漢堡選單按鈕 (手機版用) */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--dark-forest);
+            cursor: pointer;
+            padding: 5px;
         }
 
         /* 登入按鈕 */
@@ -134,15 +144,15 @@
             background: transparent;
             border: 1px solid var(--dark-forest);
             color: var(--dark-forest);
-            padding: 7px 22px;
-            font-size: 0.9rem;
+            padding: 6px 18px;
+            font-size: 0.85rem;
             font-family: var(--font-kai);
             cursor: pointer;
             border-radius: 30px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             letter-spacing: 0.08em;
         }
 
@@ -157,39 +167,39 @@
             position: relative;
             display: none; 
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
         }
 
         .user-avatar {
-            width: 38px;
-            height: 38px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             background: var(--dark-forest);
             color: var(--accent-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 0.9rem;
             border: 1.5px solid var(--accent-gold);
         }
 
         .user-name {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--dark-forest);
             font-weight: bold;
         }
 
         .user-dropdown {
             position: absolute;
-            top: 48px;
+            top: 45px;
             right: 0;
             background: var(--off-white);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            width: 180px;
-            padding: 8px 0;
+            width: 170px;
+            padding: 6px 0;
             display: none;
             flex-direction: column;
             z-index: 1001;
@@ -201,10 +211,10 @@
         }
 
         .user-dropdown a, .user-dropdown button {
-            padding: 10px 20px;
+            padding: 10px 16px;
             color: var(--dark-forest);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-family: var(--font-kai);
             background: none;
             border: none;
@@ -213,7 +223,7 @@
             transition: 0.2s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .user-dropdown a:hover, .user-dropdown button:hover {
@@ -572,6 +582,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            padding: 15px;
         }
 
         .modal-overlay.active {
@@ -747,10 +758,49 @@
             color: var(--accent-gold);
         }
 
-        /* 響應式 */
+        /* === 手機響應式媒體查詢 (Mobile Responsive) === */
         @media (max-width: 960px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-center {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--off-white);
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: 0 10px 25px rgba(26, 48, 33, 0.08);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.35s ease-in-out;
+            }
+
+            .nav-center.active {
+                max-height: 420px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px 7%;
+                gap: 16px;
+                width: 100%;
+            }
+
+            .nav-links a {
+                font-size: 1rem;
+                width: 100%;
+                padding-bottom: 8px;
+                border-bottom: 1px dashed var(--border-color);
+            }
+
+            .nav-links a::after {
+                display: none;
+            }
+
             .grid-layout { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
             .hero-content h1 { font-size: 2.2rem; }
             .stats { flex-direction: column; align-items: center; gap: 15px; margin-top: -30px; }
             .stat-card { width: 100%; max-width: 320px; }
@@ -777,7 +827,7 @@
             <span>Aloha Travel</span>
         </a>
 
-        <div class="nav-center">
+        <div class="nav-center" id="navCenterMenu">
             <div class="nav-links">
                 <a href="index.html" class="active"><i class="fas fa-home"></i> 首頁 Home</a>
                 <a href="航班.html"><i class="fas fa-plane"></i> 航班 Search</a>
@@ -807,6 +857,11 @@
                     <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
                 </div>
             </div>
+
+            <!-- 手機漢堡選單按鈕 -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </nav>
 
@@ -980,6 +1035,28 @@
             } else {
                 navbar.classList.remove('scrolled');
             }
+        });
+
+        // 手機版漢堡選單 Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navCenterMenu = document.getElementById('navCenterMenu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            navCenterMenu.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (navCenterMenu.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+            }
+        });
+
+        // 點擊導覽連結後自動收合選單 (手機版友善)
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navCenterMenu.classList.remove('active');
+                mobileMenuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            });
         });
 
         // 登入 Modal 控制
