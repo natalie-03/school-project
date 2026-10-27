@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的口袋導遊 Pocket Guide | 智慧旅遊助理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* --- 核心高級配色 --- */
+            --dark-forest: #1A3021;     /* 墨綠：主標題、按鈕 hover、深色頁尾 */
+            --sage-green: #4A634E;      /* 鼠尾草綠：內文與次要文字 */
+            --off-white: #F9FBF9;       /* 絲綢白：主背景 */
+            --accent-gold: #B8977E;     /* 柔銅金：點綴線條、圖標、重要按鈕 */
+            --accent-gold-light: #f3ece6;
+            --border-color: #E2E8E2;    /* 質感邊框 */
+            --glass-bg: rgba(249, 251, 249, 0.9);
+            
+            /* --- 標楷體字型家族 --- */
+            --font-kai: "標楷體", "BiauKai", "DFKai-SB", "STKaiti", "Kaiti SC", serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--off-white);
+            color: var(--dark-forest);
+            font-family: var(--font-kai);
+            line-height: 1.8;
+            letter-spacing: 0.06em;
+            overflow-x: hidden;
+        }
+
+        /* === 導覽列 Navbar === */
+        .navbar {
+            padding: 22px 6%;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 15px 6%;
+            box-shadow: 0 4px 20px rgba(26, 48, 33, 0.06);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.15em;
+            color: var(--dark-forest);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            color: var(--accent-gold);
+            font-size: 1.3rem;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(-12deg) scale(1.15);
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            text-decoration: none; 
+            color: var(--dark-forest);
+            font-size: 0.95rem;
+            transition: 0.3s; 
+            position: relative;
+            display: flex; 
+            align-items: center; 
+            gap: 6px;
+            padding: 4px 0;
+        }
+
+        .nav-links a i {
+            color: var(--sage-green);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover i, .nav-links a.active i {
+            color: var(--accent-gold);
+        }
+
+        .nav-links a::after {
+            content: ''; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0;
+            width: 0; 
+            height: 1.5px; 
+            background: var(--accent-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after { 
+            width: 100%; 
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 登入按鈕 */
+        .btn-auth {
+            background: transparent;
+            border: 1px solid var(--dark-forest);
+            color: var(--dark-forest);
+            padding: 7px 22px;
+            font-size: 0.9rem;
+            font-family: var(--font-kai);
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.08em;
+        }
+
+        .btn-auth:hover {
+            background: var(--dark-forest);
+            color: var(--off-white);
+            box-shadow: 0 4px 12px rgba(26, 48, 33, 0.15);
+        }
+
+        /* 使用者登入後頭像選單 */
+        .user-profile-menu {
+            position: relative;
+            display: none; /* 登入後切換為 flex */
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--dark-forest);
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            border: 1.5px solid var(--accent-gold);
+            transition: 0.3s;
+        }
+
+        .user-name {
+            font-size: 0.95rem;
+            color: var(--dark-forest);
+            font-weight: bold;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: var(--off-white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            width: 180px;
+            padding: 8px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+        }
+
+        .user-dropdown.active {
+            display: flex;
+            animation: fadeInDown 0.25s forwards;
+        }
+
+        .user-dropdown a, .user-dropdown button {
+            padding: 10px 20px;
+            color: var(--dark-forest);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: var(--font-kai);
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-dropdown a:hover, .user-dropdown button:hover {
+            background: var(--accent-gold-light);
+            color: var(--dark-forest);
+        }
+
+        /* === 主視覺 Hero === */
+        .hero {
+            height: 68vh;
+            min-height: 480px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            text-align: center; 
+            padding: 0 5%;
+            background: linear-gradient(rgba(26, 48, 33, 0.6), rgba(26, 48, 33, 0.6)), 
+                        url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
+            color: var(--off-white);
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: normal;
+            letter-spacing: 0.28em;
+            margin-bottom: 22px;
+            text-shadow: 2px 2px 12px rgba(0,0,0,0.4);
+        }
+
+        .hero-content p {
+            font-size: 1.05rem; 
+            letter-spacing: 0.35em;
+            opacity: 0.92;
+            line-height: 2;
+        }
+
+        /* === 內容佈局 === */
+        .container { 
+            max-width: 1140px; 
+            margin: 0 auto; 
+            padding: 80px 5%; 
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: normal;
+            margin-bottom: 60px;
+            color: var(--dark-forest);
+            letter-spacing: 0.22em;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 45px;
+            height: 2px;
+            background: var(--accent-gold);
+            margin: 16px auto 0;
+        }
+
+        /* 文章與服務卡片網格 */
+        .article-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 45px 35px;
+        }
+
+        .article-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-top: 2px solid var(--dark-forest); 
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-radius: 4px;
+            transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .article-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(26, 48, 33, 0.08);
+            border-top-color: var(--accent-gold);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .card-icon {
+            font-size: 1.3rem;
+            color: var(--accent-gold);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(184, 151, 126, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .article-card:hover .card-icon {
+            background: var(--dark-forest);
+            color: var(--accent-gold);
+        }
+
+        .article-card h3 { 
+            font-size: 1.35rem; 
+            font-weight: normal; 
+            color: var(--dark-forest);
+            letter-spacing: 0.12em;
+        }
+
+        .article-card p { 
+            font-size: 0.95rem; 
+            color: var(--sage-green); 
+            margin-bottom: 28px; 
+            text-align: justify; 
+            line-height: 1.85;
+            flex-grow: 1;
+        }
+
+        /* 高級感按鈕 */
+        .btn-minimal {
+            display: inline-block;
+            text-decoration: none; 
+            color: var(--dark-forest);
+            border: 1px solid var(--dark-forest);
+            padding: 8px 26px; 
+            font-size: 0.88rem;
+            transition: all 0.3s;
+            width: fit-content;
+            letter-spacing: 0.1em;
+            background: transparent;
+        }
+
+        .btn-minimal:hover {
+            background: var(--dark-forest); 
+            color: var(--off-white);
+        }
+
+        /* === 語錄區 === */
+        .quote-block {
+            padding: 100px 5%; 
+            text-align: center; 
+            border-top: 1px solid var(--border-color);
+            background: rgba(242, 246, 242, 0.5);
+        }
+
+        blockquote {
+            font-size: 1.55rem; 
+            line-height: 2.1; 
+            color: var(--dark-forest);
+            max-width: 820px; 
+            margin: 0 auto; 
+            padding: 0 20px;
+            letter-spacing: 0.15em;
+        }
+
+        /* === 登入/註冊 Modal === */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(26, 48, 33, 0.55);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background: var(--off-white);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 440px;
+            border-radius: 8px;
+            padding: 35px 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--sage-green);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--dark-forest);
+        }
+
+        /* Modal 分頁選擇器 */
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 28px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            background: none;
+            border: none;
+            font-family: var(--font-kai);
+            font-size: 1.1rem;
+            color: var(--sage-green);
+            cursor: pointer;
+            position: relative;
+            transition: 0.3s;
+            letter-spacing: 0.1em;
+        }
+
+        .auth-tab.active {
+            color: var(--dark-forest);
+            font-weight: bold;
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-gold);
+        }
+
+        /* 表單元素 */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--dark-forest);
+            margin-bottom: 8px;
+            letter-spacing: 0.08em;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i.input-icon {
+            position: absolute;
+            left: 14px;
+            color: var(--sage-green);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: var(--font-kai);
+            font-size: 0.95rem;
+            color: var(--dark-forest);
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--dark-forest);
+            box-shadow: 0 0 0 3px rgba(26, 48, 33, 0.06);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            color: var(--sage-green);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            color: var(--sage-green);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: var(--sage-green);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: var(--accent-gold);
+        }
+
+        /* 送出按鈕 */
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--dark-forest);
+            color: var(--off-white);
+            border: none;
+            border-radius: 4px;
+            font-family: var(--font-kai);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 0.15em;
+        }
+
+        .btn-submit:hover {
+            background: #25442f;
+            box-shadow: 0 4px 12px rgba(26, 48, 33, 0.2);
+        }
+
+        /* 社群 / 訪客快速登入 */
+        .social-divider {
+            text-align: center;
+            margin: 25px 0 20px;
+            position: relative;
+        }
+
+        .social-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0;
+            width: 100%; height: 1px;
+            background: var(--border-color);
+        }
+
+        .social-divider span {
+            background: var(--off-white);
+            padding: 0 12px;
+            position: relative;
+            font-size: 0.82rem;
+            color: var(--sage-green);
+        }
+
+        .social-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-social {
+            flex: 1;
+            padding: 9px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: var(--font-kai);
+            font-size: 0.85rem;
+            color: var(--dark-forest);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-social:hover {
+            background: var(--accent-gold-light);
+            border-color: var(--accent-gold);
+        }
+
+        /* === 頁尾 === */
+        .footer {
+            background-color: var(--dark-forest);
+            color: var(--off-white);
+            padding: 50px 5% 40px;
+            text-align: center; 
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: var(--accent-gold);
+        }
+
+        .footer-nav {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            color: var(--off-white);
+            opacity: 0.8;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.88rem;
+        }
+
+        .footer-nav a:hover {
+            opacity: 1;
+            color: var(--accent-gold);
+        }
+
+        /* 動畫 */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 響應式 */
+        @media (max-width: 960px) {
+            .nav-links { display: none; }
+            .navbar { padding: 18px 5%; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .article-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 導覽列 Navbar -->
+    <nav class="navbar" id="mainNavbar">
+        <a href="index.html" class="logo">
+            <i class="fas fa-paper-plane logo-icon"></i>
+            <span>我的口袋導遊</span>
+        </a>
+
+        <div class="nav-center">
+            <div class="nav-links">
+                <a href="航班.html"><i class="fas fa-plane"></i> 航班 Search</a>
+                <a href="住宿.html"><i class="fas fa-hotel"></i> 住宿 Hotel</a>
+                <a href="美食.html"><i class="fas fa-utensils"></i> 美食 Dining</a>
+                <a href="旅遊.html"><i class="fas fa-compass"></i> 旅遊 Travel</a>
+                <a href="保險.html"><i class="fas fa-shield-alt"></i> 保險 Insurance</a>
+                <a href="chatbot.html"><i class="fas fa-robot"></i> AI 助手</a>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <!-- 未登入狀態按鈕 -->
+            <button class="btn-auth" id="openAuthBtn">
+                <i class="far fa-user"></i>
+                <span>登入 / 註冊</span>
+            </button>
+
+            <!-- 已登入狀態頭像 -->
+            <div class="user-profile-menu" id="userProfileMenu">
+                <div class="user-avatar" id="avatarInitial">旅</div>
+                <span class="user-name" id="userNameDisplay">貴賓</span>
+                <i class="fas fa-chevron-down" style="font-size: 0.75rem; color: var(--sage-green);"></i>
+
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#profile"><i class="far fa-id-card"></i> 個人行程資料</a>
+                    <a href="#saved"><i class="far fa-bookmark"></i> 收藏景點清單</a>
+                    <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主視覺 Banner -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>靜享旅程．智慧棲居</h1>
+            <p>全方位旅遊服務整合，為您撫平旅途焦慮，展開一場從容的探索之旅。</p>
+        </div>
+    </header>
+
+    <!-- 核心功能模組 Grid -->
+    <main class="container">
+        <h2 class="section-title">全方位口袋服務</h2>
+
+        <section class="article-grid">
+            
+            <!-- 1. 航班模組 -->
+            <div class="article-card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-plane"></i></div>
+                        <h3>雲端航班搜尋</h3>
+                    </div>
+                    <p>即時檢索與比對最佳航班時間與票價，協助您輕鬆規劃飛往理想目的地的最適航程。</p>
+                </div>
+                <a href="航班.html" class="btn-minimal">查詢航班</a>
+            </div>
+
+            <!-- 2. 住宿模組 -->
+            <div class="article-card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-hotel"></i></div>
+                        <h3>嚴選質感住宿</h3>
+                    </div>
+                    <p>評估地理位置、品質與預算，精選最契合您旅遊偏好的棲居之所，享受安心舒適的休憩時光。</p>
+                </div>
+                <a href="住宿.html" class="btn-minimal">尋找住宿</a>
+            </div>
+
+            <!-- 3. 美食模組 -->
+            <div class="article-card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-utensils"></i></div>
+                        <h3>在地美旬尋味</h3>
+                    </div>
+                    <p>匯集網路口碑與在地特色餐廳，精準推薦符合您口味的餐館，品嚐土地與味蕾的詩意連結。</p>
+                </div>
+                <a href="美食.html" class="btn-minimal">探索美食</a>
+            </div>
+
+            <!-- 4. 旅遊模組 -->
+            <div class="article-card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-compass"></i></div>
+                        <h3>山海深度漫旅</h3>
+                    </div>
+                    <p>避開人潮擁擠，智慧串聯景點與順暢交通路線，為您量身打造節奏適中的秘境探索行程。</p>
+                </div>
+                <a href="旅遊.html" class="btn-minimal">規劃行程</a>
+            </div>
+
+            <!-- 5. 保險模組 -->
+            <div class="article-card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3>平安旅遊保障</h3>
+                    </div>
+                    <p>整合海外突發疾病與旅遊不便險資訊，提供透明齊全的保障試算，讓每趟旅程都多一份從容與安心。</p>
+                </div>
+                <a href="保險.html" class="btn-minimal">保險試算</a>
+            </div>
+
+            <!-- 6. AI 助手 -->
+            <div class="article-card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-robot"></i></div>
+                        <h3>口袋 AI 隨行導遊</h3>
+                    </div>
+                    <p>即時問答、突發狀況行程調整與出發前注意事項提醒，24小時全天候隨侍在側的智慧助理。</p>
+                </div>
+                <a href="chatbot.html" class="btn-minimal">對話諮詢</a>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- 語錄區 -->
+    <section class="quote-block">
+        <blockquote>「大海在呼喚，我必前往。每一波浪潮中，都藏著等待述說的故事。」</blockquote>
+        <p style="margin-top:22px; color: var(--accent-gold); letter-spacing: 0.2em;">— 夏威夷古諺</p>
+    </section>
+
+    <!-- 登入 / 註冊彈窗 (Modal) -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-container">
+            <button class="modal-close" id="closeAuthBtn"><i class="fas fa-times"></i></button>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin">帳號登入</button>
+                <button class="auth-tab" id="tabRegister">新用戶註冊</button>
+            </div>
+
+            <!-- 登入表單 -->
+            <form id="loginForm" onsubmit="handleAuthSubmit(event, 'login')">
+                <div class="form-group">
+                    <label for="loginEmail">電子郵件 / 帳號</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-envelope input-icon"></i>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="example@domain.com" required value="traveler@pocketguide.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">密碼</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="請輸入密碼" required value="password123">
+                        <i class="far fa-eye toggle-password" onclick="togglePasswordVisibility('loginPassword', this)"></i>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" checked> 記住登入狀態
+                    </label>
+                    <a href="#forgot" class="forgot-link">忘記密碼？</a>
+                </div>
+
+                <button type="submit" class="btn-submit">開啟我的旅程</button>
+            </form>
+
+            <!-- 註冊表單 (預設隱藏) -->
+            <form id="registerForm" style="display: none;" onsubmit="handleAuthSubmit(event, 'register')">
+                <div class="form-group">
+                    <label for="regName">您的稱呼 / 暱稱</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-user input-icon"></i>
+                        <input type="text" id="regName" class="form-control" placeholder="例如：林漫旅" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">電子郵件</label>
+                    <div class="input-wrapper">
+                        <i class="far fa-envelope input-icon"></i>
+                        <input type="email" id="regEmail" class="form-control" placeholder="example@domain.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">設定密碼</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="regPassword" class="form-control" placeholder="至少8位數密碼" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">註冊並登入</button>
+            </form>
+
+            <div class="social-divider">
+                <span>快速登入體騐</span>
+            </div>
+
+            <div class="social-btns">
+                <button type="button" class="btn-social" onclick="simulateGuestLogin('靜享旅客')">
+                    <i class="far fa-compass" style="color: var(--accent-gold);"></i> 訪客試用
+                </button>
+                <button type="button" class="btn-social" onclick="simulateGuestLogin('Google用戶')">
+                    <i class="fab fa-google" style="color: #4285F4;"></i> Google 登入
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <div class="footer-logo">
+            <i class="fas fa-paper-plane"></i> 我的口袋導遊
+        </div>
+        <div class="footer-nav">
+            <a href="index.html">首頁</a>
+            <a href="航班.html">航班搜尋</a>
+            <a href="住宿.html">嚴選住宿</a>
+            <a href="美食.html">在地美旬</a>
+            <a href="旅遊.html">山海漫旅</a>
+            <a href="保險.html">平安保障</a>
+        </div>
+        <p>&copy; 2026 我的口袋導遊 Pocket Guide. 靜享熱帶陽光的溫潤與從容。</p>
+    </footer>
+
+    <!-- JavaScript 互動功能 -->
+    <script>
+        // 頁面滾動與 Navbar 樣式改變
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('mainNavbar');
+            if (window.scrollY > 40) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 登入/註冊 Modal 元素控制
+        const authModal = document.getElementById('authModal');
+        const openAuthBtn = document.getElementById('openAuthBtn');
+        const closeAuthBtn = document.getElementById('closeAuthBtn');
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        // 開啟 Modal
+        openAuthBtn.addEventListener('click', () => {
+            authModal.classList.add('active');
+        });
+
+        // 關閉 Modal
+        closeAuthBtn.addEventListener('click', () => {
+            authModal.classList.remove('active');
+        });
+
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.classList.remove('active');
+            }
+        });
+
+        // 切換 Tab
+        tabLogin.addEventListener('click', () => {
+            tabLogin.classList.add('active');
+            tabRegister.classList.remove('active');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+        });
+
+        tabRegister.addEventListener('click', () => {
+            tabRegister.classList.add('active');
+            tabLogin.classList.remove('active');
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+        });
+
+        // 密碼顯示/隱藏切換
+        function togglePasswordVisibility(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // 模擬會員登入狀態處理
+        const userProfileMenu = document.getElementById('userProfileMenu');
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const avatarInitial = document.getElementById('avatarInitial');
+        const userDropdown = document.getElementById('userDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        function setLoggedInState(userName) {
+            openAuthBtn.style.display = 'none';
+            userProfileMenu.style.display = 'flex';
+            userNameDisplay.textContent = userName;
+            avatarInitial.textContent = userName.charAt(0);
+            authModal.classList.remove('active');
+            
+            // 儲存狀態
+            localStorage.setItem('pocket_guide_user', userName);
+        }
+
+        function handleAuthSubmit(event, type) {
+            event.preventDefault();
+            let name = '尊榮貴賓';
+            if (type === 'register') {
+                const regNameInput = document.getElementById('regName').value;
+                if (regNameInput) name = regNameInput;
+            } else {
+                const emailInput = document.getElementById('loginEmail').value;
+                if (emailInput) name = emailInput.split('@')[0];
+            }
+            setLoggedInState(name);
+        }
+
+        function simulateGuestLogin(guestName) {
+            setLoggedInState(guestName);
+        }
+
+        // 頭像選單 Toggle
+        userProfileMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            userDropdown.classList.remove('active');
+        });
+
+        // 登出帳號
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('pocket_guide_user');
+            userProfileMenu.style.display = 'none';
+            openAuthBtn.style.display = 'flex';
+            userDropdown.classList.remove('active');
+        });
+
+        // 頁面載入時檢查登入狀態
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('pocket_guide_user');
+            if (savedUser) {
+                setLoggedInState(savedUser);
+            }
+        });
+    </script>
+</body>
+</html>
