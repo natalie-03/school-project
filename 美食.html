@@ -3,26 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aloha Travel - 台灣美食分析</title>
+    <title>Aloha Travel - 全球美食探索與推薦</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.1.0/src/wordcloud2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 引入外部數據文件 -->
-    <script src="./js/food_trends.js"></script>
-
     <style>
         :root {
-            /* --- 核心高級配色 --- */
-            --dark-forest: #1A3021;     /* 墨綠：主標題、按鈕 hover、深色頁尾 */
-            --sage-green: #4A634E;      /* 鼠尾草綠：內文與次要文字 */
-            --off-white: #F9FBF9;       /* 絲綢白：主背景 */
-            --accent-gold: #B8977E;     /* 柔銅金：點綴線條、圖標、重要按鈕 */
+            --dark-forest: #1A3021;     /* 墨綠 */
+            --sage-green: #4A634E;      /* 鼠尾草綠 */
+            --off-white: #F9FBF9;       /* 絲綢白背景 */
+            --accent-gold: #B8977E;     /* 柔銅金 */
             --accent-gold-light: #f3ece6;
             --border-color: #E2E8E2;    /* 質感邊框 */
             --glass-bg: rgba(249, 251, 249, 0.92);
-            
-            /* --- 標楷體字型家族 --- */
             --font-kai: "標楷體", "BiauKai", "DFKai-SB", "STKaiti", "Kaiti SC", serif;
         }
 
@@ -153,7 +147,7 @@
 
         header {
             text-align: center;
-            padding: 20px 0 30px;
+            padding: 20px 0 20px;
             animation: fadeInDown 0.8s ease;
         }
 
@@ -170,8 +164,45 @@
             color: var(--sage-green);
             letter-spacing: 0.15em;
             max-width: 750px;
-            margin: 0 auto;
+            margin: 0 auto 25px;
             line-height: 1.8;
+        }
+
+        /* === 國家選擇器列 === */
+        .country-selector-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 35px;
+        }
+
+        .country-btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            background: #ffffff;
+            color: var(--dark-forest);
+            border: 1px solid var(--border-color);
+            font-family: var(--font-kai);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(26,48,33,0.03);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .country-btn:hover, .country-btn.active {
+            background: var(--dark-forest);
+            color: var(--off-white);
+            border-color: var(--dark-forest);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(26, 48, 33, 0.12);
+        }
+
+        .country-btn.active i {
+            color: var(--accent-gold);
         }
 
         /* Tabs 分頁器 */
@@ -521,7 +552,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* === 響應式調整 === */
         @media (max-width: 960px) {
             .mobile-menu-toggle { display: block; }
             .nav-center {
@@ -554,7 +584,7 @@
 <body>
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <p>正在載入美食數據...</p>
+        <p>正在載入全球美食數據...</p>
     </div>
 
     <!-- 導覽列 Navbar -->
@@ -585,9 +615,20 @@
 
     <div class="container">
         <header>
-            <h1>台灣美食攻略</h1>
-            <p class="subtitle">基於美食文章分析，探索台灣最受歡迎的菜系、餐廳類型和美食地圖</p>
+            <h1 id="pageTitle">台灣美食攻略</h1>
+            <p class="subtitle" id="pageSubtitle">基於美食文章分析，探索台灣最受歡迎的菜系、餐廳類型和美食地圖</p>
         </header>
+
+        <!-- 國家選擇按鈕列 -->
+        <div class="country-selector-bar" id="countrySelector">
+            <button class="country-btn active" data-country="taiwan"><i class="fas fa-flag"></i> 台灣</button>
+            <button class="country-btn" data-country="japan"><i class="fas fa-torii-gate"></i> 日本</button>
+            <button class="country-btn" data-country="korea"><i class="fas fa-fire"></i> 韓國</button>
+            <button class="country-btn" data-country="thailand"><i class="fas fa-pepper-hot"></i> 泰國</button>
+            <button class="country-btn" data-country="italy"><i class="fas fa-pizza-slice"></i> 義大利</button>
+            <button class="country-btn" data-country="france"><i class="fas fa-wine-glass"></i> 法國</button>
+            <button class="country-btn" data-country="usa"><i class="fas fa-hamburger"></i> 美國</button>
+        </div>
 
         <div class="tabs">
             <div class="tab active" data-tab="cuisine">菜系分析</div>
@@ -714,39 +755,215 @@
     </div>
 
     <script>
-        // 導覽列滾動效果與手機版漢堡選單
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('mainNavbar');
-            if (window.scrollY > 40) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
+        // 全球美食資料庫
+        const globalFoodDatabase = {
+            "taiwan": {
+                countryName: "台灣",
+                subtitle: "探索寶島夜市文化、在地小吃與經典台菜的風味圖譜",
+                totalArticles: 1420,
+                cuisines: [
+                    { name: "夜市小吃", count: 480, article_count: 320 },
+                    { name: "經典台菜", count: 350, article_count: 240 },
+                    { name: "客家料理", count: 210, article_count: 150 },
+                    { name: "原住民風味", count: 180, article_count: 120 },
+                    { name: "台式早午餐", count: 150, article_count: 110 }
+                ],
+                food_types: [
+                    { name: "特色小吃攤", count: 520, article_count: 380 },
+                    { name: "手搖飲品店", count: 410, article_count: 310 },
+                    { name: "傳統熱炒店", count: 290, article_count: 210 },
+                    { name: "文青咖啡館", count: 230, article_count: 180 }
+                ],
+                dishes: [
+                    { name: "牛肉麵", count: 310, article_count: 250 },
+                    { name: "小籠包", count: 290, article_count: 220 },
+                    { name: "滷肉飯", count: 270, article_count: 210 },
+                    { name: "珍珠奶茶", count: 350, article_count: 290 },
+                    { name: "雞排", count: 240, article_count: 190 }
+                ],
+                locations: [
+                    { name: "台北市", count: 580, article_count: 420 },
+                    { name: "台南市", count: 490, article_count: 360 },
+                    { name: "台中市", count: 380, article_count: 280 },
+                    { name: "高雄市", count: 340, article_count: 250 }
+                ]
+            },
+            "japan": {
+                countryName: "日本",
+                subtitle: "品味職人精神、極致生鮮、壽司與拉麵的匠心滋味",
+                totalArticles: 1680,
+                cuisines: [
+                    { name: "壽司刺身", count: 520, article_count: 390 },
+                    { name: "日式拉麵", count: 480, article_count: 360 },
+                    { name: "和牛燒肉", count: 340, article_count: 270 },
+                    { name: "居酒屋料理", count: 290, article_count: 220 },
+                    { name: "懷石料理", count: 180, article_count: 140 }
+                ],
+                food_types: [
+                    { name: "專業壽司屋", count: 450, article_count: 340 },
+                    { name: "拉麵專門店", count: 420, article_count: 320 },
+                    { name: "日式居酒屋", count: 380, article_count: 290 },
+                    { name: "傳統茶屋", count: 210, article_count: 160 }
+                ],
+                dishes: [
+                    { name: "博多豚骨拉麵", count: 330, article_count: 280 },
+                    { name: "築地生魚片丼", count: 310, article_count: 260 },
+                    { name: "A5和牛燒肉", count: 290, article_count: 240 },
+                    { name: "讚岐烏龍麵", count: 240, article_count: 190 },
+                    { name: "章魚燒", count: 220, article_count: 180 }
+                ],
+                locations: [
+                    { name: "東京都", count: 650, article_count: 490 },
+                    { name: "大阪府", count: 520, article_count: 390 },
+                    { name: "京都府", count: 410, article_count: 310 },
+                    { name: "北海道", count: 360, article_count: 280 }
+                ]
+            },
+            "korea": {
+                countryName: "韓國",
+                subtitle: "感受炭火烤肉的誘人香氣、泡菜文化的酸辣與街頭小吃魅力",
+                totalArticles: 1250,
+                cuisines: [
+                    { name: "韓式烤肉", count: 460, article_count: 350 },
+                    { name: "宮廷料理", count: 220, article_count: 170 },
+                    { name: "街頭小吃", count: 390, article_count: 300 },
+                    { name: "家常湯飯", count: 280, article_count: 210 }
+                ],
+                food_types: [
+                    { name: "炭火烤肉店", count: 410, article_count: 310 },
+                    { name: "傳統市場攤商", count: 350, article_count: 270 },
+                    { name: "時尚咖啡廳", count: 310, article_count: 240 },
+                    { name: "韓式酒家", count: 180, article_count: 140 }
+                ],
+                dishes: [
+                    { name: "韓式三層肉", count: 340, article_count: 280 },
+                    { name: "石鍋拌飯", count: 290, article_count: 240 },
+                    { name: "辣炒年糕", count: 310, article_count: 260 },
+                    { name: "人參雞湯", count: 220, article_count: 180 },
+                    { name: "部隊鍋", count: 250, article_count: 200 }
+                ],
+                locations: [
+                    { name: "首爾特別市", count: 620, article_count: 480 },
+                    { name: "釜山市", count: 390, article_count: 300 },
+                    { name: "濟州市", count: 240, article_count: 190 },
+                    { name: "大邱市", count: 180, article_count: 140 }
+                ]
+            },
+            "thailand": {
+                countryName: "泰國",
+                subtitle: "探索酸辣交織、香料豐富的南洋風情與街頭百味",
+                totalArticles: 1120,
+                cuisines: [
+                    { name: "泰式宮廷菜", count: 240, article_count: 180 },
+                    { name: "伊善料理", count: 310, article_count: 240 },
+                    { name: "泰式街頭小吃", count: 420, article_count: 330 },
+                    { name: "海鮮料理", count: 280, article_count: 210 }
+                ],
+                food_types: [
+                    { name: "夜市路邊攤", count: 450, article_count: 350 },
+                    { name: "景觀餐廳", count: 260, article_count: 200 },
+                    { name: "海鮮大排檔", count: 310, article_count: 240 }
+                ],
+                dishes: [
+                    { name: "冬蔭功酸辣湯", count: 380, article_count: 310 },
+                    { name: "泰式炒河粉", count: 360, article_count: 290 },
+                    { name: "綠咖哩雞", count: 290, article_count: 240 },
+                    { name: "芒果糯米飯", count: 320, article_count: 270 },
+                    { name: "青木瓜沙拉", count: 270, article_count: 220 }
+                ],
+                locations: [
+                    { name: "曼谷", count: 610, article_count: 480 },
+                    { name: "清邁", count: 380, article_count: 290 },
+                    { name: "普吉島", count: 290, article_count: 220 }
+                ]
+            },
+            "italy": {
+                countryName: "義大利",
+                subtitle: "漫步地中海陽光下，品嚐手工窯烤披薩與經典義大利麵",
+                totalArticles: 1340,
+                cuisines: [
+                    { name: "拿坡里披薩", count: 450, article_count: 350 },
+                    { name: "手工義麵", count: 420, article_count: 330 },
+                    { name: "托斯卡納菜", count: 280, article_count: 210 },
+                    { name: "西西里海鮮", count: 250, article_count: 190 }
+                ],
+                food_types: [
+                    { name: "傳統小餐館", count: 410, article_count: 320 },
+                    { name: "披薩專賣店", count: 390, article_count: 300 },
+                    { name: "義式冰淇淋店", count: 340, article_count: 270 }
+                ],
+                dishes: [
+                    { name: "拿坡里瑪格麗特披薩", count: 380, article_count: 310 },
+                    { name: "羅馬培根蛋黃麵", count: 320, article_count: 260 },
+                    { name: "提拉米蘇", count: 350, article_count: 290 },
+                    { name: "托斯卡納T骨牛排", count: 240, article_count: 190 },
+                    { name: "手工義式冰淇淋", count: 360, article_count: 300 }
+                ],
+                locations: [
+                    { name: "羅馬", count: 520, article_count: 410 },
+                    { name: "佛羅倫斯", count: 390, article_count: 300 },
+                    { name: "威尼斯", count: 340, article_count: 260 },
+                    { name: "拿坡里", count: 310, article_count: 240 }
+                ]
+            },
+            "france": {
+                countryName: "法國",
+                subtitle: "享受法式浪漫與米其林星級工藝交織的精緻餐酒美學",
+                totalArticles: 1410,
+                cuisines: [
+                    { name: "法式料理", count: 480, article_count: 380 },
+                    { name: "普羅旺斯鄉村菜", count: 310, article_count: 240 },
+                    { name: "法式甜點烘焙", count: 420, article_count: 340 }
+                ],
+                food_types: [
+                    { name: "米其林餐廳", count: 390, article_count: 310 },
+                    { name: "經典法式小館", count: 440, article_count: 350 },
+                    { name: "街角麵包坊", count: 460, article_count: 370 }
+                ],
+                dishes: [
+                    { name: "法式可頌", count: 410, article_count: 340 },
+                    { name: "勃根地紅酒燉牛肉", count: 320, article_count: 270 },
+                    { name: "法式焦糖布蕾", count: 290, article_count: 240 },
+                    { name: "馬卡龍", count: 340, article_count: 280 },
+                    { name: "法式油封鴨", count: 260, article_count: 210 }
+                ],
+                locations: [
+                    { name: "巴黎", count: 720, article_count: 580 },
+                    { name: "里昂", count: 350, article_count: 270 },
+                    { name: "尼斯", count: 280, article_count: 220 }
+                ]
+            },
+            "usa": {
+                countryName: "美國",
+                subtitle: "探索澎湃美式漢堡、烤肉與融合多元文化的公路美食",
+                totalArticles: 1280,
+                cuisines: [
+                    { name: "德州美式烤肉", count: 380, article_count: 300 },
+                    { name: "經典美式快餐", count: 450, article_count: 360 },
+                    { name: "新美式料理", count: 310, article_count: 240 }
+                ],
+                food_types: [
+                    { name: "美式漢堡店", count: 420, article_count: 340 },
+                    { name: "經典牛排館", count: 360, article_count: 290 },
+                    { name: "美式早午餐館", count: 330, article_count: 260 }
+                ],
+                dishes: [
+                    { name: "手作厚切牛肉起司堡", count: 390, article_count: 320 },
+                    { name: "德州煙燻牛胸肉", count: 310, article_count: 250 },
+                    { name: "紐約客牛排", count: 340, article_count: 280 },
+                    { name: "美式鬆餅", count: 280, article_count: 230 },
+                    { name: "水牛城辣雞翅", count: 290, article_count: 240 }
+                ],
+                locations: [
+                    { name: "紐約", count: 580, article_count: 460 },
+                    { name: "洛杉磯", count: 430, article_count: 340 },
+                    { name: "舊金山", count: 360, article_count: 290 }
+                ]
             }
-        });
+        };
 
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const navCenterMenu = document.getElementById('navCenterMenu');
-
-        if (mobileMenuToggle) {
-            mobileMenuToggle.addEventListener('click', () => {
-                navCenterMenu.classList.toggle('active');
-                const icon = mobileMenuToggle.querySelector('i');
-                if (navCenterMenu.classList.contains('active')) {
-                    icon.classList.replace('fa-bars', 'fa-times');
-                } else {
-                    icon.classList.replace('fa-times', 'fa-bars');
-                }
-            });
-        }
-
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navCenterMenu.classList.remove('active');
-                if (mobileMenuToggle) {
-                    mobileMenuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-                }
-            });
-        });
+        let currentCountry = 'taiwan';
+        let foodData = globalFoodDatabase[currentCountry];
 
         // 圖表實例
         let cuisineChart = null;
@@ -765,42 +982,22 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            loadData();
+            initCountrySelector();
+            loadCountryData(currentCountry);
         });
 
-        function loadData() {
-            if (typeof foodTrends === 'undefined') {
-                console.error('food_trends.js 載入失敗');
-                document.getElementById('loadingOverlay').innerHTML = `
-                    <div style="text-align: center; padding: 20px;">
-                        <i class="fas fa-exclamation-triangle fa-3x" style="color: var(--accent-gold); margin-bottom: 20px;"></i>
-                        <h2>數據載入失敗</h2>
-                        <p style="margin-top: 10px;">無法載入美食數據，請檢查 food_trends.js 文件是否存在</p>
-                        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: var(--dark-forest); color: var(--off-white); border: none; border-radius: 4px; cursor: pointer; font-family: var(--font-kai);">重新載入</button>
-                    </div>
-                `;
-                return;
-            }
+        function initCountrySelector() {
+            const buttons = document.querySelectorAll('.country-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const countryKey = btn.getAttribute('data-country');
+                    switchCountry(countryKey);
+                });
+            });
 
-            window.foodData = foodTrends;
-            initializePage();
-        }
-
-        function initializePage() {
-            renderRankings();
-            initCharts();
-            initTabs();
-
-            document.getElementById('totalArticles').textContent = foodData.total_articles;
-            document.getElementById('cuisineCount').textContent = foodData.cuisines.length;
-            document.getElementById('restaurantCount').textContent = foodData.food_types.length;
-            document.getElementById('locationCount').textContent = foodData.locations.length;
-
-            document.getElementById('loadingOverlay').style.display = 'none';
-            showNotification('美食數據載入成功！');
-        }
-
-        function initTabs() {
+            // 初始化 Tabs
             const tabs = document.querySelectorAll('.tabs .tab');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -814,13 +1011,52 @@
                     document.getElementById(tabId + '-tab').classList.add('active');
 
                     setTimeout(() => {
-                        if (cuisineChart) cuisineChart.resize();
-                        if (restaurantChart) restaurantChart.resize();
-                        if (dishesChart) dishesChart.resize();
-                        if (locationChart) locationChart.resize();
+                        resizeCharts();
                     }, 100);
                 });
             });
+        }
+
+        function switchCountry(countryKey) {
+            const loading = document.getElementById('loadingOverlay');
+            loading.style.display = 'flex';
+
+            setTimeout(() => {
+                currentCountry = countryKey;
+                foodData = globalFoodDatabase[countryKey];
+                
+                // 更新標題
+                document.getElementById('pageTitle').textContent = `${foodData.countryName}美食攻略`;
+                document.getElementById('pageSubtitle').textContent = foodData.subtitle;
+
+                renderRankings();
+                initCharts();
+
+                document.getElementById('totalArticles').textContent = foodData.total_articles;
+                document.getElementById('cuisineCount').textContent = foodData.cuisines.length;
+                document.getElementById('restaurantCount').textContent = foodData.food_types.length;
+                document.getElementById('locationCount').textContent = foodData.locations.length;
+
+                loading.style.display = 'none';
+                showNotification(`已切換至 ${foodData.countryName} 美食探索！`);
+            }, 350);
+        }
+
+        function loadCountryData(countryKey) {
+            foodData = globalFoodDatabase[countryKey];
+            document.getElementById('pageTitle').textContent = `${foodData.countryName}美食攻略`;
+            document.getElementById('pageSubtitle').textContent = foodData.subtitle;
+
+            renderRankings();
+            initCharts();
+
+            document.getElementById('totalArticles').textContent = foodData.total_articles;
+            document.getElementById('cuisineCount').textContent = foodData.cuisines.length;
+            document.getElementById('restaurantCount').textContent = foodData.food_types.length;
+            document.getElementById('locationCount').textContent = foodData.locations.length;
+
+            document.getElementById('loadingOverlay').style.display = 'none';
+            showNotification('全球美食數據載入成功！');
         }
 
         function renderRankings() {
@@ -857,7 +1093,7 @@
                         </div>
                         <div class="food-details">
                             ${details.description}<br>
-                            關鍵字出現次數: ${item.count} | 包含文章數: ${item.article_count}
+                            熱度指數: ${item.count} | 評鑑文章數: ${item.article_count}
                         </div>
                     </div>
                 `;
@@ -871,39 +1107,16 @@
         }
 
         function getFoodDetails(name, type) {
-            const detailsMap = {
-                cuisine: {
-                    "日式": { tags: ["精緻", "清淡", "海鮮"], description: "日式料理以精緻和清淡著稱，注重食材原味和季節感。", icon: "fa-fish" },
-                    "韓式": { tags: ["辛辣", "發酵", "烤肉"], description: "韓式料理以辛辣和發酵食品聞名，如泡菜和韓式烤肉。", icon: "fa-pepper-hot" },
-                    "美式": { tags: ["份量大", "漢堡", "烤肉"], description: "美式料理以份量大和多樣化著稱，漢堡和烤肉是經典代表。", icon: "fa-hamburger" },
-                    "泰式": { tags: ["酸辣", "香料", "椰奶"], description: "泰式料理以酸辣口味和豐富香料聞名，椰奶是常用食材。", icon: "fa-lemon" },
-                    "台式": { tags: ["家常", "小吃", "夜市"], description: "台式料理融合多種文化，以家常菜和小吃為特色。", icon: "fa-home" }
-                },
-                restaurant: {
-                    "餐廳": { tags: ["多樣", "正式", "聚會"], description: "餐廳提供多樣化的菜單選擇，適合各種場合和聚會。", icon: "fa-utensils" },
-                    "早餐": { tags: ["快速", "營養", "日常"], description: "早餐店提供快速方便的餐點，是日常生活的必需品。", icon: "fa-coffee" },
-                    "火鍋": { tags: ["熱騰騰", "聚會", "多樣"], description: "火鍋適合多人共享，可以根據喜好選擇不同湯底和食材。", icon: "fa-hotdog" }
-                },
-                dishes: {
-                    "甜點": { tags: ["甜蜜", "精緻", "下午茶"], description: "甜點是餐後或下午茶的完美選擇，帶來幸福感。", icon: "fa-ice-cream" },
-                    "蛋糕": { tags: ["慶祝", "奶油", "多樣"], description: "蛋糕適合各種慶祝場合，口味和造型多樣化。", icon: "fa-birthday-cake" }
-                },
-                location: {
-                    "台北": { tags: ["首都", "多元", "國際化"], description: "台北美食多元且國際化，從夜市小吃到高級餐廳應有盡有。", icon: "fa-city" },
-                    "台南": { tags: ["古都", "傳統", "小吃"], description: "台南以傳統小吃聞名，是台灣美食之都。", icon: "fa-landmark" },
-                    "高雄": { tags: ["港都", "海鮮", "熱情"], description: "高雄美食融合海港特色，海鮮料理特別豐富。", icon: "fa-anchor" },
-                    "台中": { tags: ["創新", "茶飲", "甜點"], description: "台中是創意美食的搖籃，珍珠奶茶就發源於此。", icon: "fa-mug-hot" }
-                }
-            };
-
-            if (detailsMap[type] && detailsMap[type][name]) {
-                return detailsMap[type][name];
-            }
-            return { tags: ["熱門", "推薦"], description: `${name}是備受推崇的熱門選擇之一。`, icon: "fa-utensils" };
+            return { tags: ["必吃", "推薦", "人氣"], description: `在${foodData.countryName}當地極受歡迎的${name}，擁有獨特的風味與深厚的飲食文化底蘊，是旅客造訪時不可錯過的經典美食。`, icon: "fa-utensils" };
         }
 
         function initCharts() {
             const chartColors = ['#1A3021', '#4A634E', '#B8977E', '#658269', '#8C6D53', '#A89F91', '#345638', '#D4B8A0'];
+
+            if (cuisineChart) cuisineChart.destroy();
+            if (restaurantChart) restaurantChart.destroy();
+            if (dishesChart) dishesChart.destroy();
+            if (locationChart) locationChart.destroy();
 
             // 菜系圖表
             const cuisineCtx = document.getElementById('cuisineChart').getContext('2d');
@@ -932,12 +1145,13 @@
             restaurantChart = new Chart(restCtx, {
                 type: 'bar',
                 data: {
-                    labels: foodData.food_types.slice(0, 8).map(item => item.name),
+                    labels: foodData.food_types.map(item => item.name),
                     datasets: [{
-                        label: '出現次數',
-                        data: foodData.food_types.slice(0, 8).map(item => item.count),
-                        backgroundColor: '#1A3021',
-                        borderRadius: 4
+                        label: '熱度指數',
+                        data: foodData.food_types.map(item => item.count),
+                        backgroundColor: '#4A634E',
+                        borderColor: '#1A3021',
+                        borderWidth: 1
                     }]
                 },
                 options: {
@@ -945,20 +1159,20 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { font: { family: '標楷體', size: 12 }, color: '#4A634E' } },
-                        y: { ticks: { font: { family: '標楷體', size: 12 }, color: '#4A634E' } }
+                        y: { ticks: { font: { family: '標楷體' }, color: '#1A3021' } },
+                        x: { ticks: { font: { family: '標楷體' }, color: '#1A3021' } }
                     }
                 }
             });
 
-            // 菜色圖表
+            // 熱門菜色圖表
             const dishesCtx = document.getElementById('dishesChart').getContext('2d');
             dishesChart = new Chart(dishesCtx, {
                 type: 'pie',
                 data: {
-                    labels: foodData.dishes.slice(0, 6).map(item => item.name),
+                    labels: foodData.dishes.map(item => item.name),
                     datasets: [{
-                        data: foodData.dishes.slice(0, 6).map(item => item.count),
+                        data: foodData.dishes.map(item => item.count),
                         backgroundColor: chartColors,
                         borderWidth: 1,
                         borderColor: '#fff'
@@ -973,17 +1187,18 @@
                 }
             });
 
-            // 地區圖表
+            // 地區分布圖表
             const locCtx = document.getElementById('locationChart').getContext('2d');
             locationChart = new Chart(locCtx, {
                 type: 'bar',
                 data: {
-                    labels: foodData.locations.slice(0, 8).map(item => item.name),
+                    labels: foodData.locations.map(item => item.name),
                     datasets: [{
                         label: '熱度指數',
-                        data: foodData.locations.slice(0, 8).map(item => item.count),
+                        data: foodData.locations.map(item => item.count),
                         backgroundColor: '#B8977E',
-                        borderRadius: 4
+                        borderColor: '#1A3021',
+                        borderWidth: 1
                     }]
                 },
                 options: {
@@ -991,35 +1206,45 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { font: { family: '標楷體', size: 12 }, color: '#4A634E' } },
-                        y: { ticks: { font: { family: '標楷體', size: 12 }, color: '#4A634E' } }
+                        y: { ticks: { font: { family: '標楷體' }, color: '#1A3021' } },
+                        x: { ticks: { font: { family: '標楷體' }, color: '#1A3021' } }
                     }
                 }
             });
 
-            // 文字雲
-            try {
-                const cloudEl = document.getElementById('wordcloud');
-                const wordsList = [];
-                if (foodData.dishes) foodData.dishes.forEach(d => wordsList.push([d.name, d.count * 3]));
-                if (foodData.cuisines) foodData.cuisines.forEach(c => wordsList.push([c.name, c.count * 2]));
-                if (foodData.locations) foodData.locations.forEach(l => wordsList.push([l.name, l.count * 2]));
+            renderWordCloud();
+        }
 
-                WordCloud(cloudEl, {
-                    list: wordsList.length ? wordsList : [['台灣美食', 50], ['小吃', 40], ['夜市', 35]],
-                    gridSize: 8,
-                    weightFactor: 1.2,
-                    fontFamily: '標楷體, sans-serif',
-                    color: function () {
-                        const colors = ['#1A3021', '#4A634E', '#B8977E'];
-                        return colors[Math.floor(Math.random() * colors.length)];
-                    },
-                    backgroundColor: '#F9FBF9',
-                    rotateRatio: 0.3
-                });
-            } catch (e) {
-                console.error("Wordcloud error:", e);
-            }
+        function resizeCharts() {
+            if (cuisineChart) cuisineChart.resize();
+            if (restaurantChart) restaurantChart.resize();
+            if (dishesChart) dishesChart.resize();
+            if (locationChart) locationChart.resize();
+        }
+
+        function renderWordCloud() {
+            const canvas = document.getElementById('wordcloud');
+            canvas.width = canvas.parentElement.clientWidth - 20;
+            canvas.height = canvas.parentElement.clientHeight - 20;
+
+            const words = [
+                ...foodData.cuisines.map(i => [i.name, i.count]),
+                ...foodData.dishes.map(i => [i.name, i.count]),
+                ...foodData.locations.map(i => [i.name, i.count]),
+                ["必吃美食", 300], ["在地風味", 280], ["人氣推薦", 250], ["私房餐廳", 220]
+            ];
+
+            WordCloud(canvas, {
+                list: words,
+                gridSize: 8,
+                weightFactor: 0.35,
+                fontFamily: '標楷體, sans-serif',
+                color: function (word, weight) {
+                    return weight > 350 ? '#1A3021' : weight > 250 ? '#4A634E' : '#B8977E';
+                },
+                backgroundColor: 'transparent',
+                rotateRatio: 0.3
+            });
         }
     </script>
 </body>
