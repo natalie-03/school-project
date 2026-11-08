@@ -126,7 +126,6 @@
             gap: 12px;
         }
 
-        /* 漢堡選單按鈕 (手機版用) */
         .mobile-menu-toggle {
             display: none;
             background: none;
@@ -137,7 +136,6 @@
             padding: 5px;
         }
 
-        /* 登入按鈕 */
         .btn-auth {
             background: transparent;
             border: 1px solid var(--dark-forest);
@@ -160,26 +158,29 @@
             box-shadow: 0 4px 12px rgba(26, 48, 33, 0.15);
         }
 
-        /* 使用者登入後頭像選單 */
         .user-profile-menu {
             position: relative;
             display: none; 
             align-items: center;
             gap: 8px;
             cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--accent-gold-light);
+            border: 1px solid var(--border-color);
         }
 
         .user-avatar {
-            width: 34px;
-            height: 34px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             background: var(--dark-forest);
             color: var(--accent-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
-            border: 1.5px solid var(--accent-gold);
+            font-size: 0.85rem;
+            border: 1px solid var(--accent-gold);
         }
 
         .user-name {
@@ -196,7 +197,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            width: 170px;
+            width: 180px;
             padding: 6px 0;
             display: none;
             flex-direction: column;
@@ -222,6 +223,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            width: 100%;
         }
 
         .user-dropdown a:hover, .user-dropdown button:hover {
@@ -290,7 +292,6 @@
             margin: 14px auto 0;
         }
 
-        /* 文章與服務卡片網格 */
         .article-grid {
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -356,7 +357,6 @@
             flex-grow: 1;
         }
 
-        /* 高級感按鈕 */
         .btn-minimal {
             display: inline-block;
             text-decoration: none; 
@@ -394,7 +394,7 @@
             letter-spacing: 0.12em;
         }
 
-        /* === 登入/註冊 Modal === */
+        /* === 登入 / 註冊 Modal === */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -631,6 +631,31 @@
             border-color: var(--accent-gold);
         }
 
+        /* === 登入成功浮動提示 Toast === */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--dark-forest);
+            color: var(--off-white);
+            padding: 14px 24px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+            font-family: var(--font-kai);
+            font-size: 0.95rem;
+            z-index: 3000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.35s ease;
+            pointer-events: none;
+            letter-spacing: 0.08em;
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* === 頁尾 === */
         .footer {
             background-color: var(--dark-forest);
@@ -668,7 +693,6 @@
             color: var(--accent-gold);
         }
 
-        /* === 手機響應式媒體查詢 (Mobile Responsive) === */
         @media (max-width: 960px) {
             .mobile-menu-toggle {
                 display: block;
@@ -755,15 +779,15 @@
                 <span>登入 / 註冊</span>
             </button>
 
-            <!-- 已登入狀態頭像 -->
+            <!-- 已登入狀態頭像與選單 -->
             <div class="user-profile-menu" id="userProfileMenu">
                 <div class="user-avatar" id="avatarInitial">旅</div>
                 <span class="user-name" id="userNameDisplay">貴賓</span>
                 <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--sage-green);"></i>
 
                 <div class="user-dropdown" id="userDropdown">
-                    <a href="#profile"><i class="far fa-id-card"></i> 個人行程資料</a>
-                    <a href="#saved"><i class="far fa-bookmark"></i> 收藏景點清單</a>
+                    <a href="行程.html"><i class="far fa-id-card"></i> 個人行程資料</a>
+                    <a href="旅遊.html"><i class="far fa-bookmark"></i> 收藏景點清單</a>
                     <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
                 </div>
             </div>
@@ -788,8 +812,6 @@
         <h2 class="section-title">全方位口袋服務</h2>
 
         <section class="article-grid">
-            
-            <!-- 1. 航班模組 -->
             <div class="article-card">
                 <div>
                     <div class="card-header">
@@ -801,7 +823,6 @@
                 <a href="航班.html" class="btn-minimal">查詢航班</a>
             </div>
 
-            <!-- 2. 住宿模組 -->
             <div class="article-card">
                 <div>
                     <div class="card-header">
@@ -813,7 +834,6 @@
                 <a href="住宿.html" class="btn-minimal">尋找住宿</a>
             </div>
 
-            <!-- 3. 美食模組 -->
             <div class="article-card">
                 <div>
                     <div class="card-header">
@@ -825,7 +845,6 @@
                 <a href="美食.html" class="btn-minimal">探索美食</a>
             </div>
 
-            <!-- 4. 旅遊模組 -->
             <div class="article-card">
                 <div>
                     <div class="card-header">
@@ -837,7 +856,6 @@
                 <a href="旅遊.html" class="btn-minimal">規劃行程</a>
             </div>
 
-            <!-- 5. 保險模組 -->
             <div class="article-card">
                 <div>
                     <div class="card-header">
@@ -849,7 +867,6 @@
                 <a href="保險.html" class="btn-minimal">保險試算</a>
             </div>
 
-            <!-- 6. AI 助手 -->
             <div class="article-card">
                 <div>
                     <div class="card-header">
@@ -860,7 +877,6 @@
                 </div>
                 <a href="chatbot.html" class="btn-minimal">對話諮詢</a>
             </div>
-
         </section>
     </main>
 
@@ -870,7 +886,7 @@
         <p style="margin-top:18px; color: var(--accent-gold); letter-spacing: 0.15em; font-size: 0.95rem;">— 夏威夷古諺</p>
     </section>
 
-    <!-- 登入 / 註冊彈窗 (Modal) -->
+    <!-- 登入 / 註冊 Modal -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-container">
             <button class="modal-close" id="closeAuthBtn"><i class="fas fa-times"></i></button>
@@ -995,7 +1011,6 @@
             }
         });
 
-        // 點擊導覽連結後自動收合選單 (手機版友善)
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 navCenterMenu.classList.remove('active');
@@ -1026,7 +1041,7 @@
             }
         });
 
-        // 切換 Tab
+        // 切換 Tab (登入 / 註冊)
         tabLogin.addEventListener('click', () => {
             tabLogin.classList.add('active');
             tabRegister.classList.remove('active');
@@ -1037,58 +1052,41 @@
         tabRegister.addEventListener('click', () => {
             tabRegister.classList.add('active');
             tabLogin.classList.remove('active');
-            loginForm.style.display = 'none';
             registerForm.style.display = 'block';
+            loginForm.style.display = 'none';
         });
 
-        // 密碼顯示/隱藏切換
-        function togglePasswordVisibility(inputId, icon) {
-            const input = document.getElementById(inputId);
+        function togglePasswordVisibility(id, el) {
+            const input = document.getElementById(id);
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                el.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
                 input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
+                el.classList.replace('fa-eye-slash', 'fa-eye');
             }
         }
 
-        // 模擬會員登入狀態處理
+        // 顯示登入成功 Toast 提示
+        function showToast(message) {
+            let toast = document.getElementById('customToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'customToast';
+                toast.className = 'toast-notification';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: var(--accent-gold); margin-right: 8px;"></i> ${message}`;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        // 使用者頭像下拉選單控制
         const userProfileMenu = document.getElementById('userProfileMenu');
-        const userNameDisplay = document.getElementById('userNameDisplay');
-        const avatarInitial = document.getElementById('avatarInitial');
         const userDropdown = document.getElementById('userDropdown');
-        const logoutBtn = document.getElementById('logoutBtn');
 
-        function setLoggedInState(userName) {
-            openAuthBtn.style.display = 'none';
-            userProfileMenu.style.display = 'flex';
-            userNameDisplay.textContent = userName;
-            avatarInitial.textContent = userName.charAt(0);
-            authModal.classList.remove('active');
-            
-            // 儲存狀態
-            localStorage.setItem('pocket_guide_user', userName);
-        }
-
-        function handleAuthSubmit(event, type) {
-            event.preventDefault();
-            let name = '尊榮貴賓';
-            if (type === 'register') {
-                const regNameInput = document.getElementById('regName').value;
-                if (regNameInput) name = regNameInput;
-            } else {
-                const emailInput = document.getElementById('loginEmail').value;
-                if (emailInput) name = emailInput.split('@')[0];
-            }
-            setLoggedInState(name);
-        }
-
-        function simulateGuestLogin(guestName) {
-            setLoggedInState(guestName);
-        }
-
-        // 頭像選單 Toggle
         userProfileMenu.addEventListener('click', (e) => {
             e.stopPropagation();
             userDropdown.classList.toggle('active');
@@ -1098,18 +1096,40 @@
             userDropdown.classList.remove('active');
         });
 
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('pocket_guide_user');
+        // 處理登入 / 註冊提交
+        function handleAuthSubmit(e, type) {
+            e.preventDefault();
+            let name = "貴賓";
+            if (type === 'login') {
+                const email = document.getElementById('loginEmail').value;
+                name = email.split('@')[0] || "漫旅貴賓";
+            } else {
+                name = document.getElementById('regName').value || "新貴賓";
+            }
+            loginSuccess(name);
+        }
+
+        function simulateGuestLogin(name) {
+            loginSuccess(name);
+        }
+
+        function loginSuccess(name) {
+            authModal.classList.remove('active');
+            // 切換導覽列按鈕為使用者頭像選單
+            openAuthBtn.style.display = 'none';
+            userProfileMenu.style.display = 'flex';
+            document.getElementById('userNameDisplay').innerText = name;
+            document.getElementById('avatarInitial').innerText = name.charAt(0);
+            
+            showToast(`登入成功！歡迎回來，${name}`);
+        }
+
+        // 登出按鈕
+        document.getElementById('logoutBtn').addEventListener('click', () => {
             userProfileMenu.style.display = 'none';
             openAuthBtn.style.display = 'flex';
-        });
-
-        // 頁面載入時檢查是否已登入
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedUser = localStorage.getItem('pocket_guide_user');
-            if (savedUser) {
-                setLoggedInState(savedUser);
-            }
+            userDropdown.classList.remove('active');
+            showToast('已成功登出帳號');
         });
     </script>
 </body>
