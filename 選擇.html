@@ -239,7 +239,7 @@ body {
     padding: 5px;
 }
 
-/* === 主視覺 Hero (刻意加高，展現大器質感) === */
+/* === 主視覺 Hero (加高設計) === */
 .hero {
     padding: 120px 20px 100px;
     text-align: center;
@@ -1270,7 +1270,7 @@ function setupOptions(id, callback) {
 setupOptions("regionOptions", value => { selectedRegion = value; });
 setupOptions("styleOptions", value => { selectedStyle = value; });
 
-// === 登入、註冊與帳號狀態互動邏輯 ===
+// === 跨頁面保持登入狀態與互動邏輯 ===
 const authModal = document.getElementById('authModal');
 const openAuthBtn = document.getElementById('openAuthBtn');
 const closeAuthBtn = document.getElementById('closeAuthBtn');
@@ -1377,10 +1377,10 @@ logoutBtn.addEventListener('click', () => {
     showToast("已成功登出帳號");
 });
 
-// 初始化檢查登入狀態
+// 跨頁面狀態同步：每次載入頁面時自動檢查 localStorage 裡的登入資料
 window.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem("aloha_user");
-    if (savedUser) {
+    if (savedUser && savedUser !== "guest_logged_out") {
         setLoggedInUser(savedUser);
     } else {
         openAuthBtn.style.display = 'flex';
