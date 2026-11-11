@@ -239,9 +239,9 @@ body {
     padding: 5px;
 }
 
-/* === 主視覺 Hero (加高讓畫面更有空間感) === */
+/* === 主視覺 Hero (刻意加高，展現大器質感) === */
 .hero {
-    padding: 85px 20px 65px;
+    padding: 120px 20px 100px;
     text-align: center;
     background: linear-gradient(rgba(26, 48, 33, 0.82), rgba(26, 48, 33, 0.82)),
                 url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1920') center/cover no-repeat;
@@ -249,17 +249,17 @@ body {
 }
 
 .hero h1 {
-    font-size: 2.6rem;
+    font-size: 2.8rem;
     font-weight: normal;
-    letter-spacing: 0.2em;
-    margin-bottom: 14px;
+    letter-spacing: 0.22em;
+    margin-bottom: 16px;
 }
 
 .hero p {
     color: #e5e9e4;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     opacity: 0.92;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
 }
 
 /* 靈感小語列 */
@@ -430,13 +430,6 @@ body {
     gap: 24px;
 }
 
-/* 三欄排版 (適用於預算或偏好) */
-.three-col-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-}
-
 /* 選項按鈕卡片 */
 .option-grid {
     display: grid;
@@ -509,7 +502,7 @@ input:focus, select:focus {
     letter-spacing: 0.08em;
 }
 
-/* 常見問題 FAQ 區塊 (加長頁面版面用) */
+/* 常見問題 FAQ 區塊 */
 .faq-list {
     display: flex;
     flex-direction: column;
@@ -861,8 +854,9 @@ input:focus, select:focus {
 }
 
 @media (max-width: 768px) {
-    .two-col-grid, .three-col-grid { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 2rem; }
+    .two-col-grid { grid-template-columns: 1fr; }
+    .hero { padding: 90px 15px 70px; }
+    .hero h1 { font-size: 2.1rem; }
     .panel { padding: 24px 18px; }
 }
 
@@ -1088,7 +1082,7 @@ input:focus, select:focus {
         </div>
     </section>
 
-    <!-- 4. 常見問題說明 (增加頁面深度與長度) -->
+    <!-- 4. 常見問題說明 -->
     <section class="panel">
         <h3><i class="fas fa-question-circle"></i> 關於口袋導遊 AI 行程規劃</h3>
         <div class="faq-list">
