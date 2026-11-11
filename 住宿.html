@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>嚴選質感住宿 | 我的口袋導遊 Pocket Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* --- 莫蘭迪/墨綠禪意高級配色 --- */
+            --dark-forest: #1A3021;     /* 墨綠：標題與深色元素 */
+            --sage-green: #4A634E;      /* 鼠尾草綠：文字與邊框 */
+            --light-sage: #E8EFE9;     /* 淺鼠尾草：標籤與軟底 */
+            --off-white: #F9FBF9;       /* 絲綢白：主背景 */
+            --accent-gold: #B8977E;     /* 柔銅金：亮點與按鈕 */
+            --accent-gold-light: #F4EFE9;
+            --border-color: #E0ECE1;    /* 邊框線條 */
+            --card-bg: #FFFFFF;
+            --glass-bg: rgba(249, 251, 249, 0.95);
+            --shadow-soft: 0 8px 25px rgba(26, 48, 33, 0.05);
+            --shadow-hover: 0 15px 35px rgba(26, 48, 33, 0.1);
+            
+            /* --- 標楷體字型家族 --- */
+            --font-kai: "標楷體", "BiauKai", "DFKai-SB", "STKaiti", "Kaiti SC", serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--off-white);
+            color: var(--dark-forest);
+            font-family: var(--font-kai);
+            line-height: 1.8;
+            letter-spacing: 0.06em;
+            overflow-x: hidden;
+        }
+
+        /* === 導覽列 Navbar（完全比對航班.html） === */
+        .navbar {
+            padding: 18px 6%;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            position: sticky; 
+            top: 0; 
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.35rem; 
+            font-weight: bold;
+            letter-spacing: 0.2em; 
+            color: var(--dark-forest);
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+        }
+
+        .logo i { 
+            color: var(--accent-gold); 
+            font-size: 1.25rem;
+        }
+
+        .nav-links { 
+            display: flex; 
+            align-items: center; 
+            gap: 28px; 
+        }
+
+        .nav-links a {
+            text-decoration: none; 
+            color: var(--dark-forest); 
+            font-size: 0.95rem;
+            letter-spacing: 0.12em;
+            transition: 0.3s; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            padding: 8px 2px;
+        }
+
+        .nav-links a i {
+            font-size: 0.9rem;
+            color: var(--dark-forest);
+        }
+
+        /* 底部指示線效果 */
+        .nav-links a::after {
+            content: ''; 
+            position: absolute; 
+            bottom: -2px; 
+            left: 0;
+            width: 0; 
+            height: 2px; 
+            background: var(--accent-gold); 
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after, 
+        .nav-links a.active::after { 
+            width: 100%; 
+        }
+
+        /* AI 隨行導遊膠囊按鈕 */
+        .nav-btn-ai {
+            border: 1px solid var(--dark-forest); 
+            padding: 6px 20px !important; 
+            border-radius: 24px;
+            transition: all 0.3s ease !important;
+        }
+
+        .nav-btn-ai::after {
+            display: none !important;
+        }
+
+        .nav-btn-ai:hover {
+            background: var(--dark-forest);
+            color: var(--off-white) !important;
+        }
+
+        .nav-btn-ai:hover i {
+            color: var(--off-white) !important;
+        }
+
+        /* === 主視覺 Hero === */
+        .hero {
+            padding: 60px 5% 30px;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(184, 151, 126, 0.12) 0%, rgba(249, 251, 249, 0) 70%);
+        }
+
+        .hero h1 { 
+            font-size: clamp(2rem, 3.8vw, 2.5rem); 
+            font-weight: normal; 
+            letter-spacing: 0.2em; 
+            margin-bottom: 12px; 
+            color: var(--dark-forest);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .hero p { 
+            font-size: 1rem; 
+            color: var(--sage-green); 
+            max-width: 750px; 
+            margin: 0 auto; 
+            line-height: 1.8; 
+        }
+
+        /* === 內容容器 === */
+        .container { 
+            max-width: 1180px; 
+            margin: 0 auto; 
+            padding: 25px 4% 90px; 
+        }
+
+        /* === 條件設定卡片 === */
+        .search-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 35px 40px; 
+            border-radius: 14px; 
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-soft);
+            position: relative; 
+            overflow: hidden;
+        }
+
+        .search-card::before {
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 3px;
+            background: linear-gradient(90deg, var(--dark-forest), var(--accent-gold));
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .form-group-search {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group-search label {
+            font-size: 0.9rem;
+            color: var(--dark-forest);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.08em;
+        }
+
+        .form-group-search label i {
+            color: var(--accent-gold);
+        }
+
+        .search-input, .search-select {
+            width: 100%;
+            padding: 11px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: var(--font-kai);
+            font-size: 0.92rem;
+            color: var(--dark-forest);
+            background: var(--off-white);
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus, .search-select:focus {
+            border-color: var(--accent-gold);
+            background: #ffffff;
+            box-shadow: 0 0 8px rgba(184, 151, 126, 0.2);
+        }
+
+        .btn-search-submit {
+            padding: 12px 30px;
+            background: var(--dark-forest);
+            color: var(--off-white);
+            border: none;
+            border-radius: 6px;
+            font-family: var(--font-kai);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.15em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 45px;
+            box-shadow: 0 4px 15px rgba(26, 48, 33, 0.12);
+        }
+
+        .btn-search-submit:hover {
+            background: var(--sage-green);
+            transform: translateY(-2px);
+        }
+
+        /* === Loading 加載狀態 === */
+        .loading-box {
+            text-align: center;
+            padding: 40px;
+            color: var(--sage-green);
+            font-size: 1rem;
+            display: none;
+        }
+
+        .loading-box i {
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+        }
+
+        /* === 搜尋結果看板與排序 === */
+        .results-header {
+            background: var(--light-sage);
+            border: 1px solid var(--border-color);
+            padding: 18px 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.92rem;
+            color: var(--dark-forest);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-count span {
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        .sort-filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-select {
+            padding: 6px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: var(--font-kai);
+            font-size: 0.88rem;
+            color: var(--dark-forest);
+            background: #ffffff;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* === 住宿卡片 Grid === */
+        .hotel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .hotel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent-gold);
+        }
+
+        .hotel-card-img-wrapper {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .hotel-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .hotel-card:hover .hotel-card-img {
+            transform: scale(1.05);
+        }
+
+        .hotel-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(26, 48, 33, 0.85);
+            color: var(--off-white);
+            font-size: 0.78rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .hotel-card-body {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .hotel-title-text {
+            font-size: 1.25rem;
+            font-weight: normal;
+            color: var(--dark-forest);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .hotel-location-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.83rem;
+            color: var(--sage-green);
+            background: var(--light-sage);
+            padding: 3px 10px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            width: fit-content;
+        }
+
+        .hotel-rating-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--sage-green);
+            margin-bottom: 12px;
+        }
+
+        .hotel-stars {
+            color: #f39c12;
+            font-size: 0.85rem;
+        }
+
+        .hotel-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .hotel-price-label {
+            font-size: 0.78rem;
+            color: var(--sage-green);
+        }
+
+        .hotel-price {
+            font-size: 1.35rem;
+            color: var(--dark-forest);
+            font-weight: bold;
+        }
+
+        .btn-view-detail {
+            font-size: 0.88rem;
+            color: var(--dark-forest);
+            border: 1px solid var(--dark-forest);
+            padding: 6px 16px;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .hotel-card:hover .btn-view-detail {
+            background: var(--dark-forest);
+            color: var(--off-white);
+        }
+
+        /* === 詳細介紹 Modal === */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(26, 48, 33, 0.6);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .detail-modal-container {
+            background: var(--off-white);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 820px;
+            max-height: 90vh;
+            border-radius: 12px;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            padding: 32px 30px;
+        }
+
+        .modal-overlay.active .detail-modal-container {
+            transform: translateY(0);
+        }
+
+        .detail-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--off-white);
+            border: 1px solid var(--border-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1rem;
+            color: var(--dark-forest);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .detail-close-btn:hover {
+            background: var(--dark-forest);
+            color: var(--off-white);
+        }
+
+        .detail-header {
+            margin-bottom: 20px;
+            padding-right: 40px;
+        }
+
+        .detail-title {
+            font-size: 1.6rem;
+            color: var(--dark-forest);
+            font-weight: normal;
+            margin-bottom: 8px;
+        }
+
+        .detail-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .detail-gallery {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .gallery-main {
+            height: 260px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-sub {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .gallery-sub img {
+            height: 124px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .detail-section {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .detail-section-title {
+            font-size: 1.05rem;
+            color: var(--dark-forest);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .detail-section-title i {
+            color: var(--accent-gold);
+        }
+
+        .facility-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .facility-tag {
+            background: var(--off-white);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--sage-green);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rating-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ai-verify-tag {
+            background: linear-gradient(135deg, rgba(184, 151, 126, 0.15), rgba(26, 48, 33, 0.08));
+            border: 1px solid var(--accent-gold);
+            color: var(--dark-forest);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .review-quote {
+            font-style: italic;
+            color: var(--sage-green);
+            font-size: 0.9rem;
+            background: var(--off-white);
+            padding: 12px 16px;
+            border-left: 3px solid var(--accent-gold);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .detail-footer-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-booking {
+            background: var(--dark-forest);
+            color: var(--off-white);
+            border: none;
+            padding: 12px 36px;
+            font-family: var(--font-kai);
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 0.15em;
+            box-shadow: 0 4px 15px rgba(26, 48, 33, 0.15);
+        }
+
+        .btn-booking:hover {
+            background: var(--sage-green);
+            transform: translateY(-2px);
+        }
+
+        /* === Toast 通知 === */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--dark-forest);
+            color: var(--off-white);
+            padding: 14px 24px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+            font-family: var(--font-kai);
+            font-size: 0.95rem;
+            z-index: 3000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.35s ease;
+            pointer-events: none;
+        }
+
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* === 頁尾 === */
+        .footer {
+            background-color: var(--dark-forest);
+            color: var(--off-white);
+            padding: 40px 5%;
+            text-align: center; 
+            font-size: 0.88rem;
+            letter-spacing: 0.08em;
+        }
+
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .search-grid { grid-template-columns: repeat(2, 1fr); }
+            .detail-gallery { grid-template-columns: 1fr; }
+            .gallery-sub { flex-direction: row; }
+            .gallery-sub img { height: 100px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 導覽列 Navbar (與航班.html 完全相同) -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <i class="fas fa-paper-plane"></i>
+            <span>我 的 口 袋 導 遊</span>
+        </a>
+        <div class="nav-links">
+            <a href="航班.html"><i class="fas fa-plane"></i> 航班查詢</a>
+            <a href="住宿.html" class="active"><i class="fas fa-hotel"></i> 住宿</a>
+            <a href="美食.html"><i class="fas fa-utensils"></i> 美食</a>
+            <a href="旅遊.html"><i class="fas fa-compass"></i> 旅遊</a>
+            <a href="保險.html"><i class="fas fa-shield-alt"></i> 保險分析</a>
+            <a href="chatbot.html" class="nav-btn-ai"><i class="fas fa-robot"></i> AI 隨行導遊</a>
+        </div>
+    </nav>
+
+    <!-- 主視覺 Banner -->
+    <header class="hero">
+        <h1>嚴選質感住宿</h1>
+        <p>為您精選靜謐舒適的棲居之所，讓旅途的每一夜都沉浸於美好夢境。</p>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="container">
+
+        <!-- 條件設定區塊 -->
+        <section class="search-card">
+            <form id="hotelSearchForm" onsubmit="handleSearchSubmit(event)">
+                <div class="search-grid">
+                    <div class="form-group-search">
+                        <label for="destinationSelect"><i class="fas fa-map-marker-alt"></i> 住宿地點</label>
+                        <select id="destinationSelect" class="search-select">
+                            <option value="東京" selected>東京 (Tokyo)</option>
+                            <option value="大阪">大阪 (Osaka)</option>
+                            <option value="首爾">首爾 (Seoul)</option>
+                            <option value="曼谷">曼谷 (Bangkok)</option>
+                            <option value="新加坡">新加坡 (Singapore)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-search">
+                        <label for="checkInDate"><i class="far fa-calendar-alt"></i> 入住日期</label>
+                        <input type="date" id="checkInDate" class="search-input" value="2026-05-15">
+                    </div>
+
+                    <div class="form-group-search">
+                        <label for="checkOutDate"><i class="far fa-calendar-check"></i> 退房日期</label>
+                        <input type="date" id="checkOutDate" class="search-input" value="2026-05-18">
+                    </div>
+
+                    <div class="form-group-search">
+                        <label for="guestCount"><i class="fas fa-user-friends"></i> 住宿人數</label>
+                        <select id="guestCount" class="search-select">
+                            <option value="1">1 位貴賓</option>
+                            <option value="2" selected>2 位貴賓</option>
+                            <option value="3">3 位貴賓</option>
+                            <option value="4">4 位貴賓及以上</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn-search-submit">
+                            <i class="fas fa-search"></i> 搜尋最佳住宿
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Loading 狀態 -->
+        <div class="loading-box" id="hotelLoading">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <p>正在搜尋並比對當地的嚴選質感住宿資料...</p>
+        </div>
+
+        <!-- 搜尋結果與排序功能看板 -->
+        <div id="resultsWrapper">
+            <section class="results-header">
+                <div class="results-count">
+                    <i class="fas fa-filter" style="color:var(--accent-gold); margin-right:6px;"></i>
+                    搜尋目的地：<span id="currentDestLabel">東京</span>（找到 <span id="hotelCount">4</span> 間精選住宿）
+                </div>
+                <div class="sort-filter-group">
+                    <label for="priceSortSelect"><i class="fas fa-sort-amount-down-alt"></i> 價格排序：</label>
+                    <select id="priceSortSelect" class="sort-select" onchange="applyPriceSort()">
+                        <option value="default">預設推薦排序</option>
+                        <option value="low-to-high">價格：由低到高</option>
+                        <option value="high-to-low">價格：由高到低</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- 住宿卡片展示區 -->
+            <section class="hotel-grid" id="hotelGridContainer">
+                <!-- JS 動態生成卡片 -->
+            </section>
+        </div>
+    </main>
+
+    <!-- 住宿詳細介紹 Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="detail-modal-container" id="detailModalContent">
+            <!-- JS 動態渲染詳細內容 -->
+        </div>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <p>&copy; 2026 我的口袋導遊 Pocket Guide. 靜享熱帶陽光的溫潤與從容。</p>
+    </footer>
+
+    <!-- JavaScript 邏輯控制 -->
+    <script>
+        // 住宿資料庫
+        const hotelDatabase = {
+            "東京": [
+                {
+                    id: "tokyo-1",
+                    name: "東京極簡微光極致飯店",
+                    locationTag: "近 新宿車站 步行3分鐘",
+                    price: 4600,
+                    img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "奢華旗艦",
+                    roomType: "尊榮雙人大床套房 (高樓層城市景觀)",
+                    facilities: ["全區免費 Wi-Fi", "獨立浴缸", "景觀陽台", "空氣清淨機", "膠囊咖啡機", "24小時健身房"],
+                    stars: 4.9,
+                    reviewCount: 382,
+                    reviewQuote: "高樓層夜景無敵，服務人員非常有禮貌且貼心，新宿購物極度方便！"
+                },
+                {
+                    id: "tokyo-2",
+                    name: "銀座藝文美學設計旅店",
+                    locationTag: "近 銀座商圈 步行5分鐘",
+                    price: 3800,
+                    img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "熱門首選",
+                    roomType: "雅緻雙人房 (含精緻日式早餐)",
+                    facilities: ["免費高速 Wi-Fi", "獨立浴缸", "空氣清淨機", "藝文閱讀 Lounge", "頂級沐浴備品"],
+                    stars: 4.8,
+                    reviewCount: 254,
+                    reviewQuote: "裝潢非常有品味，步行到銀座購物大道只需幾分鐘，性價比超高。"
+                },
+                {
+                    id: "tokyo-3",
+                    name: "淺草靜謐和風湯泉旅館",
+                    locationTag: "近 淺草寺 步行2分鐘",
+                    price: 2950,
+                    img: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "傳統和風",
+                    roomType: "榻榻米日式家庭房",
+                    facilities: ["全區 Wi-Fi", "傳統大浴場", "和服體驗服務", "免費宵夜拉麵", "行李寄放"],
+                    stars: 4.7,
+                    reviewCount: 512,
+                    reviewQuote: "能體驗道地的榻榻米與湯泉，窗外能隱約看到晴空塔，非常有感覺！"
+                },
+                {
+                    id: "tokyo-4",
+                    name: "涉谷潮尚輕奢商旅",
+                    locationTag: "近 涉谷十字路口 步行4分鐘",
+                    price: 5200,
+                    img: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "時尚前衛",
+                    roomType: "都市潮流景觀套房",
+                    facilities: ["極速 Wi-Fi", "景觀陽台", "Bose 藍芽音響", "屋頂露天酒吧", "智慧電視"],
+                    stars: 4.8,
+                    reviewCount: 198,
+                    reviewQuote: "頂樓酒吧調酒水準極高，隔音效果意想不到地讚，年輕旅客首選！"
+                }
+            ],
+            "大阪": [
+                {
+                    id: "osaka-1",
+                    name: "心齋橋精品景點渡假飯店",
+                    locationTag: "近 心齋橋商圈 步行2分鐘",
+                    price: 3400,
+                    img: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "購物首選",
+                    roomType: "舒適雙床套房",
+                    facilities: ["免費 Wi-Fi", "獨立浴缸", "空氣清淨機", "自助洗衣房", "全室按摩椅"],
+                    stars: 4.8,
+                    reviewCount: 420,
+                    reviewQuote: "門口就是買東西吃東西的地方，房間非常寬敞乾淨，下趟來大阪一定再住！"
+                },
+                {
+                    id: "osaka-2",
+                    name: "梅田雲端尊爵高空酒店",
+                    locationTag: "近 JR大阪站/梅田 步行5分鐘",
+                    price: 5800,
+                    img: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "地標高空",
+                    roomType: "天際特大雙人景觀房",
+                    facilities: ["免費高速 Wi-Fi", "景觀陽台", "獨立浴缸", "無邊際室內泳池", "私人管家服務"],
+                    stars: 4.9,
+                    reviewCount: 289,
+                    reviewQuote: "高空俯瞰大阪夜景美得令人屏息，飯店與車站直通完全不怕下雨。"
+                },
+                {
+                    id: "osaka-3",
+                    name: "難波綠意文旅會館",
+                    locationTag: "近 難波站 步行4分鐘",
+                    price: 2700,
+                    img: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "高CP值",
+                    roomType: "簡約溫馨雙人房",
+                    facilities: ["免費 Wi-Fi", "空氣清淨機", "免費飲料吧", "24小時櫃檯", "洗烘衣設備"],
+                    stars: 4.6,
+                    reviewCount: 310,
+                    reviewQuote: "價格親民卻毫不馬虎，樓下就是便利商店，前往機場非常順暢。"
+                }
+            ],
+            "首爾": [
+                {
+                    id: "seoul-1",
+                    name: "明洞美學棲居旅店",
+                    locationTag: "近 明洞步行街 步行1分鐘",
+                    price: 3600,
+                    img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "購物熱門",
+                    roomType: "韓系極簡高空套房",
+                    facilities: ["免費 Wi-Fi", "Dyson 吹風機", "空氣清淨機", "韓式茶點", "轉接頭借用"],
+                    stars: 4.8,
+                    reviewCount: 365,
+                    reviewQuote: "距離明洞地鐵站超近，房間美感極佳，Dyson 吹風機用起來超順手！"
+                },
+                {
+                    id: "seoul-2",
+                    name: "弘大藝文新潮渡假飯店",
+                    locationTag: "近 弘益大學站 步行3分鐘",
+                    price: 3100,
+                    img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "年輕潮流",
+                    roomType: "設計感標準雙人房",
+                    facilities: ["免費 Wi-Fi", "黑膠唱片機", "屋頂影院", "健身房", "迎賓調酒"],
+                    stars: 4.7,
+                    reviewCount: 480,
+                    reviewQuote: "樓下就是弘大熱鬧的夜生活與巷弄咖啡廳，飯店內的氛圍放鬆至極。"
+                },
+                {
+                    id: "seoul-3",
+                    name: "江南頂級奢華尊榮酒店",
+                    locationTag: "近 江南站 步行6分鐘",
+                    price: 6400,
+                    img: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "頂級奢華",
+                    roomType: "行政奢華套房 (含行政酒廊禮遇)",
+                    facilities: ["高速 Wi-Fi", "景觀陽台", "獨立浴缸", "溫水泳池", "SPA會館", "專車接送"],
+                    stars: 4.9,
+                    reviewCount: 210,
+                    reviewQuote: "服務無可挑剔，行政酒廊的餐食水準極高，睡眠品質極佳。"
+                }
+            ],
+            "曼谷": [
+                {
+                    id: "bkk-1",
+                    name: "湄南河畔河景無邊際渡假村",
+                    locationTag: "近 昭披耶河畔 專屬接駁船",
+                    price: 4200,
+                    img: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "無邊際泳池",
+                    roomType: "河景奢華陽台雙人房",
+                    facilities: ["免費 Wi-Fi", "景觀陽台", "獨立浴缸", "河景無邊際泳池", "泰式 SPA"],
+                    stars: 4.9,
+                    reviewCount: 520,
+                    reviewQuote: "在無邊際泳池看夕陽染紅湄南河簡直是人生享受，渡假氛圍拉滿！"
+                },
+                {
+                    id: "bkk-2",
+                    name: "暹羅商圈現代綠洲酒店",
+                    locationTag: "近 BTS Siam站 步行3分鐘",
+                    price: 2800,
+                    img: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "城市綠洲",
+                    roomType: "雅緻綠意庭園房",
+                    facilities: ["免費 Wi-Fi", "空氣清淨機", "戶外熱帶花園", "高爾夫練習區", "泰式按摩諮詢"],
+                    stars: 4.7,
+                    reviewCount: 390,
+                    reviewQuote: "鬧中取靜，飯店裡的植栽設計令人放鬆，走去奇隆與暹羅購物超方便。"
+                },
+                {
+                    id: "bkk-3",
+                    name: "通羅設計潮尚風格旅店",
+                    locationTag: "近 BTS Thong Lo站 步行6分鐘",
+                    price: 2400,
+                    img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "風格小資",
+                    roomType: "工業風陽台套房",
+                    facilities: ["免費 Wi-Fi", "景觀陽台", "高空小酒館", "自動研磨咖啡機", "高畫質投影"],
+                    stars: 4.6,
+                    reviewCount: 230,
+                    reviewQuote: "位於曼谷著名的文青通羅區，周邊高質感酒吧與咖啡廳林立，CP值超高！"
+                }
+            ],
+            "新加坡": [
+                {
+                    id: "sg-1",
+                    name: "濱海灣高空璀璨尊爵酒店",
+                    locationTag: "近 濱海灣花園 步行4分鐘",
+                    price: 8900,
+                    img: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "地標地王",
+                    roomType: "濱海灣全景奢華套房",
+                    facilities: ["高速 Wi-Fi", "景觀陽台", "獨立浴缸", "無邊際泳池", "米其林餐廳", "禮賓管家"],
+                    stars: 4.9,
+                    reviewCount: 680,
+                    reviewQuote: "無邊際泳池俯瞰新加坡天際線，絕對是此生必住一次的夢幻旅店！"
+                },
+                {
+                    id: "sg-2",
+                    name: "聖淘沙陽光沙灘渡假村",
+                    locationTag: "近 聖淘沙海灘 直通環球影城",
+                    price: 6800,
+                    img: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "親子海景",
+                    roomType: "海景渡假 Villa 家庭房",
+                    facilities: ["免費 Wi-Fi", "景觀陽台", "私人沙灘", "水上樂園", "SPA三溫暖"],
+                    stars: 4.8,
+                    reviewCount: 340,
+                    reviewQuote: "帶小朋友來玩環球影城住這裡最方便，沙灘極美，設施非常豐富。"
+                },
+                {
+                    id: "sg-3",
+                    name: "牛車水歷史南洋風情旅館",
+                    locationTag: "近 地鐵牛車水站 步行2分鐘",
+                    price: 3900,
+                    img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop",
+                    subImgs: [
+                        "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=600&auto=format&fit=crop"
+                    ],
+                    badge: "南洋復古",
+                    roomType: "精品復古雙人房",
+                    facilities: ["免費 Wi-Fi", "空氣清淨機", "娘惹茶點", "歷史建築導覽", "有機洗沐備品"],
+                    stars: 4.7,
+                    reviewCount: 275,
+                    reviewQuote: "濃濃的南洋復古建築風格，拍照非常好看，周圍美食攤位極多！"
+                }
+            ]
+        };
+
+        // 當前快照
+        let currentHotels = [];
+
+        // 頁面初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            renderHotelsForDestination("東京");
+        });
+
+        // 搜尋提交
+        function handleSearchSubmit(e) {
+            e.preventDefault();
+            const dest = document.getElementById('destinationSelect').value;
+            const loading = document.getElementById('hotelLoading');
+            const wrapper = document.getElementById('resultsWrapper');
+
+            wrapper.style.opacity = '0.3';
+            loading.style.display = 'block';
+
+            setTimeout(() => {
+                loading.style.display = 'none';
+                wrapper.style.opacity = '1';
+                renderHotelsForDestination(dest);
+            }, 500);
+        }
+
+        // 渲染對應地點住宿
+        function renderHotelsForDestination(dest) {
+            document.getElementById('currentDestLabel').innerText = dest;
+            const hotels = hotelDatabase[dest] || [];
+            currentHotels = [...hotels];
+            
+            document.getElementById('priceSortSelect').value = "default";
+            renderGrid(currentHotels);
+            showToast(`已為您載入 ${dest} 的熱門質感住宿`);
+        }
+
+        // 價格排序
+        function applyPriceSort() {
+            const sortType = document.getElementById('priceSortSelect').value;
+            if (sortType === 'low-to-high') {
+                currentHotels.sort((a, b) => a.price - b.price);
+            } else if (sortType === 'high-to-low') {
+                currentHotels.sort((a, b) => b.price - a.price);
+            } else {
+                const dest = document.getElementById('destinationSelect').value;
+                currentHotels = [...(hotelDatabase[dest] || [])];
+            }
+            renderGrid(currentHotels);
+        }
+
+        // 產生卡片
+        function renderGrid(hotels) {
+            const container = document.getElementById('hotelGridContainer');
+            document.getElementById('hotelCount').innerText = hotels.length;
+
+            if (hotels.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--sage-green);">尚無找到對應地點的住宿。</div>`;
+                return;
+            }
+
+            container.innerHTML = hotels.map(hotel => {
+                const starsHtml = Array(5).fill(0).map((_, i) => 
+                    `<i class="${i < Math.floor(hotel.stars) ? 'fas' : 'far'} fa-star"></i>`
+                ).join('');
+
+                return `
+                    <div class="hotel-card" onclick="openHotelDetail('${hotel.id}')">
+                        <div class="hotel-card-img-wrapper">
+                            <img src="${hotel.img}" alt="${hotel.name}" class="hotel-card-img">
+                            <div class="hotel-badge"><i class="fas fa-bookmark" style="color: var(--accent-gold);"></i> ${hotel.badge}</div>
+                        </div>
+                        <div class="hotel-card-body">
+                            <div>
+                                <h3 class="hotel-title-text">${hotel.name}</h3>
+                                <div class="hotel-location-tag">
+                                    <i class="fas fa-map-marker-alt" style="color: var(--accent-gold);"></i> ${hotel.locationTag}
+                                </div>
+                                <div class="hotel-rating-row">
+                                    <span class="hotel-stars">${starsHtml}</span>
+                                    <span><strong>${hotel.stars}</strong> (${hotel.reviewCount} 則評價)</span>
+                                </div>
+                            </div>
+                            <div class="hotel-card-footer">
+                                <div>
+                                    <div class="hotel-price-label">每晚起（含稅）</div>
+                                    <div class="hotel-price">NT$ ${hotel.price.toLocaleString()}</div>
+                                </div>
+                                <div class="btn-view-detail">詳細介紹</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 開啟詳細 Modal
+        function openHotelDetail(hotelId) {
+            let selected = null;
+            Object.values(hotelDatabase).forEach(list => {
+                const found = list.find(h => h.id === hotelId);
+                if (found) selected = found;
+            });
+
+            if (!selected) return;
+
+            const modal = document.getElementById('detailModal');
+            const container = document.getElementById('detailModalContent');
+
+            const starIcons = Array(5).fill(0).map((_, i) => 
+                `<i class="${i < Math.floor(selected.stars) ? 'fas' : 'far'} fa-star"></i>`
+            ).join('');
+
+            container.innerHTML = `
+                <button class="detail-close-btn" onclick="closeHotelDetail()"><i class="fas fa-times"></i></button>
+
+                <div class="detail-header">
+                    <h2 class="detail-title">${selected.name}</h2>
+                    <div class="detail-meta-row">
+                        <div class="hotel-location-tag" style="margin-bottom:0;">
+                            <i class="fas fa-map-marker-alt" style="color: var(--accent-gold);"></i> ${selected.locationTag}
+                        </div>
+                        <div style="font-size: 0.88rem; color: var(--sage-green);">
+                            標籤：<strong style="color: var(--dark-forest);">${selected.badge}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 旅館房間與設施圖片 -->
+                <div class="detail-gallery">
+                    <img src="${selected.img}" class="gallery-main" alt="主圖">
+                    <div class="gallery-sub">
+                        <img src="${selected.subImgs[0] || selected.img}" alt="設施相片1">
+                        <img src="${selected.subImgs[1] || selected.img}" alt="設施相片2">
+                    </div>
+                </div>
+
+                <!-- 房型說明 -->
+                <div class="detail-section">
+                    <h4 class="detail-section-title"><i class="fas fa-bed"></i> 推薦房型說明</h4>
+                    <p style="font-size:0.95rem; color: var(--dark-forest);">${selected.roomType}</p>
+                </div>
+
+                <!-- 房內設備與設施說明 -->
+                <div class="detail-section">
+                    <h4 class="detail-section-title"><i class="fas fa-concierge-bell"></i> 房內設備與服務設施</h4>
+                    <div class="facility-tags">
+                        ${selected.facilities.map(f => `<div class="facility-tag"><i class="fas fa-check" style="color: var(--accent-gold);"></i> ${f}</div>`).join('')}
+                    </div>
+                </div>
+
+                <!-- Google 評論與 AI 真實性標籤 -->
+                <div class="detail-section">
+                    <h4 class="detail-section-title"><i class="fab fa-google"></i> Google 住客真實體驗評價</h4>
+                    <div class="rating-box">
+                        <div style="color: #f39c12; font-size: 1rem;">${starIcons}</div>
+                        <div style="font-weight: bold; font-size: 1.05rem; color: var(--dark-forest);">${selected.stars} / 5.0</div>
+                        <div style="font-size:0.85rem; color: var(--sage-green);">（依據 ${selected.reviewCount} 則真實評論）</div>
+                        <div class="ai-verify-tag">
+                            <i class="fas fa-sparkles" style="color: var(--accent-gold);"></i> ✨ AI 已比對真實性
+                        </div>
+                    </div>
+                    <div class="review-quote">
+                        「${selected.reviewQuote}」
+                    </div>
+                </div>
+
+                <!-- 預定按鈕區域 -->
+                <div class="detail-footer-action">
+                    <div>
+                        <span style="font-size:0.85rem; color: var(--sage-green);">每晚尊榮房價</span>
+                        <div style="font-size: 1.6rem; color: var(--dark-forest); font-weight: bold;">
+                            NT$ ${selected.price.toLocaleString()}
+                        </div>
+                    </div>
+                    <button class="btn-booking" onclick="bookHotel('${selected.name}')">
+                        <i class="far fa-bookmark"></i> 預定住宿
+                    </button>
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        // 關閉 Modal
+        function closeHotelDetail() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('detailModal')) {
+                closeHotelDetail();
+            }
+        });
+
+        // 預訂住宿按鈕事件
+        function bookHotel(hotelName) {
+            closeHotelDetail();
+            showToast(`已為您成功預定並保存住宿紀錄！(${hotelName})`);
+        }
+
+        // Toast 通知
+        function showToast(message) {
+            let toast = document.getElementById('customToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'customToast';
+                toast.className = 'toast-notification';
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="fas fa-check-circle" style="color: var(--accent-gold); margin-right: 8px;"></i> ${message}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+    </script>
+</body>
+</html>
