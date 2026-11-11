@@ -34,7 +34,7 @@ body {
     line-height: 1.8;
 }
 
-/* === 頂部比例最佳化導覽列 Navbar === */
+/* === 頂部導覽列 Navbar === */
 .navbar {
     padding: 12px 3%;
     display: flex; 
@@ -83,7 +83,7 @@ body {
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 16px; /* 最佳化間距，確保選單完美不擠壓 */
+    gap: 16px;
     white-space: nowrap;
 }
 
@@ -124,9 +124,34 @@ body {
     width: 100%; 
 }
 
-/* 使用者頭像區與選單 */
+/* 右側登入/註冊按鈕 (對照截圖中的樣式) */
+.auth-btn-pill {
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 7px 18px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: var(--font-kai);
+    font-size: 0.9rem;
+    color: var(--dark-forest);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(26,48,33,0.03);
+}
+
+.auth-btn-pill:hover {
+    border-color: var(--dark-forest);
+    background: var(--gold-light);
+    transform: translateY(-1px);
+}
+
+/* 登入後的使用者頭像區與選單 */
 .user-profile-container {
     position: relative;
+    display: none; /* 預設隱藏，登入後顯示 */
 }
 
 .user-profile-badge {
@@ -208,13 +233,28 @@ body {
     background: var(--gold-light);
 }
 
-.mobile-menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 1.3rem;
-    color: var(--dark-forest);
-    cursor: pointer;
+/* === 登入成功 Toast 提示橫幅 === */
+.toast-notification {
+    position: fixed;
+    top: 25px;
+    right: 30px;
+    background: var(--dark-forest);
+    color: white;
+    padding: 12px 22px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    border-left: 4px solid var(--accent-gold);
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-notification.show {
+    transform: translateX(0);
 }
 
 /* === 精緻登入 / 註冊 Modal === */
@@ -789,21 +829,32 @@ input:focus, select:focus {
         </div>
     </div>
 
-    <!-- 會員頭像與帳號選單 -->
-    <div class="user-profile-container">
+    <!-- 未登入時顯示的按鈕 -->
+    <button class="auth-btn-pill" id="authBtnPill" onclick="openAuthModal()">
+        <i class="far fa-user"></i> 登入 / 註冊
+    </button>
+
+    <!-- 登入後顯示的會員頭像與選單 -->
+    <div class="user-profile-container" id="userProfileContainer">
         <div class="user-profile-badge" id="userBadge">
             <div class="user-avatar" id="avatarLetter">t</div>
             <span class="user-name"><span id="userNameText">traveler</span> <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--sage-green);"></i></span>
         </div>
 
         <div class="dropdown-menu" id="userDropdown">
-            <button onclick="openAuthModal()"><i class="fas fa-exchange-alt"></i> 切換帳號 / 登入</button>
+            <button onclick="openAuthModal()"><i class="fas fa-exchange-alt"></i> 切換帳號</button>
             <button onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
         </div>
     </div>
 
     <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
 </nav>
+
+<!-- 登入成功 Toast 提示橫幅 -->
+<div class="toast-notification" id="toastNotification">
+    <i class="fas fa-check-circle" style="color: var(--accent-gold); font-size: 1.2rem;"></i>
+    <span id="toastText">登入成功！歡迎回來</span>
+</div>
 
 <header class="hero">
     <h1>開啟一場專屬於你的旅程</h1>
@@ -1082,6 +1133,9 @@ function setupOptions(id, callback) {
 setupOptions("regionOptions", value => { selectedRegion = value; });
 setupOptions("styleOptions", value => { selectedStyle = value; });
 
+// 導覽列帳號互動控制
+const authBtnPill = document.getElementById("authBtnPill");
+const userProfileContainer = document.getElementById("userProfileContainer");
 const userBadge = document.getElementById("userBadge");
 const userDropdown = document.getElementById("userDropdown");
 const authModal = document.getElementById("authModal");
@@ -1142,6 +1196,15 @@ function togglePasswordVisibility() {
     }
 }
 
+function showToast(message) {
+    const toast = document.getElementById("toastNotification");
+    document.getElementById("toastText").textContent = message;
+    toast.classList.add("show");
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3500);
+}
+
 function handleAuthSubmit(e) {
     e.preventDefault();
     let name = "traveler";
@@ -1155,7 +1218,7 @@ function handleAuthSubmit(e) {
     localStorage.setItem("aloha_user", name);
     updateUserDisplay(name);
     closeAuthModal();
-    alert(`歡迎回來，${name}！`);
+    showToast(`✨ 歡迎回來，${name}！登入成功`);
 }
 
 function quickLogin(type) {
@@ -1163,24 +1226,36 @@ function quickLogin(type) {
     localStorage.setItem("aloha_user", name);
     updateUserDisplay(name);
     closeAuthModal();
-    alert(`已透過 ${type} 成功登入！`);
+    showToast(`✨ 已透過 ${type} 成功登入！`);
 }
 
 function updateUserDisplay(name) {
-    document.getElementById("userNameText").textContent = name;
-    document.getElementById("avatarLetter").textContent = name.charAt(0).toLowerCase();
+    if (name && name !== "guest_logged_out") {
+        document.getElementById("userNameText").textContent = name;
+        document.getElementById("avatarLetter").textContent = name.charAt(0).toLowerCase();
+        authBtnPill.style.display = "none";
+        userProfileContainer.style.display = "block";
+    } else {
+        authBtnPill.style.display = "flex";
+        userProfileContainer.style.display = "none";
+    }
 }
 
 function logoutUser() {
-    localStorage.removeItem("aloha_user");
-    updateUserDisplay("traveler");
+    localStorage.setItem("aloha_user", "guest_logged_out");
+    updateUserDisplay("guest_logged_out");
     userDropdown.classList.remove("active");
-    alert("已成功登出帳號");
+    showToast("已成功登出帳號");
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    const savedUser = localStorage.getItem("aloha_user") || "traveler";
-    updateUserDisplay(savedUser);
+    const savedUser = localStorage.getItem("aloha_user");
+    // 若沒有紀錄過或記錄為登出，預設顯示「登入 / 註冊」按鈕；若有則顯示使用者頭像
+    if (!savedUser || savedUser === "guest_logged_out") {
+        updateUserDisplay("guest_logged_out");
+    } else {
+        updateUserDisplay(savedUser);
+    }
 });
 
 function startPlanning() {
