@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>旅程設定 | Aloha Travel - 我的口袋導遊</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --dark-forest: #1A3021;
+    --sage-green: #4A634E;
+    --off-white: #F7F9F7;
+    --accent-gold: #B8977E;
+    --gold-light: #F4EFEA;
+    --border-color: #E2E8E2;
+    --font-kai: "標楷體","BiauKai","DFKai-SB",serif;
+    --shadow-soft: 0 10px 30px rgba(26, 48, 33, 0.05);
+    --shadow-hover: 0 15px 35px rgba(26, 48, 33, 0.09);
+    --glass-bg: rgba(247, 249, 247, 0.92);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--off-white);
+    color: var(--dark-forest);
+    font-family: var(--font-kai);
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+}
+
+/* === 頂部精緻導覽列 Navbar === */
+.navbar {
+    padding: 14px 5%;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    position: sticky; 
+    top: 0; 
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 15px rgba(26, 48, 33, 0.03);
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: bold;
+    letter-spacing: 0.12em;
+    color: var(--dark-forest);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    color: var(--accent-gold);
+    font-size: 1.2rem;
+    transition: transform 0.4s ease;
+}
+
+.logo:hover .logo-icon {
+    transform: rotate(-12deg) scale(1.15);
+}
+
+.nav-center {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.nav-links a {
+    text-decoration: none; 
+    color: var(--dark-forest);
+    font-size: 0.92rem;
+    transition: 0.3s; 
+    position: relative;
+    display: flex; 
+    align-items: center; 
+    gap: 7px;
+    padding: 4px 0;
+}
+
+.nav-links a i {
+    color: var(--sage-green);
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover i, .nav-links a.active i {
+    color: var(--accent-gold);
+}
+
+.nav-links a::after {
+    content: ''; 
+    position: absolute; 
+    bottom: 0; 
+    left: 0;
+    width: 0; 
+    height: 1.5px; 
+    background: var(--accent-gold);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after, .nav-links a.active::after { 
+    width: 100%; 
+}
+
+/* 使用者頭像區與選單 */
+.user-profile-container {
+    position: relative;
+}
+
+.user-profile-badge {
+    background: var(--gold-light);
+    border: 1px solid rgba(184, 151, 126, 0.3);
+    padding: 5px 16px 5px 6px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.user-profile-badge:hover {
+    background: #ebdcd0;
+    box-shadow: 0 4px 12px rgba(26, 48, 33, 0.08);
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--dark-forest);
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.88rem;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    color: var(--dark-forest);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 180px;
+    padding: 8px 0;
+    display: none;
+    flex-direction: column;
+    z-index: 1001;
+}
+
+.dropdown-menu.active {
+    display: flex;
+}
+
+.dropdown-menu button, .dropdown-menu a {
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    color: var(--dark-forest);
+    font-family: var(--font-kai);
+    font-size: 0.9rem;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.dropdown-menu button:hover, .dropdown-menu a:hover {
+    background: var(--gold-light);
+    color: var(--dark-forest);
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--dark-forest);
+    cursor: pointer;
+}
+
+/* === 精緻登入 / 註冊 Modal (完全對照圖片樣式) === */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(26, 48, 33, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 480px;
+    border-radius: 12px;
+    padding: 35px 32px 30px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-card {
+    transform: translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: 22px; right: 22px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--dark-forest);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: 0.2s;
+}
+
+.modal-close:hover { opacity: 1; }
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 28px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    background: none;
+    border: none;
+    font-family: var(--font-kai);
+    font-size: 1.15rem;
+    color: var(--sage-green);
+    cursor: pointer;
+    position: relative;
+    letter-spacing: 0.1em;
+}
+
+.auth-tab.active {
+    color: var(--dark-forest);
+    font-weight: bold;
+}
+
+.auth-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 100%; height: 2px;
+    background: var(--accent-gold);
+}
+
+.modal-form-group {
+    margin-bottom: 22px;
+    text-align: left;
+}
+
+.modal-form-group label {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--dark-forest);
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+}
+
+.modal-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.modal-input-wrap i.field-icon {
+    position: absolute;
+    left: 15px;
+    color: var(--sage-green);
+    font-size: 0.95rem;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 13px 42px 13px 45px !important;
+    text-align: left !important;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: var(--font-kai);
+    font-size: 1rem;
+    color: var(--dark-forest);
+    outline: none;
+    background: white;
+    transition: 0.25s;
+}
+
+.modal-input:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(184,151,126,0.15);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--sage-green);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.auth-options-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+    color: var(--sage-green);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.remember-me input {
+    accent-color: var(--dark-forest);
+    width: 16px;
+    height: 16px;
+}
+
+.forgot-pwd {
+    color: var(--sage-green);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.forgot-pwd:hover {
+    color: var(--dark-forest);
+    text-decoration: underline;
+}
+
+.btn-auth-submit {
+    width: 100%;
+    padding: 15px;
+    background: var(--dark-forest);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-kai);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    letter-spacing: 0.15em;
+    box-shadow: 0 4px 15px rgba(26,48,33,0.15);
+}
+
+.btn-auth-submit:hover {
+    background: var(--sage-green);
+}
+
+/* 快速登入分隔線與按鈕 */
+.quick-login-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0 20px;
+    color: var(--sage-green);
+    font-size: 0.88rem;
+}
+
+.quick-login-divider::before,
+.quick-login-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.quick-login-divider span {
+    padding: 0 15px;
+}
+
+.quick-btns-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.btn-quick {
+    padding: 11px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: var(--font-kai);
+    font-size: 0.9rem;
+    color: var(--dark-forest);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: 0.25s;
+}
+
+.btn-quick:hover {
+    background: var(--gold-light);
+    border-color: var(--accent-gold);
+}
+
+/* 主視覺 Hero */
+.hero {
+    padding: 65px 20px 45px;
+    text-align: center;
+    background: linear-gradient(
+        rgba(26,48,33,0.85),
+        rgba(26,48,33,0.85)
+    ),
+    url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1920')
+    center/cover no-repeat;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 2.3rem;
+    font-weight: normal;
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    color: #e5e9e4;
+    font-size: 1.05rem;
+    opacity: 0.9;
+}
+
+/* 主要內容容器 */
+.container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 1.55rem;
+    font-weight: normal;
+    margin-bottom: 35px;
+    color: var(--dark-forest);
+    letter-spacing: 0.15em;
+}
+
+.section-title::after {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 2px;
+    background: var(--accent-gold);
+    margin: 14px auto 0;
+}
+
+/* 卡片面板 */
+.panel {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-top: 3px solid var(--dark-forest);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.panel:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.panel h3 {
+    font-size: 1.2rem;
+    margin-bottom: 22px;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    letter-spacing: 0.12em;
+}
+
+.panel h3 i {
+    color: var(--accent-gold);
+    font-size: 1.1rem;
+}
+
+/* 1. 天數與日期整合區塊 */
+.days-control-wrap {
+    background: var(--gold-light);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    border: 1px solid rgba(184,151,126,0.25);
+    margin-bottom: 25px;
+}
+
+.days-input-group {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+}
+
+.days-input-group input {
+    width: 85px;
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--dark-forest);
+    padding: 2px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    outline: none;
+}
+
+.days-input-group span {
+    font-size: 1.2rem;
+    color: var(--sage-green);
+}
+
+.days-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.step-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-gold);
+    background: white;
+    color: var(--dark-forest);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-btn:hover {
+    background: var(--dark-forest);
+    color: white;
+    border-color: var(--dark-forest);
+}
+
+.quick-days {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.quick-tag {
+    padding: 6px 16px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: var(--sage-green);
+}
+
+.quick-tag:hover, .quick-tag.active {
+    background: var(--dark-forest);
+    color: white;
+    border-color: var(--dark-forest);
+    box-shadow: 0 4px 12px rgba(26,48,33,0.15);
+}
+
+/* 兩欄左右平行排版 */
+.two-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* 選項按鈕卡片 */
+.option-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.option {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: white;
+}
+
+.option:hover,
+.option.active {
+    border: 2px solid var(--accent-gold);
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(184,151,126,0.18);
+}
+
+.option .emoji {
+    display: block;
+    font-size: 1.7rem;
+    margin-bottom: 6px;
+}
+
+.option small {
+    display: block;
+    color: var(--sage-green);
+    font-size: 0.78rem;
+    margin-top: 4px;
+}
+
+/* 表單元件美化 */
+input[type="text"], input[type="date"], input[type="email"], input[type="password"], select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    font-family: var(--font-kai);
+    font-size: 0.98rem;
+    color: var(--dark-forest);
+    outline: none;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+input:focus, select:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(184,151,126,0.15);
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: var(--dark-forest);
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.08em;
+}
+
+/* 開始規劃按鈕 */
+.btn-start {
+    width: 100%;
+    padding: 17px;
+    background: var(--dark-forest);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-kai);
+    font-size: 1.15rem;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(26,48,33,0.18);
+}
+
+.btn-start:hover {
+    background: var(--sage-green);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(26,48,33,0.25);
+}
+
+.note {
+    text-align: center;
+    color: var(--sage-green);
+    font-size: 0.9rem;
+    margin-top: 20px;
+    letter-spacing: 0.08em;
+}
+
+/* 頁尾 */
+.footer {
+    background: var(--dark-forest);
+    color: white;
+    text-align: center;
+    padding: 38px 20px;
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+}
+
+.footer p {
+    margin-top: 8px;
+    color: #b5c2b8;
+    font-size: 0.82rem;
+}
+
+@media(max-width:960px) {
+    .nav-center { display: none; }
+    .mobile-menu-toggle { display: block; }
+    .two-col-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.85rem; }
+    .panel { padding: 24px 18px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 頂部精緻導覽列 -->
+<nav class="navbar">
+    <a href="index.html" class="logo">
+        <i class="fas fa-paper-plane logo-icon"></i>
+        <span>我的口袋導遊</span>
+    </a>
+
+    <div class="nav-center">
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 首頁 Home</a>
+            <a href="航班.html"><i class="fas fa-plane"></i> 航班 Search</a>
+            <a href="住宿.html"><i class="fas fa-hotel"></i> 住宿 Hotel</a>
+            <a href="美食.html"><i class="fas fa-utensils"></i> 美食 Dining</a>
+            <a href="旅遊.html" class="active"><i class="fas fa-compass"></i> 旅遊 Travel</a>
+            <a href="保險.html"><i class="fas fa-shield-alt"></i> 保險 Insurance</a>
+            <a href="chatbot.html"><i class="fas fa-robot"></i> AI 助手</a>
+        </div>
+    </div>
+
+    <!-- 會員頭像與帳號選單 -->
+    <div class="user-profile-container">
+        <div class="user-profile-badge" id="userBadge">
+            <div class="user-avatar" id="avatarLetter">t</div>
+            <span class="user-name"><span id="userNameText">traveler</span> <i class="fas fa-chevron-down" style="font-size: 0.75rem; color: var(--sage-green);"></i></span>
+        </div>
+
+        <div class="dropdown-menu" id="userDropdown">
+            <button onclick="openAuthModal()"><i class="fas fa-exchange-alt"></i> 切換帳號 / 登入</button>
+            <button onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
+        </div>
+    </div>
+
+    <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+</nav>
+
+<header class="hero">
+    <h1>開啟一場專屬於你的旅程</h1>
+    <p>自訂天數與喜好，讓 AI 助手為您量身打造完美行程</p>
+</header>
+
+<main class="container">
+
+    <h2 class="section-title">旅程基本設定</h2>
+
+    <!-- 1. 天數與日期整合面板 -->
+    <section class="panel">
+        <h3><i class="far fa-calendar-alt"></i> 您的旅遊天數與日期</h3>
+
+        <div class="days-control-wrap">
+            <div class="days-input-group">
+                <input type="number" id="tripDaysInput" value="3" min="1" max="30" onchange="updateDays(this.value)">
+                <span>天</span>
+            </div>
+            
+            <div class="days-stepper">
+                <button type="button" class="step-btn" onclick="adjustDays(-1)"><i class="fas fa-minus"></i></button>
+                <span style="color: var(--sage-green); font-size: 0.88rem;">微調天數或點擊下方快速標籤</span>
+                <button type="button" class="step-btn" onclick="adjustDays(1)"><i class="fas fa-plus"></i></button>
+            </div>
+
+            <div class="quick-days">
+                <div class="quick-tag" onclick="setDays(1)">1天輕旅行</div>
+                <div class="quick-tag active" onclick="setDays(3)">3天小度假</div>
+                <div class="quick-tag" onclick="setDays(5)">5天深度遊</div>
+                <div class="quick-tag" onclick="setDays(7)">7天大漫遊</div>
+            </div>
+        </div>
+
+        <div class="two-col-grid">
+            <div class="form-group">
+                <label for="startDate">預計出發日期</label>
+                <input type="date" id="startDate">
+            </div>
+
+            <div class="form-group">
+                <label for="endDate">預計結束日期 <span style="font-size:0.75rem; color:var(--sage-green); font-weight:normal;">(依天數自動計算)</span></label>
+                <input type="date" id="endDate">
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. 地區目的地與旅伴人數 -->
+    <section class="panel">
+        <div class="two-col-grid" style="align-items: start;">
+            <div>
+                <h3><i class="fas fa-globe-asia"></i> 想去哪裡旅行？</h3>
+                <div class="option-grid" id="regionOptions">
+                    <div class="option active" data-value="國內旅遊">
+                        <span class="emoji">🏞️</span>
+                        <strong>國內旅遊</strong>
+                        <small>探索台灣之美</small>
+                    </div>
+
+                    <div class="option" data-value="國外旅遊">
+                        <span class="emoji">✈️</span>
+                        <strong>國外旅遊</strong>
+                        <small>探索世界各地</small>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top:20px">
+                    <label for="destination">預計前往的目的地</label>
+                    <input id="destination" type="text" placeholder="例如：日本東京、台灣花蓮">
+                </div>
+            </div>
+
+            <div>
+                <h3><i class="fas fa-user-friends"></i> 幾位旅伴同行？</h3>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="people">選擇同行人數</label>
+                    <select id="people" style="padding: 14px 16px;">
+                        <option value="1">1 位（獨自旅行）</option>
+                        <option value="2" selected>2 位（雙人旅行）</option>
+                        <option value="3">3 位（小團體）</option>
+                        <option value="4">4 位（家族/好友）</option>
+                        <option value="5">5 位（多人出遊）</option>
+                        <option value="6">6 位以上（團體熱鬧）</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 旅遊風格 -->
+    <section class="panel">
+        <h3><i class="fas fa-compass"></i> 您偏好的旅遊風格</h3>
+
+        <div class="option-grid" id="styleOptions" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="option active" data-value="自然景觀">
+                <span class="emoji">🌿</span>
+                <strong>自然景觀</strong>
+                <small>山林、海岸</small>
+            </div>
+
+            <div class="option" data-value="美食探索">
+                <span class="emoji">🍜</span>
+                <strong>美食探索</strong>
+                <small>在地特色</small>
+            </div>
+
+            <div class="option" data-value="文化歷史">
+                <span class="emoji">🏛️</span>
+                <strong>文化歷史</strong>
+                <small>古蹟、藝術</small>
+            </div>
+
+            <div class="option" data-value="購物休閒">
+                <span class="emoji">🛍️</span>
+                <strong>購物休閒</strong>
+                <small>逛街、放鬆</small>
+            </div>
+
+            <div class="option" data-value="冒險體驗">
+                <span class="emoji">🏕️</span>
+                <strong>冒險體驗</strong>
+                <small>戶外活動</small>
+            </div>
+
+            <div class="option" data-value="深度慢旅">
+                <span class="emoji">☕</span>
+                <strong>深度慢旅</strong>
+                <small>悠閒探索</small>
+            </div>
+        </div>
+    </section>
+
+    <button class="btn-start" onclick="startPlanning()">
+        開始規劃我的旅程 →
+    </button>
+
+    <p class="note">
+        ✨ 讓 AI 助手依照您的喜好，打造專屬您的質感旅遊行程。
+    </p>
+
+</main>
+
+<!-- 精緻登入 / 註冊 Modal (完全對照圖片風格) -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal-card">
+        <button class="modal-close" onclick="closeAuthModal()"><i class="fas fa-times"></i></button>
+        
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">帳號登入</button>
+            <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">新 用 戶 註 冊</button>
+        </div>
+
+        <form id="authForm" onsubmit="handleAuthSubmit(event)">
+            <div class="modal-form-group" id="nameGroup" style="display: none;">
+                <label for="userNameInput">您的暱稱 / 帳號名稱</label>
+                <div class="modal-input-wrap">
+                    <i class="far fa-user field-icon"></i>
+                    <input type="text" class="modal-input" id="userNameInput" placeholder="例如：traveler">
+                </div>
+            </div>
+
+            <div class="modal-form-group">
+                <label for="userEmailInput">電子郵件 / 帳號</label>
+                <div class="modal-input-wrap">
+                    <i class="far fa-envelope field-icon"></i>
+                    <input type="email" class="modal-input" id="userEmailInput" placeholder="traveler@pocketguide.com" required value="traveler@pocketguide.com">
+                </div>
+            </div>
+
+            <div class="modal-form-group">
+                <label for="userPasswordInput">密碼</label>
+                <div class="modal-input-wrap">
+                    <i class="fas fa-lock field-icon"></i>
+                    <input type="password" class="modal-input" id="userPasswordInput" placeholder="••••••••••••" required value="password123">
+                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                        <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="auth-options-row" id="loginOptionsRow">
+                <label class="remember-me">
+                    <input type="checkbox" checked> 記住登入狀態
+                </label>
+                <a href="#" class="forgot-pwd" onclick="alert('請聯繫客服重設密碼'); return false;">忘記密碼？</a>
+            </div>
+
+            <button type="submit" class="btn-auth-submit" id="authSubmitBtn">開啟我的旅程</button>
+        </form>
+
+        <div class="quick-login-divider">
+            <span>快速登入體驗</span>
+        </div>
+
+        <div class="quick-btns-grid">
+            <button class="btn-quick" onclick="quickLogin('訪客')">
+                <i class="fas fa-compass" style="color: var(--accent-gold);"></i> 訪客試用
+            </button>
+            <button class="btn-quick" onclick="quickLogin('Google會員')">
+                <i class="fab fa-google" style="color: #ea4335;"></i> Google 登入
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    ✈ 我的口袋導遊 Pocket Guide
+    <p>&copy; 2026 Aloha Travel. 讓每一趟旅行，都成為美好的回憶。</p>
+</footer>
+
+<script>
+// 天數與日期連動邏輯
+let currentDays = parseInt(sessionStorage.getItem("tripDays")) || 3;
+document.getElementById("tripDaysInput").value = currentDays;
+
+const todayStr = new Date().toISOString().split('T')[0];
+document.getElementById("startDate").value = todayStr;
+calculateEndDate();
+
+function updateDays(val) {
+    let num = parseInt(val);
+    if (isNaN(num) || num < 1) num = 1;
+    if (num > 30) num = 30;
+    currentDays = num;
+    document.getElementById("tripDaysInput").value = currentDays;
+    calculateEndDate();
+}
+
+function adjustDays(amount) {
+    let newDays = currentDays + amount;
+    if (newDays >= 1 && newDays <= 30) {
+        currentDays = newDays;
+        document.getElementById("tripDaysInput").value = currentDays;
+        calculateEndDate();
+    }
+}
+
+function setDays(days) {
+    currentDays = days;
+    document.getElementById("tripDaysInput").value = currentDays;
+    
+    document.querySelectorAll('.quick-tag').forEach(tag => tag.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    calculateEndDate();
+}
+
+function calculateEndDate() {
+    const startDateVal = document.getElementById("startDate").value;
+    if (!startDateVal) return;
+
+    const date = new Date(startDateVal + "T12:00:00");
+    date.setDate(date.getDate() + Number(currentDays) - 1);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    document.getElementById("endDate").value = `${year}-${month}-${day}`;
+}
+
+document.getElementById("startDate").addEventListener("change", calculateEndDate);
+
+let selectedRegion = "國內旅遊";
+let selectedStyle = "自然景觀";
+
+function setupOptions(id, callback) {
+    document.querySelectorAll(`#${id} .option`).forEach(option => {
+        option.addEventListener("click", () => {
+            document.querySelectorAll(`#${id} .option`).forEach(item => item.classList.remove("active"));
+            option.classList.add("active");
+            callback(option.dataset.value);
+        });
+    });
+}
+
+setupOptions("regionOptions", value => { selectedRegion = value; });
+setupOptions("styleOptions", value => { selectedStyle = value; });
+
+// 使用者帳號與 Modal 控制
+const userBadge = document.getElementById("userBadge");
+const userDropdown = document.getElementById("userDropdown");
+const authModal = document.getElementById("authModal");
+
+userBadge.addEventListener("click", (e) => {
+    e.stopPropagation();
+    userDropdown.classList.toggle("active");
+});
+
+window.addEventListener("click", () => {
+    userDropdown.classList.remove("active");
+});
+
+let authMode = 'login';
+
+function openAuthModal() {
+    userDropdown.classList.remove("active");
+    authModal.classList.add("active");
+    switchAuthTab('login');
+}
+
+function closeAuthModal() {
+    authModal.classList.remove("active");
+}
+
+function switchAuthTab(mode) {
+    authMode = mode;
+    const tabLogin = document.getElementById("tabLogin");
+    const tabRegister = document.getElementById("tabRegister");
+    const nameGroup = document.getElementById("nameGroup");
+    const loginOptionsRow = document.getElementById("loginOptionsRow");
+    const authSubmitBtn = document.getElementById("authSubmitBtn");
+
+    if (mode === 'login') {
+        tabLogin.classList.add("active");
+        tabRegister.classList.remove("active");
+        nameGroup.style.display = "none";
+        loginOptionsRow.style.display = "flex";
+        authSubmitBtn.textContent = "開啟我的旅程";
+    } else {
+        tabRegister.classList.add("active");
+        tabLogin.classList.remove("active");
+        nameGroup.style.display = "block";
+        loginOptionsRow.style.display = "none";
+        authSubmitBtn.textContent = "註冊並登入";
+    }
+}
+
+// 密碼顯示/隱藏切換
+function togglePasswordVisibility() {
+    const pwdInput = document.getElementById("userPasswordInput");
+    const eyeIcon = document.getElementById("eyeIcon");
+    if (pwdInput.type === "password") {
+        pwdInput.type = "text";
+        eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+    } else {
+        pwdInput.type = "password";
+        eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+    }
+}
+
+function handleAuthSubmit(e) {
+    e.preventDefault();
+    let name = "traveler";
+    if (authMode === 'register') {
+        name = document.getElementById("userNameInput").value.trim() || "新旅人";
+    } else {
+        const email = document.getElementById("userEmailInput").value;
+        name = email.split('@')[0] || "traveler";
+    }
+
+    localStorage.setItem("aloha_user", name);
+    updateUserDisplay(name);
+    closeAuthModal();
+    alert(`歡迎回來，${name}！`);
+}
+
+function quickLogin(type) {
+    const name = type === '訪客' ? '訪客User' : 'Google會員';
+    localStorage.setItem("aloha_user", name);
+    updateUserDisplay(name);
+    closeAuthModal();
+    alert(`已透過 ${type} 成功登入！`);
+}
+
+function updateUserDisplay(name) {
+    document.getElementById("userNameText").textContent = name;
+    document.getElementById("avatarLetter").textContent = name.charAt(0).toLowerCase();
+}
+
+function logoutUser() {
+    localStorage.removeItem("aloha_user");
+    updateUserDisplay("traveler");
+    userDropdown.classList.remove("active");
+    alert("已成功登出帳號");
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    const savedUser = localStorage.getItem("aloha_user") || "traveler";
+    updateUserDisplay(savedUser);
+});
+
+function startPlanning() {
+    const destination = document.getElementById("destination").value.trim();
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    const people = document.getElementById("people").value;
+
+    if (!destination) {
+        alert("請輸入您的旅遊目的地！");
+        document.getElementById("destination").focus();
+        return;
+    }
+
+    if (!startDate || !endDate) {
+        alert("請選擇完整的旅遊日期！");
+        return;
+    }
+
+    const tripData = {
+        days: currentDays,
+        region: selectedRegion,
+        destination: destination,
+        startDate: startDate,
+        endDate: endDate,
+        people: people,
+        style: selectedStyle
+    };
+
+    sessionStorage.setItem("tripData", JSON.stringify(tripData));
+    sessionStorage.setItem("tripDays", currentDays);
+
+    window.location.href = "調整.html";
+}
+</script>
+
+</body>
+</html>
