@@ -775,7 +775,7 @@ input:focus, select:focus {
     background: var(--off-white);
     padding: 0 10px;
     position: relative;
-    font-size: 0.8rem;
+    font-size: 0.80rem;
     color: var(--sage-green);
 }
 
@@ -1021,10 +1021,30 @@ input:focus, select:focus {
         </div>
     </section>
 
-    <!-- 3. 旅遊風格偏好 -->
+    <!-- 3. 旅遊風格偏好 (包含 悠閒慢節奏 vs. 充實快節奏) -->
     <section class="panel">
-        <h3><i class="fas fa-compass"></i> 第三步：您偏好的旅遊風格</h3>
+        <h3><i class="fas fa-compass"></i> 第三步：您偏好的旅遊風格與步調</h3>
 
+        <!-- 步調選擇 (悠閒 vs 充實) -->
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 10px; font-size: 0.95rem; color: var(--dark-forest); font-weight: bold; text-align: center; letter-spacing: 0.08em;">旅程節奏偏好</label>
+            <div class="option-grid" id="paceOptions" style="grid-template-columns: 1fr 1fr;">
+                <div class="option active" data-value="悠閒慢節奏">
+                    <span class="emoji">☕</span>
+                    <strong>悠閒慢節奏</strong>
+                    <small>放鬆漫步、留白充電</small>
+                </div>
+
+                <div class="option" data-value="充實快節奏">
+                    <span class="emoji">⚡</span>
+                    <strong>充實快節奏</strong>
+                    <small>豐富緊湊、打卡踩點</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主題風格選擇 -->
+        <label style="display: block; margin-bottom: 10px; font-size: 0.95rem; color: var(--dark-forest); font-weight: bold; text-align: center; letter-spacing: 0.08em;">核心主題風格</label>
         <div class="option-grid" id="styleOptions" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
             <div class="option active" data-value="自然景觀">
                 <span class="emoji">🌿</span>
@@ -1057,7 +1077,7 @@ input:focus, select:focus {
             </div>
 
             <div class="option" data-value="深度慢旅">
-                <span class="emoji">☕</span>
+                <span class="emoji">🍃</span>
                 <strong>深度慢旅</strong>
                 <small>悠閒探索</small>
             </div>
@@ -1089,7 +1109,7 @@ input:focus, select:focus {
         <div class="faq-list">
             <div class="faq-item">
                 <h4><i class="fas fa-chevron-right"></i> 填寫設定後，AI 如何為我規劃？</h4>
-                <p>AI 助手會綜合您選擇的天數、目的地、預算範圍與旅遊風格，自動篩選最佳景點、餐館與順暢交通動線，並在「旅遊.html」頁面呈現每日詳細時間軸。</p>
+                <p>AI 助手會綜合您選擇的天數、目的地、預算範圍與步調偏好，自動篩選最佳景點、餐館與順暢交通動線，並在「旅遊.html」頁面呈現每日詳細時間軸。</p>
             </div>
             <div class="faq-item">
                 <h4><i class="fas fa-chevron-right"></i> 生成的行程可以隨時修改或調整嗎？</h4>
@@ -1256,6 +1276,7 @@ function calculateEndDate() {
 document.getElementById("startDate").addEventListener("change", calculateEndDate);
 
 let selectedRegion = "國內旅遊";
+let selectedPace = "悠閒慢節奏";
 let selectedStyle = "自然景觀";
 
 function setupOptions(id, callback) {
@@ -1269,6 +1290,7 @@ function setupOptions(id, callback) {
 }
 
 setupOptions("regionOptions", value => { selectedRegion = value; });
+setupOptions("paceOptions", value => { selectedPace = value; });
 setupOptions("styleOptions", value => { selectedStyle = value; });
 
 // === 跨頁面保持登入狀態與互動邏輯 ===
@@ -1417,9 +1439,10 @@ function startPlanning() {
         endDate: endDate,
         people: people,
         budget: budget,
+        pace: selectedPace,
+        style: selectedStyle,
         transport: transport,
-        specialReq: specialReq,
-        style: selectedStyle
+        specialReq: specialReq
     };
 
     sessionStorage.setItem("tripData", JSON.stringify(tripData));
