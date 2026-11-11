@@ -10,14 +10,14 @@
 :root {
     --dark-forest: #1A3021;
     --sage-green: #4A634E;
-    --off-white: #F7F9F7;
+    --off-white: #F9FBF9;
     --accent-gold: #B8977E;
-    --gold-light: #F4EFEA;
+    --accent-gold-light: #f3ece6;
     --border-color: #E2E8E2;
-    --font-kai: "標楷體","BiauKai","DFKai-SB",serif;
+    --glass-bg: rgba(249, 251, 249, 0.92);
+    --font-kai: "標楷體", "BiauKai", "DFKai-SB", "STKaiti", "Kaiti SC", serif;
     --shadow-soft: 0 10px 30px rgba(26, 48, 33, 0.05);
     --shadow-hover: 0 15px 35px rgba(26, 48, 33, 0.09);
-    --glass-bg: rgba(247, 249, 247, 0.95);
 }
 
 * {
@@ -27,16 +27,17 @@
 }
 
 body {
-    background: var(--off-white);
+    background-color: var(--off-white);
     color: var(--dark-forest);
     font-family: var(--font-kai);
-    letter-spacing: 0.06em;
     line-height: 1.8;
+    letter-spacing: 0.06em;
+    overflow-x: hidden;
 }
 
-/* === 頂部導覽列 Navbar === */
+/* === 導覽列 Navbar (對齊首頁範本) === */
 .navbar {
-    padding: 12px 3%;
+    padding: 14px 5%;
     display: flex; 
     justify-content: space-between; 
     align-items: center;
@@ -46,26 +47,25 @@ body {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 2px 15px rgba(26, 48, 33, 0.03);
-    width: 100%;
+    transition: all 0.3s ease;
 }
 
 .logo {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     font-weight: bold;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     color: var(--dark-forest);
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     white-space: nowrap;
 }
 
 .logo-icon {
     color: var(--accent-gold);
-    font-size: 1.1rem;
-    transition: transform 0.4s ease;
+    font-size: 1.2rem;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .logo:hover .logo-icon {
@@ -77,31 +77,31 @@ body {
     align-items: center;
     flex: 1;
     justify-content: center;
-    padding: 0 20px;
+    padding: 0 15px;
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
     white-space: nowrap;
 }
 
 .nav-links a {
     text-decoration: none; 
     color: var(--dark-forest);
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     transition: 0.3s; 
     position: relative;
     display: flex; 
     align-items: center; 
-    gap: 5px;
+    gap: 6px;
     padding: 4px 0;
 }
 
 .nav-links a i {
     color: var(--sage-green);
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     transition: color 0.3s;
 }
 
@@ -124,388 +124,127 @@ body {
     width: 100%; 
 }
 
-/* 右側登入/註冊按鈕 (對照截圖中的樣式) */
-.auth-btn-pill {
-    background: white;
-    border: 1px solid var(--border-color);
-    padding: 7px 18px;
-    border-radius: 30px;
+.nav-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-family: var(--font-kai);
-    font-size: 0.9rem;
+    gap: 12px;
+}
+
+/* 未登入狀態按鈕 */
+.btn-auth {
+    background: transparent;
+    border: 1px solid var(--dark-forest);
     color: var(--dark-forest);
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(26,48,33,0.03);
-}
-
-.auth-btn-pill:hover {
-    border-color: var(--dark-forest);
-    background: var(--gold-light);
-    transform: translateY(-1px);
-}
-
-/* 登入後的使用者頭像區與選單 */
-.user-profile-container {
-    position: relative;
-    display: none; /* 預設隱藏，登入後顯示 */
-}
-
-.user-profile-badge {
-    background: var(--gold-light);
-    border: 1px solid rgba(184, 151, 126, 0.3);
-    padding: 4px 14px 4px 5px;
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    font-family: var(--font-kai);
+    cursor: pointer;
     border-radius: 30px;
+    transition: all 0.3s ease;
     display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+}
+
+.btn-auth:hover {
+    background: var(--dark-forest);
+    color: var(--off-white);
+    box-shadow: 0 4px 12px rgba(26, 48, 33, 0.15);
+}
+
+/* 已登入狀態頭像與選單 */
+.user-profile-menu {
+    position: relative;
+    display: none; 
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    padding: 4px 12px 4px 6px;
+    border-radius: 20px;
+    background: var(--accent-gold-light);
+    border: 1px solid var(--border-color);
     white-space: nowrap;
-}
-
-.user-profile-badge:hover {
-    background: #ebdcd0;
-    box-shadow: 0 4px 12px rgba(26, 48, 33, 0.08);
 }
 
 .user-avatar {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: var(--dark-forest);
-    color: var(--gold-light);
+    color: var(--accent-gold);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.82rem;
-    font-family: sans-serif;
-    font-weight: bold;
+    font-size: 0.85rem;
+    border: 1px solid var(--accent-gold);
 }
 
 .user-name {
-    font-size: 0.86rem;
+    font-size: 0.9rem;
     color: var(--dark-forest);
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    font-weight: bold;
 }
 
-.dropdown-menu {
+.user-dropdown {
     position: absolute;
-    top: 42px;
+    top: 45px;
     right: 0;
-    background: white;
+    background: var(--off-white);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    width: 170px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    width: 180px;
     padding: 6px 0;
     display: none;
     flex-direction: column;
     z-index: 1001;
 }
 
-.dropdown-menu.active {
+.user-dropdown.active {
     display: flex;
+    animation: fadeInDown 0.25s forwards;
 }
 
-.dropdown-menu button {
-    padding: 9px 14px;
-    background: none;
-    border: none;
+.user-dropdown a, .user-dropdown button {
+    padding: 10px 16px;
     color: var(--dark-forest);
-    font-family: var(--font-kai);
-    font-size: 0.88rem;
-    text-align: left;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: 0.2s;
-    width: 100%;
-}
-
-.dropdown-menu button:hover {
-    background: var(--gold-light);
-}
-
-/* === 登入成功 Toast 提示橫幅 === */
-.toast-notification {
-    position: fixed;
-    top: 25px;
-    right: 30px;
-    background: var(--dark-forest);
-    color: white;
-    padding: 12px 22px;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    z-index: 3000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
-    border-left: 4px solid var(--accent-gold);
-    transform: translateX(120%);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.toast-notification.show {
-    transform: translateX(0);
-}
-
-/* === 精緻登入 / 註冊 Modal === */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(26, 48, 33, 0.6);
-    backdrop-filter: blur(5px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.modal-card {
-    background: white;
-    border: 1px solid var(--border-color);
-    width: 100%;
-    max-width: 480px;
-    border-radius: 12px;
-    padding: 35px 32px 30px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.15);
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-}
-
-.modal-overlay.active .modal-card {
-    transform: translateY(0);
-}
-
-.modal-close {
-    position: absolute;
-    top: 22px; right: 22px;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    color: var(--dark-forest);
-    cursor: pointer;
-    opacity: 0.7;
-    transition: 0.2s;
-}
-
-.modal-close:hover { opacity: 1; }
-
-.auth-tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 28px;
-}
-
-.auth-tab {
-    flex: 1;
-    padding: 12px 0;
-    text-align: center;
-    background: none;
-    border: none;
-    font-family: var(--font-kai);
-    font-size: 1.15rem;
-    color: var(--sage-green);
-    cursor: pointer;
-    position: relative;
-    letter-spacing: 0.1em;
-}
-
-.auth-tab.active {
-    color: var(--dark-forest);
-    font-weight: bold;
-}
-
-.auth-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px; left: 0;
-    width: 100%; height: 2px;
-    background: var(--accent-gold);
-}
-
-.modal-form-group {
-    margin-bottom: 22px;
-    text-align: left;
-}
-
-.modal-form-group label {
-    display: block;
-    font-size: 0.95rem;
-    color: var(--dark-forest);
-    margin-bottom: 8px;
-    letter-spacing: 0.05em;
-}
-
-.modal-input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.modal-input-wrap i.field-icon {
-    position: absolute;
-    left: 15px;
-    color: var(--sage-green);
-    font-size: 0.95rem;
-}
-
-.modal-input {
-    width: 100%;
-    padding: 13px 42px 13px 45px !important;
-    text-align: left !important;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-family: var(--font-kai);
-    font-size: 1rem;
-    color: var(--dark-forest);
-    outline: none;
-    background: white;
-    transition: 0.25s;
-}
-
-.modal-input:focus {
-    border-color: var(--accent-gold);
-    box-shadow: 0 0 0 3px rgba(184,151,126,0.15);
-}
-
-.toggle-password {
-    position: absolute;
-    right: 15px;
-    background: none;
-    border: none;
-    color: var(--sage-green);
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-.auth-options-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    font-size: 0.9rem;
-    color: var(--sage-green);
-}
-
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-}
-
-.remember-me input {
-    accent-color: var(--dark-forest);
-    width: 16px;
-    height: 16px;
-}
-
-.forgot-pwd {
-    color: var(--sage-green);
     text-decoration: none;
-    transition: 0.2s;
-}
-
-.forgot-pwd:hover {
-    color: var(--dark-forest);
-    text-decoration: underline;
-}
-
-.btn-auth-submit {
-    width: 100%;
-    padding: 15px;
-    background: var(--dark-forest);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-family: var(--font-kai);
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: 0.3s;
-    letter-spacing: 0.15em;
-    box-shadow: 0 4px 15px rgba(26,48,33,0.15);
-}
-
-.btn-auth-submit:hover {
-    background: var(--sage-green);
-}
-
-.quick-login-divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 25px 0 20px;
-    color: var(--sage-green);
     font-size: 0.88rem;
-}
-
-.quick-login-divider::before,
-.quick-login-divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.quick-login-divider span {
-    padding: 0 15px;
-}
-
-.quick-btns-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.btn-quick {
-    padding: 11px;
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
     font-family: var(--font-kai);
-    font-size: 0.9rem;
-    color: var(--dark-forest);
+    background: none;
+    border: none;
+    text-align: left;
     cursor: pointer;
+    transition: 0.2s;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
-    transition: 0.25s;
+    width: 100%;
 }
 
-.btn-quick:hover {
-    background: var(--gold-light);
-    border-color: var(--accent-gold);
+.user-dropdown a:hover, .user-dropdown button:hover {
+    background: var(--accent-gold-light);
+    color: var(--dark-forest);
 }
 
-/* 主視覺 Hero */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--dark-forest);
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* === 主視覺 Hero === */
 .hero {
     padding: 65px 20px 45px;
     text-align: center;
-    background: linear-gradient(
-        rgba(26,48,33,0.85),
-        rgba(26,48,33,0.85)
-    ),
-    url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1920')
-    center/cover no-repeat;
+    background: linear-gradient(rgba(26, 48, 33, 0.85), rgba(26, 48, 33, 0.85)),
+                url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1920') center/cover no-repeat;
     color: white;
 }
 
@@ -522,7 +261,7 @@ body {
     opacity: 0.9;
 }
 
-/* 主要內容容器 */
+/* === 主要內容容器 === */
 .container {
     max-width: 920px;
     margin: 0 auto;
@@ -536,6 +275,7 @@ body {
     margin-bottom: 35px;
     color: var(--dark-forest);
     letter-spacing: 0.15em;
+    position: relative;
 }
 
 .section-title::after {
@@ -582,7 +322,7 @@ body {
 
 /* 1. 天數與日期整合區塊 */
 .days-control-wrap {
-    background: var(--gold-light);
+    background: var(--accent-gold-light);
     border-radius: 10px;
     padding: 24px;
     text-align: center;
@@ -608,6 +348,7 @@ body {
     border-radius: 8px;
     background: white;
     outline: none;
+    font-family: var(--font-kai);
 }
 
 .days-input-group span {
@@ -697,7 +438,7 @@ body {
 .option:hover,
 .option.active {
     border: 2px solid var(--accent-gold);
-    background: var(--gold-light);
+    background: var(--accent-gold-light);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(184,151,126,0.18);
 }
@@ -716,7 +457,7 @@ body {
 }
 
 /* 表單元件美化 */
-input[type="text"], input[type="date"], input[type="email"], input[type="password"], select {
+input[type="text"], input[type="date"], select {
     width: 100%;
     padding: 13px 16px;
     border: 1px solid var(--border-color);
@@ -779,45 +520,315 @@ input:focus, select:focus {
     letter-spacing: 0.08em;
 }
 
-/* 頁尾 */
-.footer {
-    background: var(--dark-forest);
-    color: white;
+/* === 登入 / 註冊 Modal === */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(26, 48, 33, 0.55);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 15px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: var(--off-white);
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 420px;
+    border-radius: 8px;
+    padding: 30px 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-container {
+    transform: translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--sage-green);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--dark-forest);
+}
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 10px 0;
     text-align: center;
-    padding: 38px 20px;
+    background: none;
+    border: none;
+    font-family: var(--font-kai);
+    font-size: 1rem;
+    color: var(--sage-green);
+    cursor: pointer;
+    position: relative;
+    transition: 0.3s;
+    letter-spacing: 0.08em;
+}
+
+.auth-tab.active {
+    color: var(--dark-forest);
+    font-weight: bold;
+}
+
+.auth-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-gold);
+}
+
+.modal-form-group {
+    margin-bottom: 18px;
+    position: relative;
+    text-align: left;
+}
+
+.modal-form-group label {
+    display: block;
     font-size: 0.88rem;
+    color: var(--dark-forest);
+    margin-bottom: 6px;
+    letter-spacing: 0.06em;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i.input-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--sage-green);
+    font-size: 0.88rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 11px 14px 11px 38px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: var(--font-kai);
+    font-size: 0.92rem;
+    color: var(--dark-forest);
+    transition: 0.3s;
+    outline: none;
+    text-align: left !important;
+}
+
+.form-control:focus {
+    border-color: var(--dark-forest);
+    box-shadow: 0 0 0 3px rgba(26, 48, 33, 0.06);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    color: var(--sage-green);
+    cursor: pointer;
+    font-size: 0.88rem;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    margin-bottom: 20px;
+    color: var(--sage-green);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.forgot-link {
+    color: var(--sage-green);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.forgot-link:hover {
+    color: var(--accent-gold);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 11px;
+    background: var(--dark-forest);
+    color: var(--off-white);
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-kai);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: 0.3s;
     letter-spacing: 0.12em;
 }
 
-.footer p {
-    margin-top: 8px;
-    color: #b5c2b8;
-    font-size: 0.82rem;
+.btn-submit:hover {
+    background: #25442f;
+    box-shadow: 0 4px 12px rgba(26, 48, 33, 0.2);
 }
 
-@media(max-width:1100px) {
+.social-divider {
+    text-align: center;
+    margin: 22px 0 16px;
+    position: relative;
+}
+
+.social-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0;
+    width: 100%; height: 1px;
+    background: var(--border-color);
+}
+
+.social-divider span {
+    background: var(--off-white);
+    padding: 0 10px;
+    position: relative;
+    font-size: 0.8rem;
+    color: var(--sage-green);
+}
+
+.social-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-social {
+    flex: 1;
+    padding: 8px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: var(--font-kai);
+    font-size: 0.82rem;
+    color: var(--dark-forest);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: 0.3s;
+}
+
+.btn-social:hover {
+    background: var(--accent-gold-light);
+    border-color: var(--accent-gold);
+}
+
+/* === 登入成功浮動提示 Toast === */
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--dark-forest);
+    color: var(--off-white);
+    padding: 14px 24px;
+    border-radius: 6px;
+    border-left: 4px solid var(--accent-gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    font-family: var(--font-kai);
+    font-size: 0.95rem;
+    z-index: 3000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.35s ease;
+    pointer-events: none;
+    letter-spacing: 0.08em;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* === 頁尾 === */
+.footer {
+    background-color: var(--dark-forest);
+    color: var(--off-white);
+    padding: 45px 5% 35px;
+    text-align: center; 
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+}
+
+.footer-logo {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--accent-gold);
+}
+
+@media (max-width: 1050px) {
     .nav-center { display: none; }
     .mobile-menu-toggle { display: block; }
 }
 
-@media(max-width:768px) {
+@media (max-width: 768px) {
     .two-col-grid { grid-template-columns: 1fr; }
     .hero h1 { font-size: 1.85rem; }
     .panel { padding: 24px 18px; }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 頂部比例最佳化導覽列 -->
-<nav class="navbar">
+<!-- 頂部導覽列 Navbar -->
+<nav class="navbar" id="mainNavbar">
     <a href="index.html" class="logo">
         <i class="fas fa-paper-plane logo-icon"></i>
         <span>我的口袋導遊</span>
     </a>
 
-    <div class="nav-center">
+    <div class="nav-center" id="navCenterMenu">
         <div class="nav-links">
             <a href="index.html"><i class="fas fa-home"></i> 首頁 Home</a>
             <a href="航班.html"><i class="fas fa-plane"></i> 航班 Search</a>
@@ -829,31 +840,36 @@ input:focus, select:focus {
         </div>
     </div>
 
-    <!-- 未登入時顯示的按鈕 -->
-    <button class="auth-btn-pill" id="authBtnPill" onclick="openAuthModal()">
-        <i class="far fa-user"></i> 登入 / 註冊
-    </button>
+    <div class="nav-actions">
+        <!-- 未登入狀態按鈕 -->
+        <button class="btn-auth" id="openAuthBtn">
+            <i class="far fa-user"></i>
+            <span>登入 / 註冊</span>
+        </button>
 
-    <!-- 登入後顯示的會員頭像與選單 -->
-    <div class="user-profile-container" id="userProfileContainer">
-        <div class="user-profile-badge" id="userBadge">
-            <div class="user-avatar" id="avatarLetter">t</div>
-            <span class="user-name"><span id="userNameText">traveler</span> <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--sage-green);"></i></span>
+        <!-- 已登入狀態頭像與選單 -->
+        <div class="user-profile-menu" id="userProfileMenu">
+            <div class="user-avatar" id="avatarInitial">旅</div>
+            <span class="user-name" id="userNameDisplay">貴賓</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--sage-green);"></i>
+
+            <div class="user-dropdown" id="userDropdown">
+                <a href="行程.html"><i class="far fa-id-card"></i> 個人行程資料</a>
+                <a href="旅遊.html"><i class="far fa-bookmark"></i> 收藏景點清單</a>
+                <button id="logoutBtn" type="button"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
+            </div>
         </div>
 
-        <div class="dropdown-menu" id="userDropdown">
-            <button onclick="openAuthModal()"><i class="fas fa-exchange-alt"></i> 切換帳號</button>
-            <button onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
-        </div>
+        <!-- 手機漢堡選單按鈕 -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
     </div>
-
-    <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
 </nav>
 
-<!-- 登入成功 Toast 提示橫幅 -->
+<!-- 登入成功浮動提示 Toast -->
 <div class="toast-notification" id="toastNotification">
-    <i class="fas fa-check-circle" style="color: var(--accent-gold); font-size: 1.2rem;"></i>
-    <span id="toastText">登入成功！歡迎回來</span>
+    <i class="fas fa-check-circle" style="color: var(--accent-gold);"></i> <span id="toastText">登入成功！歡迎回來</span>
 </div>
 
 <header class="hero">
@@ -931,7 +947,7 @@ input:focus, select:focus {
                 <h3><i class="fas fa-user-friends"></i> 幾位旅伴同行？</h3>
                 <div class="form-group" style="margin-top: 10px;">
                     <label for="people">選擇同行人數</label>
-                    <select id="people" style="padding: 14px 16px;">
+                    <select id="people" style="padding: 13px 16px;">
                         <option value="1">1 位（獨自旅行）</option>
                         <option value="2" selected>2 位（雙人旅行）</option>
                         <option value="3">3 位（小團體）</option>
@@ -997,75 +1013,98 @@ input:focus, select:focus {
 
 </main>
 
-<!-- 精緻登入 / 註冊 Modal -->
+<!-- 登入 / 註冊 Modal -->
 <div class="modal-overlay" id="authModal">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeAuthModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-container">
+        <button class="modal-close" id="closeAuthBtn"><i class="fas fa-times"></i></button>
         
         <div class="auth-tabs">
-            <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">帳號登入</button>
-            <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">新 用 戶 註 冊</button>
+            <button class="auth-tab active" id="tabLogin" type="button">帳號登入</button>
+            <button class="auth-tab" id="tabRegister" type="button">新用戶註冊</button>
         </div>
 
-        <form id="authForm" onsubmit="handleAuthSubmit(event)">
-            <div class="modal-form-group" id="nameGroup" style="display: none;">
-                <label for="userNameInput">您的暱稱 / 帳號名稱</label>
-                <div class="modal-input-wrap">
-                    <i class="far fa-user field-icon"></i>
-                    <input type="text" class="modal-input" id="userNameInput" placeholder="例如：traveler">
+        <!-- 登入表單 -->
+        <form id="loginForm" onsubmit="handleAuthSubmit(event, 'login')">
+            <div class="modal-form-group">
+                <label for="loginEmail">電子郵件 / 帳號</label>
+                <div class="input-wrapper">
+                    <i class="far fa-envelope input-icon"></i>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="example@domain.com" required value="traveler@pocketguide.com">
                 </div>
             </div>
 
             <div class="modal-form-group">
-                <label for="userEmailInput">電子郵件 / 帳號</label>
-                <div class="modal-input-wrap">
-                    <i class="far fa-envelope field-icon"></i>
-                    <input type="email" class="modal-input" id="userEmailInput" placeholder="traveler@pocketguide.com" required value="traveler@pocketguide.com">
+                <label for="loginPassword">密碼</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="請輸入密碼" required value="password123">
+                    <i class="far fa-eye toggle-password" onclick="togglePasswordVisibility('loginPassword', this)"></i>
                 </div>
             </div>
 
-            <div class="modal-form-group">
-                <label for="userPasswordInput">密碼</label>
-                <div class="modal-input-wrap">
-                    <i class="fas fa-lock field-icon"></i>
-                    <input type="password" class="modal-input" id="userPasswordInput" placeholder="••••••••••••" required value="password123">
-                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
-                        <i class="fas fa-eye" id="eyeIcon"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="auth-options-row" id="loginOptionsRow">
+            <div class="form-options">
                 <label class="remember-me">
                     <input type="checkbox" checked> 記住登入狀態
                 </label>
-                <a href="#" class="forgot-pwd" onclick="alert('請聯繫客服重設密碼'); return false;">忘記密碼？</a>
+                <a href="#forgot" class="forgot-link" onclick="alert('請聯繫客服重設密碼'); return false;">忘記密碼？</a>
             </div>
 
-            <button type="submit" class="btn-auth-submit" id="authSubmitBtn">開啟我的旅程</button>
+            <button type="submit" class="btn-submit">開啟我的旅程</button>
         </form>
 
-        <div class="quick-login-divider">
+        <!-- 註冊表單 -->
+        <form id="registerForm" style="display: none;" onsubmit="handleAuthSubmit(event, 'register')">
+            <div class="modal-form-group">
+                <label for="regName">您的稱呼 / 暱稱</label>
+                <div class="input-wrapper">
+                    <i class="far fa-user input-icon"></i>
+                    <input type="text" id="regName" class="form-control" placeholder="例如：林漫旅">
+                </div>
+            </div>
+
+            <div class="modal-form-group">
+                <label for="regEmail">電子郵件</label>
+                <div class="input-wrapper">
+                    <i class="far fa-envelope input-icon"></i>
+                    <input type="email" id="regEmail" class="form-control" placeholder="example@domain.com">
+                </div>
+            </div>
+
+            <div class="modal-form-group">
+                <label for="regPassword">設定密碼</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="regPassword" class="form-control" placeholder="至少8位數密碼">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">註冊並登入</button>
+        </form>
+
+        <div class="social-divider">
             <span>快速登入體驗</span>
         </div>
 
-        <div class="quick-btns-grid">
-            <button class="btn-quick" onclick="quickLogin('訪客')">
-                <i class="fas fa-compass" style="color: var(--accent-gold);"></i> 訪客試用
+        <div class="social-btns">
+            <button type="button" class="btn-social" onclick="simulateGuestLogin('靜享旅客')">
+                <i class="far fa-compass" style="color: var(--accent-gold);"></i> 訪客試用
             </button>
-            <button class="btn-quick" onclick="quickLogin('Google會員')">
-                <i class="fab fa-google" style="color: #ea4335;"></i> Google 登入
+            <button type="button" class="btn-social" onclick="simulateGuestLogin('Google用戶')">
+                <i class="fab fa-google" style="color: #4285F4;"></i> Google 登入
             </button>
         </div>
     </div>
 </div>
 
 <footer class="footer">
-    ✈ 我的口袋導遊 Pocket Guide
-    <p>&copy; 2026 Aloha Travel. 讓每一趟旅行，都成為美好的回憶。</p>
+    <div class="footer-logo">
+        <i class="fas fa-paper-plane"></i> 我的口袋導遊
+    </div>
+    <p>&copy; 2026 我的口袋導遊 Pocket Guide. 靜享熱帶陽光的溫潤與從容。</p>
 </footer>
 
 <script>
+// 天數與日期連動邏輯
 let currentDays = parseInt(sessionStorage.getItem("tripDays")) || 3;
 document.getElementById("tripDaysInput").value = currentDays;
 
@@ -1133,128 +1172,121 @@ function setupOptions(id, callback) {
 setupOptions("regionOptions", value => { selectedRegion = value; });
 setupOptions("styleOptions", value => { selectedStyle = value; });
 
-// 導覽列帳號互動控制
-const authBtnPill = document.getElementById("authBtnPill");
-const userProfileContainer = document.getElementById("userProfileContainer");
-const userBadge = document.getElementById("userBadge");
-const userDropdown = document.getElementById("userDropdown");
-const authModal = document.getElementById("authModal");
+// === 登入、註冊與帳號狀態互動邏輯 ===
+const authModal = document.getElementById('authModal');
+const openAuthBtn = document.getElementById('openAuthBtn');
+const closeAuthBtn = document.getElementById('closeAuthBtn');
+const tabLogin = document.getElementById('tabLogin');
+const tabRegister = document.getElementById('tabRegister');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const userProfileMenu = document.getElementById('userProfileMenu');
+const userDropdown = document.getElementById('userDropdown');
+const logoutBtn = document.getElementById('logoutBtn');
+const toastNotification = document.getElementById('toastNotification');
 
-userBadge.addEventListener("click", (e) => {
-    e.stopPropagation();
-    userDropdown.classList.toggle("active");
+openAuthBtn.addEventListener('click', () => {
+    authModal.classList.add('active');
 });
 
-window.addEventListener("click", () => {
-    userDropdown.classList.remove("active");
+closeAuthBtn.addEventListener('click', () => {
+    authModal.classList.remove('active');
 });
 
-let authMode = 'login';
-
-function openAuthModal() {
-    userDropdown.classList.remove("active");
-    authModal.classList.add("active");
-    switchAuthTab('login');
-}
-
-function closeAuthModal() {
-    authModal.classList.remove("active");
-}
-
-function switchAuthTab(mode) {
-    authMode = mode;
-    const tabLogin = document.getElementById("tabLogin");
-    const tabRegister = document.getElementById("tabRegister");
-    const nameGroup = document.getElementById("nameGroup");
-    const loginOptionsRow = document.getElementById("loginOptionsRow");
-    const authSubmitBtn = document.getElementById("authSubmitBtn");
-
-    if (mode === 'login') {
-        tabLogin.classList.add("active");
-        tabRegister.classList.remove("active");
-        nameGroup.style.display = "none";
-        loginOptionsRow.style.display = "flex";
-        authSubmitBtn.textContent = "開啟我的旅程";
-    } else {
-        tabRegister.classList.add("active");
-        tabLogin.classList.remove("active");
-        nameGroup.style.display = "block";
-        loginOptionsRow.style.display = "none";
-        authSubmitBtn.textContent = "註冊並登入";
+authModal.addEventListener('click', (e) => {
+    if (e.target === authModal) {
+        authModal.classList.remove('active');
     }
-}
+});
 
-function togglePasswordVisibility() {
-    const pwdInput = document.getElementById("userPasswordInput");
-    const eyeIcon = document.getElementById("eyeIcon");
-    if (pwdInput.type === "password") {
-        pwdInput.type = "text";
-        eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+tabLogin.addEventListener('click', () => {
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
+    loginForm.style.display = 'block';
+    registerForm.style.display = 'none';
+});
+
+tabRegister.addEventListener('click', () => {
+    tabRegister.classList.add('active');
+    tabLogin.classList.remove('active');
+    registerForm.style.display = 'block';
+    loginForm.style.display = 'none';
+});
+
+function togglePasswordVisibility(fieldId, iconElem) {
+    const field = document.getElementById(fieldId);
+    if (field.type === "password") {
+        field.type = "text";
+        iconElem.classList.replace("fa-eye", "fa-eye-slash");
     } else {
-        pwdInput.type = "password";
-        eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+        field.type = "password";
+        iconElem.classList.replace("fa-eye-slash", "fa-eye");
     }
 }
 
 function showToast(message) {
-    const toast = document.getElementById("toastNotification");
-    document.getElementById("toastText").textContent = message;
-    toast.classList.add("show");
+    const toastText = document.getElementById('toastText');
+    toastText.textContent = message;
+    toastNotification.classList.add('show');
     setTimeout(() => {
-        toast.classList.remove("show");
+        toastNotification.classList.remove('show');
     }, 3500);
 }
 
-function handleAuthSubmit(e) {
-    e.preventDefault();
-    let name = "traveler";
-    if (authMode === 'register') {
-        name = document.getElementById("userNameInput").value.trim() || "新旅人";
+function handleAuthSubmit(event, type) {
+    event.preventDefault();
+    let name = "貴賓";
+    if (type === 'login') {
+        const email = document.getElementById('loginEmail').value;
+        name = email.split('@')[0] || "漫旅會員";
     } else {
-        const email = document.getElementById("userEmailInput").value;
-        name = email.split('@')[0] || "traveler";
+        name = document.getElementById('regName').value.trim() || "新旅人";
     }
 
-    localStorage.setItem("aloha_user", name);
-    updateUserDisplay(name);
-    closeAuthModal();
+    setLoggedInUser(name);
+    authModal.classList.remove('active');
     showToast(`✨ 歡迎回來，${name}！登入成功`);
 }
 
-function quickLogin(type) {
-    const name = type === '訪客' ? '訪客User' : 'Google會員';
+function simulateGuestLogin(typeName) {
+    setLoggedInUser(typeName);
+    authModal.classList.remove('active');
+    showToast(`✨ 已透過 ${typeName} 成功登入！`);
+}
+
+function setLoggedInUser(name) {
     localStorage.setItem("aloha_user", name);
-    updateUserDisplay(name);
-    closeAuthModal();
-    showToast(`✨ 已透過 ${type} 成功登入！`);
+    document.getElementById('userNameDisplay').textContent = name;
+    document.getElementById('avatarInitial').textContent = name.charAt(0);
+    openAuthBtn.style.display = 'none';
+    userProfileMenu.style.display = 'flex';
 }
 
-function updateUserDisplay(name) {
-    if (name && name !== "guest_logged_out") {
-        document.getElementById("userNameText").textContent = name;
-        document.getElementById("avatarLetter").textContent = name.charAt(0).toLowerCase();
-        authBtnPill.style.display = "none";
-        userProfileContainer.style.display = "block";
-    } else {
-        authBtnPill.style.display = "flex";
-        userProfileContainer.style.display = "none";
-    }
-}
+userProfileMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userDropdown.classList.toggle('active');
+});
 
-function logoutUser() {
-    localStorage.setItem("aloha_user", "guest_logged_out");
-    updateUserDisplay("guest_logged_out");
-    userDropdown.classList.remove("active");
+window.addEventListener('click', () => {
+    userDropdown.classList.remove('active');
+});
+
+logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem("aloha_user");
+    userProfileMenu.style.display = 'none';
+    openAuthBtn.style.display = 'flex';
+    userDropdown.classList.remove('active');
     showToast("已成功登出帳號");
-}
+});
 
-window.addEventListener("DOMContentLoaded", () => {
+// 初始化檢查登入狀態
+window.addEventListener('DOMContentLoaded', () => {
     const savedUser = localStorage.getItem("aloha_user");
-    // 若沒有紀錄過或記錄為登出，預設顯示「登入 / 註冊」按鈕；若有則顯示使用者頭像
-    if (!savedUser || savedUser === "guest_logged_out") {
-        updateUserDisplay("guest_logged_out");
+    if (savedUser) {
+        setLoggedInUser(savedUser);
     } else {
-        updateUserDisplay(savedUser);
+        openAuthBtn.style.display = 'flex';
+        userProfileMenu.style.display = 'none';
     }
 });
 
