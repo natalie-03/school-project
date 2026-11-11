@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>旅程設定 | Aloha Travel - 我的口袋導遊</title>
+<title>旅程設定與深度規劃 | Aloha Travel - 我的口袋導遊</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -35,7 +35,7 @@ body {
     overflow-x: hidden;
 }
 
-/* === 導覽列 Navbar (對齊首頁範本) === */
+/* === 導覽列 Navbar === */
 .navbar {
     padding: 14px 5%;
     display: flex; 
@@ -239,49 +239,61 @@ body {
     padding: 5px;
 }
 
-/* === 主視覺 Hero === */
+/* === 主視覺 Hero (加高讓畫面更有空間感) === */
 .hero {
-    padding: 65px 20px 45px;
+    padding: 85px 20px 65px;
     text-align: center;
-    background: linear-gradient(rgba(26, 48, 33, 0.85), rgba(26, 48, 33, 0.85)),
+    background: linear-gradient(rgba(26, 48, 33, 0.82), rgba(26, 48, 33, 0.82)),
                 url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1920') center/cover no-repeat;
     color: white;
 }
 
 .hero h1 {
-    font-size: 2.3rem;
+    font-size: 2.6rem;
     font-weight: normal;
     letter-spacing: 0.2em;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .hero p {
     color: #e5e9e4;
-    font-size: 1.05rem;
-    opacity: 0.9;
+    font-size: 1.1rem;
+    opacity: 0.92;
+    letter-spacing: 0.1em;
+}
+
+/* 靈感小語列 */
+.inspiration-strip {
+    background: var(--accent-gold-light);
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--dark-forest);
+    letter-spacing: 0.1em;
 }
 
 /* === 主要內容容器 === */
 .container {
-    max-width: 920px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 40px 24px 80px;
+    padding: 50px 24px 90px;
 }
 
 .section-title {
     text-align: center;
-    font-size: 1.55rem;
+    font-size: 1.65rem;
     font-weight: normal;
-    margin-bottom: 35px;
+    margin-bottom: 38px;
     color: var(--dark-forest);
-    letter-spacing: 0.15em;
+    letter-spacing: 0.18em;
     position: relative;
 }
 
 .section-title::after {
     content: "";
     display: block;
-    width: 48px;
+    width: 50px;
     height: 2px;
     background: var(--accent-gold);
     margin: 14px auto 0;
@@ -293,8 +305,8 @@ body {
     border: 1px solid var(--border-color);
     border-top: 3px solid var(--dark-forest);
     border-radius: 12px;
-    padding: 32px;
-    margin-bottom: 28px;
+    padding: 36px 32px;
+    margin-bottom: 32px;
     box-shadow: var(--shadow-soft);
     transition: all 0.3s ease;
 }
@@ -304,8 +316,8 @@ body {
 }
 
 .panel h3 {
-    font-size: 1.2rem;
-    margin-bottom: 22px;
+    font-size: 1.25rem;
+    margin-bottom: 24px;
     font-weight: normal;
     display: flex;
     align-items: center;
@@ -317,14 +329,14 @@ body {
 
 .panel h3 i {
     color: var(--accent-gold);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
 }
 
 /* 1. 天數與日期整合區塊 */
 .days-control-wrap {
     background: var(--accent-gold-light);
     border-radius: 10px;
-    padding: 24px;
+    padding: 26px;
     text-align: center;
     border: 1px solid rgba(184,151,126,0.25);
     margin-bottom: 25px;
@@ -418,6 +430,13 @@ body {
     gap: 24px;
 }
 
+/* 三欄排版 (適用於預算或偏好) */
+.three-col-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
 /* 選項按鈕卡片 */
 .option-grid {
     display: grid;
@@ -490,16 +509,51 @@ input:focus, select:focus {
     letter-spacing: 0.08em;
 }
 
+/* 常見問題 FAQ 區塊 (加長頁面版面用) */
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+}
+
+.faq-item {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px 20px;
+    background: #fafcfa;
+}
+
+.faq-item h4 {
+    font-size: 1.02rem;
+    color: var(--dark-forest);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.faq-item h4 i {
+    color: var(--accent-gold);
+}
+
+.faq-item p {
+    font-size: 0.9rem;
+    color: var(--sage-green);
+    margin-left: 24px;
+    line-height: 1.6;
+}
+
 /* 開始規劃按鈕 */
 .btn-start {
     width: 100%;
-    padding: 17px;
+    padding: 18px;
     background: var(--dark-forest);
     color: white;
     border: none;
     border-radius: 8px;
     font-family: var(--font-kai);
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     letter-spacing: 0.18em;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -515,8 +569,8 @@ input:focus, select:focus {
 .note {
     text-align: center;
     color: var(--sage-green);
-    font-size: 0.9rem;
-    margin-top: 20px;
+    font-size: 0.92rem;
+    margin-top: 22px;
     letter-spacing: 0.08em;
 }
 
@@ -807,8 +861,8 @@ input:focus, select:focus {
 }
 
 @media (max-width: 768px) {
-    .two-col-grid { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 1.85rem; }
+    .two-col-grid, .three-col-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
     .panel { padding: 24px 18px; }
 }
 
@@ -877,13 +931,17 @@ input:focus, select:focus {
     <p>自訂天數與喜好，讓 AI 助手為您量身打造完美行程</p>
 </header>
 
+<div class="inspiration-strip">
+    ✨ 「世界是一本書，而不旅行的人只讀了一頁。」—— 讓我們為您翻開最精彩的下一頁。
+</div>
+
 <main class="container">
 
-    <h2 class="section-title">旅程基本設定</h2>
+    <h2 class="section-title">深度旅程規劃設定</h2>
 
     <!-- 1. 天數與日期整合面板 -->
     <section class="panel">
-        <h3><i class="far fa-calendar-alt"></i> 您的旅遊天數與日期</h3>
+        <h3><i class="far fa-calendar-alt"></i> 第一步：您的旅遊天數與日期</h3>
 
         <div class="days-control-wrap">
             <div class="days-input-group">
@@ -920,10 +978,10 @@ input:focus, select:focus {
 
     <!-- 2. 地區目的地與旅伴人數 -->
     <section class="panel">
+        <h3><i class="fas fa-globe-asia"></i> 第二步：目的地與同行夥伴</h3>
         <div class="two-col-grid" style="align-items: start;">
             <div>
-                <h3><i class="fas fa-globe-asia"></i> 想去哪裡旅行？</h3>
-                <div class="option-grid" id="regionOptions">
+                <div class="option-grid" id="regionOptions" style="margin-bottom: 20px;">
                     <div class="option active" data-value="國內旅遊">
                         <span class="emoji">🏞️</span>
                         <strong>國內旅遊</strong>
@@ -937,15 +995,14 @@ input:focus, select:focus {
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top:20px">
+                <div class="form-group">
                     <label for="destination">預計前往的目的地</label>
                     <input id="destination" type="text" placeholder="例如：日本東京、台灣花蓮">
                 </div>
             </div>
 
             <div>
-                <h3><i class="fas fa-user-friends"></i> 幾位旅伴同行？</h3>
-                <div class="form-group" style="margin-top: 10px;">
+                <div class="form-group" style="margin-bottom: 20px;">
                     <label for="people">選擇同行人數</label>
                     <select id="people" style="padding: 13px 16px;">
                         <option value="1">1 位（獨自旅行）</option>
@@ -956,15 +1013,24 @@ input:focus, select:focus {
                         <option value="6">6 位以上（團體熱鬧）</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="budget">每人預算偏好</label>
+                    <select id="budget" style="padding: 13px 16px;">
+                        <option value="經濟實惠">💰 經濟實惠（高CP值）</option>
+                        <option value="舒適質感" selected>✨ 舒適質感（精選住宿/美食）</option>
+                        <option value="奢華享受">👑 奢華享受（頂級度假體驗）</option>
+                    </select>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. 旅遊風格 -->
+    <!-- 3. 旅遊風格偏好 -->
     <section class="panel">
-        <h3><i class="fas fa-compass"></i> 您偏好的旅遊風格</h3>
+        <h3><i class="fas fa-compass"></i> 第三步：您偏好的旅遊風格</h3>
 
-        <div class="option-grid" id="styleOptions" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="option-grid" id="styleOptions" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
             <div class="option active" data-value="自然景觀">
                 <span class="emoji">🌿</span>
                 <strong>自然景觀</strong>
@@ -1001,10 +1067,48 @@ input:focus, select:focus {
                 <small>悠閒探索</small>
             </div>
         </div>
+
+        <div class="two-col-grid">
+            <div>
+                <div class="form-group">
+                    <label for="transport">慣用交通方式</label>
+                    <select id="transport" style="padding: 13px 16px;">
+                        <option value="大眾運輸">🚆 大眾運輸（鐵路/捷運/公車）</option>
+                        <option value="自駕租車">🚗 自駕租車（彈性自由行）</option>
+                        <option value="包車導覽">🚐 包車導覽（輕鬆無負擔）</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="specialReq">其他特殊需求（選填）</label>
+                    <input type="text" id="specialReq" placeholder="例如：無障礙友善、親子同行、素食餐飲">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 常見問題說明 (增加頁面深度與長度) -->
+    <section class="panel">
+        <h3><i class="fas fa-question-circle"></i> 關於口袋導遊 AI 行程規劃</h3>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h4><i class="fas fa-chevron-right"></i> 填寫設定後，AI 如何為我規劃？</h4>
+                <p>AI 助手會綜合您選擇的天數、目的地、同行人數與旅遊風格，自動篩選最佳景點、餐館與順暢交通動線，並在「旅遊.html」頁面呈現每日詳細時間軸。</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-chevron-right"></i> 生成的行程可以隨時修改或調整嗎？</h4>
+                <p>當然可以！進入行程頁面後，您可以隨時增加、刪除景點，或是交由 AI 助手針對特定天數重新排版。</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-chevron-right"></i> 登入會員有什麼專屬好處？</h4>
+                <p>登入會員後，您的所有客製化行程、收藏景點與訂單資訊都會安全同步在雲端，隨時隨地都能在手機或電腦上查看。</p>
+            </div>
+        </div>
     </section>
 
     <button class="btn-start" onclick="startPlanning()">
-        開始規劃我的旅程 →
+        開始規劃我的專屬旅程 →
     </button>
 
     <p class="note">
@@ -1295,6 +1399,9 @@ function startPlanning() {
     const startDate = document.getElementById("startDate").value;
     const endDate = document.getElementById("endDate").value;
     const people = document.getElementById("people").value;
+    const budget = document.getElementById("budget").value;
+    const transport = document.getElementById("transport").value;
+    const specialReq = document.getElementById("specialReq").value;
 
     if (!destination) {
         alert("請輸入您的旅遊目的地！");
@@ -1314,6 +1421,9 @@ function startPlanning() {
         startDate: startDate,
         endDate: endDate,
         people: people,
+        budget: budget,
+        transport: transport,
+        specialReq: specialReq,
         style: selectedStyle
     };
 
