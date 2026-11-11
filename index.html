@@ -1115,13 +1115,20 @@
 
         function loginSuccess(name) {
             authModal.classList.remove('active');
+        
             // 切換導覽列按鈕為使用者頭像選單
             openAuthBtn.style.display = 'none';
             userProfileMenu.style.display = 'flex';
+        
             document.getElementById('userNameDisplay').innerText = name;
             document.getElementById('avatarInitial').innerText = name.charAt(0);
-            
+        
             showToast(`登入成功！歡迎回來，${name}`);
+        
+            // 1 秒後自動跳轉至選擇頁面
+            setTimeout(() => {
+                window.location.href = '選擇.html';
+            }, 1000);
         }
 
         // 登出按鈕
