@@ -239,7 +239,7 @@ body {
     padding: 5px;
 }
 
-/* === 主視覺 Hero (加高設計) === */
+/* === 主視覺 Hero === */
 .hero {
     padding: 120px 20px 100px;
     text-align: center;
@@ -960,7 +960,7 @@ input:focus, select:focus {
         <div class="two-col-grid">
             <div class="form-group">
                 <label for="startDate">預計出發日期</label>
-                <input type="date" id="startDate">
+                <input type="date" id="startDate" onchange="calculateEndDate()">
             </div>
 
             <div class="form-group">
@@ -976,13 +976,13 @@ input:focus, select:focus {
         <div class="two-col-grid" style="align-items: start;">
             <div>
                 <div class="option-grid" id="regionOptions" style="margin-bottom: 20px;">
-                    <div class="option active" data-value="國內旅遊">
+                    <div class="option active" data-value="國內旅遊" onclick="selectOption('regionOptions', this)">
                         <span class="emoji">🏞️</span>
                         <strong>國內旅遊</strong>
                         <small>探索台灣之美</small>
                     </div>
 
-                    <div class="option" data-value="國外旅遊">
+                    <div class="option" data-value="國外旅遊" onclick="selectOption('regionOptions', this)">
                         <span class="emoji">✈️</span>
                         <strong>國外旅遊</strong>
                         <small>探索世界各地</small>
@@ -1021,21 +1021,21 @@ input:focus, select:focus {
         </div>
     </section>
 
-    <!-- 3. 旅遊風格偏好 (包含 悠閒慢節奏 vs. 充實快節奏) -->
+    <!-- 3. 旅遊風格偏好 -->
     <section class="panel">
         <h3><i class="fas fa-compass"></i> 第三步：您偏好的旅遊風格與步調</h3>
 
-        <!-- 步調選擇 (悠閒 vs 充實) -->
+        <!-- 步調選擇 -->
         <div style="margin-bottom: 24px;">
             <label style="display: block; margin-bottom: 10px; font-size: 0.95rem; color: var(--dark-forest); font-weight: bold; text-align: center; letter-spacing: 0.08em;">旅程節奏偏好</label>
             <div class="option-grid" id="paceOptions" style="grid-template-columns: 1fr 1fr;">
-                <div class="option active" data-value="悠閒慢節奏">
+                <div class="option active" data-value="悠閒慢節奏" onclick="selectOption('paceOptions', this)">
                     <span class="emoji">☕</span>
                     <strong>悠閒慢節奏</strong>
                     <small>放鬆漫步、留白充電</small>
                 </div>
 
-                <div class="option" data-value="充實快節奏">
+                <div class="option" data-value="充實快節奏" onclick="selectOption('paceOptions', this)">
                     <span class="emoji">⚡</span>
                     <strong>充實快節奏</strong>
                     <small>豐富緊湊、打卡踩點</small>
@@ -1046,37 +1046,37 @@ input:focus, select:focus {
         <!-- 主題風格選擇 -->
         <label style="display: block; margin-bottom: 10px; font-size: 0.95rem; color: var(--dark-forest); font-weight: bold; text-align: center; letter-spacing: 0.08em;">核心主題風格</label>
         <div class="option-grid" id="styleOptions" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
-            <div class="option active" data-value="自然景觀">
+            <div class="option active" data-value="自然景觀" onclick="selectOption('styleOptions', this)">
                 <span class="emoji">🌿</span>
                 <strong>自然景觀</strong>
                 <small>山林、海岸</small>
             </div>
 
-            <div class="option" data-value="美食探索">
+            <div class="option" data-value="美食探索" onclick="selectOption('styleOptions', this)">
                 <span class="emoji">🍜</span>
                 <strong>美食探索</strong>
                 <small>在地特色</small>
             </div>
 
-            <div class="option" data-value="文化歷史">
+            <div class="option" data-value="文化歷史" onclick="selectOption('styleOptions', this)">
                 <span class="emoji">🏛️</span>
                 <strong>文化歷史</strong>
                 <small>古蹟、藝術</small>
             </div>
 
-            <div class="option" data-value="購物休閒">
+            <div class="option" data-value="購物休閒" onclick="selectOption('styleOptions', this)">
                 <span class="emoji">🛍️</span>
                 <strong>購物休閒</strong>
                 <small>逛街、放鬆</small>
             </div>
 
-            <div class="option" data-value="冒險體驗">
+            <div class="option" data-value="冒險體驗" onclick="selectOption('styleOptions', this)">
                 <span class="emoji">🏕️</span>
                 <strong>冒險體驗</strong>
                 <small>戶外活動</small>
             </div>
 
-            <div class="option" data-value="深度慢旅">
+            <div class="option" data-value="深度慢旅" onclick="selectOption('styleOptions', this)">
                 <span class="emoji">🍃</span>
                 <strong>深度慢旅</strong>
                 <small>悠閒探索</small>
@@ -1109,19 +1109,20 @@ input:focus, select:focus {
         <div class="faq-list">
             <div class="faq-item">
                 <h4><i class="fas fa-chevron-right"></i> 填寫設定後，AI 如何為我規劃？</h4>
-                <p>AI 助手會綜合您選擇的天數、目的地、預算範圍與步調偏好，自動篩選最佳景點、餐館與順暢交通動線，並在「旅遊.html」頁面呈現每日詳細時間軸。</p>
+                <p>AI 助手會綜合您選擇的天數、目的地、預算範圍與步調偏好，自動篩選最佳景點、餐館與順暢交通動線，並在「AI 助手」頁面為您量身打造對話與行程建議。</p>
             </div>
             <div class="faq-item">
                 <h4><i class="fas fa-chevron-right"></i> 生成的行程可以隨時修改或調整嗎？</h4>
-                <p>當然可以！進入行程頁面後，您可以隨時增加、刪除景點，或是交由 AI 助手針對特定天數重新排版。</p>
+                <p>當然可以！進入 AI 助手頁面後，您可以隨時與助手對話微調行程、增加景點或重新排版。</p>
             </div>
             <div class="faq-item">
                 <h4><i class="fas fa-chevron-right"></i> 登入會員有什麼專屬好處？</h4>
-                <p>登入會員後，您的所有客製化行程、收藏景點與訂單資訊都會安全同步在雲端，隨時隨地都能在手機或電腦上查看。</p>
+                <p>登入會員後，您的所有客製化行程、收藏景點與訂單資訊都會安全同步在雲端。</p>
             </div>
         </div>
     </section>
 
+    <!-- 這裡將按鈕導向 AI 助手 (chatbot.html) 並把指標聚焦在 AI 助手頁面 -->
     <button class="btn-start" onclick="startPlanning()">
         開始規劃我的專屬旅程 →
     </button>
@@ -1223,7 +1224,7 @@ input:focus, select:focus {
 </footer>
 
 <script>
-// 天數與日期連動邏輯
+// === 1. 初始化與日期計算邏輯 ===
 let currentDays = parseInt(sessionStorage.getItem("tripDays")) || 3;
 document.getElementById("tripDaysInput").value = currentDays;
 
@@ -1232,21 +1233,24 @@ document.getElementById("startDate").value = todayStr;
 calculateEndDate();
 
 function updateDays(val) {
-    let num = parseInt(val);
-    if (isNaN(num) || num < 1) num = 1;
-    if (num > 30) num = 30;
-    currentDays = num;
+    let days = parseInt(val);
+    if (isNaN(days) || days < 1) days = 1;
+    if (days > 30) days = 30;
+    currentDays = days;
     document.getElementById("tripDaysInput").value = currentDays;
+    
+    // 更新快速標籤 active 狀態
+    document.querySelectorAll('.quick-tag').forEach(tag => tag.classList.remove('active'));
+    
     calculateEndDate();
 }
 
 function adjustDays(amount) {
-    let newDays = currentDays + amount;
-    if (newDays >= 1 && newDays <= 30) {
-        currentDays = newDays;
-        document.getElementById("tripDaysInput").value = currentDays;
-        calculateEndDate();
-    }
+    currentDays += amount;
+    if (currentDays < 1) currentDays = 1;
+    if (currentDays > 30) currentDays = 30;
+    document.getElementById("tripDaysInput").value = currentDays;
+    calculateEndDate();
 }
 
 function setDays(days) {
@@ -1254,202 +1258,178 @@ function setDays(days) {
     document.getElementById("tripDaysInput").value = currentDays;
     
     document.querySelectorAll('.quick-tag').forEach(tag => tag.classList.remove('active'));
-    event.target.classList.add('active');
+    event.currentTarget.classList.add('active');
     
     calculateEndDate();
 }
 
 function calculateEndDate() {
-    const startDateVal = document.getElementById("startDate").value;
-    if (!startDateVal) return;
-
-    const date = new Date(startDateVal + "T12:00:00");
-    date.setDate(date.getDate() + Number(currentDays) - 1);
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    document.getElementById("endDate").value = `${year}-${month}-${day}`;
+    const startInput = document.getElementById("startDate").value;
+    if (!startInput) return;
+    
+    let startDate = new Date(startInput);
+    // 結束日期 = 出發日期 + (天數 - 1)
+    startDate.setDate(startDate.getDate() + (currentDays - 1));
+    
+    let endStr = startDate.toISOString().split('T')[0];
+    document.getElementById("endDate").value = endStr;
 }
 
-document.getElementById("startDate").addEventListener("change", calculateEndDate);
-
-let selectedRegion = "國內旅遊";
-let selectedPace = "悠閒慢節奏";
-let selectedStyle = "自然景觀";
-
-function setupOptions(id, callback) {
-    document.querySelectorAll(`#${id} .option`).forEach(option => {
-        option.addEventListener("click", () => {
-            document.querySelectorAll(`#${id} .option`).forEach(item => item.classList.remove("active"));
-            option.classList.add("active");
-            callback(option.dataset.value);
-        });
-    });
+// === 2. 選項卡片點擊切換邏輯 ===
+function selectOption(containerId, element) {
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.option').forEach(opt => opt.classList.remove('active'));
+    element.classList.add('active');
 }
 
-setupOptions("regionOptions", value => { selectedRegion = value; });
-setupOptions("paceOptions", value => { selectedPace = value; });
-setupOptions("styleOptions", value => { selectedStyle = value; });
-
-// === 跨頁面保持登入狀態與互動邏輯 ===
-const authModal = document.getElementById('authModal');
-const openAuthBtn = document.getElementById('openAuthBtn');
-const closeAuthBtn = document.getElementById('closeAuthBtn');
-const tabLogin = document.getElementById('tabLogin');
-const tabRegister = document.getElementById('tabRegister');
-const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
-const userProfileMenu = document.getElementById('userProfileMenu');
-const userDropdown = document.getElementById('userDropdown');
-const logoutBtn = document.getElementById('logoutBtn');
-const toastNotification = document.getElementById('toastNotification');
-
-openAuthBtn.addEventListener('click', () => {
-    authModal.classList.add('active');
-});
-
-closeAuthBtn.addEventListener('click', () => {
-    authModal.classList.remove('active');
-});
-
-authModal.addEventListener('click', (e) => {
-    if (e.target === authModal) {
-        authModal.classList.remove('active');
-    }
-});
-
-tabLogin.addEventListener('click', () => {
-    tabLogin.classList.add('active');
-    tabRegister.classList.remove('active');
-    loginForm.style.display = 'block';
-    registerForm.style.display = 'none';
-});
-
-tabRegister.addEventListener('click', () => {
-    tabRegister.classList.add('active');
-    tabLogin.classList.remove('active');
-    registerForm.style.display = 'block';
-    loginForm.style.display = 'none';
-});
-
-function togglePasswordVisibility(fieldId, iconElem) {
-    const field = document.getElementById(fieldId);
-    if (field.type === "password") {
-        field.type = "text";
-        iconElem.classList.replace("fa-eye", "fa-eye-slash");
-    } else {
-        field.type = "password";
-        iconElem.classList.replace("fa-eye-slash", "fa-eye");
-    }
-}
-
-function showToast(message) {
-    const toastText = document.getElementById('toastText');
-    toastText.textContent = message;
-    toastNotification.classList.add('show');
-    setTimeout(() => {
-        toastNotification.classList.remove('show');
-    }, 3500);
-}
-
-function handleAuthSubmit(event, type) {
-    event.preventDefault();
-    let name = "貴賓";
-    if (type === 'login') {
-        const email = document.getElementById('loginEmail').value;
-        name = email.split('@')[0] || "漫旅會員";
-    } else {
-        name = document.getElementById('regName').value.trim() || "新旅人";
-    }
-
-    setLoggedInUser(name);
-    authModal.classList.remove('active');
-    showToast(`✨ 歡迎回來，${name}！登入成功`);
-}
-
-function simulateGuestLogin(typeName) {
-    setLoggedInUser(typeName);
-    authModal.classList.remove('active');
-    showToast(`✨ 已透過 ${typeName} 成功登入！`);
-}
-
-function setLoggedInUser(name) {
-    localStorage.setItem("aloha_user", name);
-    document.getElementById('userNameDisplay').textContent = name;
-    document.getElementById('avatarInitial').textContent = name.charAt(0);
-    openAuthBtn.style.display = 'none';
-    userProfileMenu.style.display = 'flex';
-}
-
-userProfileMenu.addEventListener('click', (e) => {
-    e.stopPropagation();
-    userDropdown.classList.toggle('active');
-});
-
-window.addEventListener('click', () => {
-    userDropdown.classList.remove('active');
-});
-
-logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem("aloha_user");
-    userProfileMenu.style.display = 'none';
-    openAuthBtn.style.display = 'flex';
-    userDropdown.classList.remove('active');
-    showToast("已成功登出帳號");
-});
-
-// 跨頁面狀態同步：每次載入頁面時自動檢查 localStorage 裡的登入資料
-window.addEventListener('DOMContentLoaded', () => {
-    const savedUser = localStorage.getItem("aloha_user");
-    if (savedUser && savedUser !== "guest_logged_out") {
-        setLoggedInUser(savedUser);
-    } else {
-        openAuthBtn.style.display = 'flex';
-        userProfileMenu.style.display = 'none';
-    }
-});
-
+// === 3. 開始規劃並將指標引導至 AI 助手頁面 ===
 function startPlanning() {
-    const destination = document.getElementById("destination").value.trim();
+    // 收集所有填寫與選擇的資料
+    const region = document.querySelector('#regionOptions .option.active')?.getAttribute('data-value') || '國內旅遊';
+    const destination = document.getElementById("destination").value.trim() || '未指定目的地';
+    const days = currentDays;
     const startDate = document.getElementById("startDate").value;
     const endDate = document.getElementById("endDate").value;
     const people = document.getElementById("people").value;
     const budget = document.getElementById("budget").value;
+    const pace = document.querySelector('#paceOptions .option.active')?.getAttribute('data-value') || '悠閒慢節奏';
+    const style = document.querySelector('#styleOptions .option.active')?.getAttribute('data-value') || '自然景觀';
     const transport = document.getElementById("transport").value;
-    const specialReq = document.getElementById("specialReq").value;
+    const specialReq = document.getElementById("specialReq").value.trim();
 
-    if (!destination) {
-        alert("請輸入您的旅遊目的地！");
-        document.getElementById("destination").focus();
-        return;
-    }
-
-    if (!startDate || !endDate) {
-        alert("請選擇完整的旅遊日期！");
-        return;
-    }
-
+    // 儲存至 sessionStorage，方便 AI 助手頁面讀取
     const tripData = {
-        days: currentDays,
-        region: selectedRegion,
-        destination: destination,
-        startDate: startDate,
-        endDate: endDate,
-        people: people,
-        budget: budget,
-        pace: selectedPace,
-        style: selectedStyle,
-        transport: transport,
-        specialReq: specialReq
+        region, destination, days, startDate, endDate, people, budget, pace, style, transport, specialReq
     };
+    sessionStorage.setItem("userTripSettings", JSON.stringify(tripData));
 
-    sessionStorage.setItem("tripData", JSON.stringify(tripData));
-    sessionStorage.setItem("tripDays", currentDays);
-
-    window.location.href = "旅遊.html";
+    // 顯示提示並平滑跳轉至 AI 助手頁面（並在網址帶上錨點以確保指標聚焦在助手介面上）
+    showToast(`已成功設定 ${days} 天 ${destination} 行程，正在前往 AI 助手...`);
+    
+    setTimeout(() => {
+        window.location.href = "chatbot.html#ai-assistant-container";
+    }, 1000);
 }
+
+// === 4. 登入 / 註冊彈窗與狀態管理 ===
+const authModal = document.getElementById("authModal");
+const openAuthBtn = document.getElementById("openAuthBtn");
+const closeAuthBtn = document.getElementById("closeAuthBtn");
+const tabLogin = document.getElementById("tabLogin");
+const tabRegister = document.getElementById("tabRegister");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const userProfileMenu = document.getElementById("userProfileMenu");
+
+if (openAuthBtn) {
+    openAuthBtn.addEventListener("click", () => authModal.classList.add("active"));
+}
+if (closeAuthBtn) {
+    closeAuthBtn.addEventListener("click", () => authModal.classList.remove("active"));
+}
+
+authModal.addEventListener("click", (e) => {
+    if (e.target === authModal) authModal.classList.remove("active");
+});
+
+tabLogin.addEventListener("click", () => {
+    tabLogin.classList.add("active");
+    tabRegister.classList.remove("active");
+    loginForm.style.display = "block";
+    registerForm.style.display = "none";
+});
+
+tabRegister.addEventListener("click", () => {
+    tabRegister.classList.add("active");
+    tabLogin.classList.remove("active");
+    registerForm.style.display = "block";
+    loginForm.style.display = "none";
+});
+
+function togglePasswordVisibility(inputId, iconEl) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        iconEl.classList.remove("fa-eye");
+        iconEl.classList.add("fa-eye-slash");
+    } else {
+        input.type = "password";
+        iconEl.classList.remove("fa-eye-slash");
+        iconEl.classList.add("fa-eye");
+    }
+}
+
+function handleAuthSubmit(event, type) {
+    event.preventDefault();
+    let name = "尊榮旅客";
+    if (type === 'register') {
+        const regNameInput = document.getElementById("regName").value.trim();
+        if (regNameInput) name = regNameInput;
+    }
+    
+    authModal.classList.remove("active");
+    loginAsUser(name);
+}
+
+function simulateGuestLogin(name) {
+    authModal.classList.remove("active");
+    loginAsUser(name);
+}
+
+function loginAsUser(name) {
+    localStorage.setItem("pocketGuideUser", name);
+    updateLoginState(name);
+    showToast(`歡迎回來，${name}！`);
+}
+
+function updateLoginState(name) {
+    if (name) {
+        openAuthBtn.style.display = "none";
+        userProfileMenu.style.display = "flex";
+        document.getElementById("userNameDisplay").textContent = name;
+        document.getElementById("avatarInitial").textContent = name.charAt(0);
+    } else {
+        openAuthBtn.style.display = "flex";
+        userProfileMenu.style.display = "none";
+    }
+}
+
+// 點擊頭像展開/收合下拉選單
+userProfileMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const dropdown = document.getElementById("userDropdown");
+    dropdown.classList.toggle("active");
+});
+
+document.addEventListener("click", () => {
+    const dropdown = document.getElementById("userDropdown");
+    if (dropdown) dropdown.classList.remove("active");
+});
+
+// 登出按鈕
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("pocketGuideUser");
+    updateLoginState(null);
+    showToast("已成功登出帳號");
+});
+
+// Toast 提示框函式
+function showToast(text) {
+    const toast = document.getElementById("toastNotification");
+    document.getElementById("toastText").textContent = text;
+    toast.classList.add("show");
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+// 頁面載入時檢查是否已登入
+window.addEventListener("DOMContentLoaded", () => {
+    const savedUser = localStorage.getItem("pocketGuideUser");
+    if (savedUser) {
+        updateLoginState(savedUser);
+    }
+});
 </script>
 
 </body>
