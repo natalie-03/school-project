@@ -1,0 +1,3563 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>旅程設定與深度規劃 | Aloha Travel - 我的口袋導遊</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --dark-forest: #1A3021;
+    --sage-green: #4A634E;
+    --off-white: #F9FBF9;
+    --accent-gold: #B8977E;
+    --accent-gold-light: #f3ece6;
+    --border-color: #E2E8E2;
+    --glass-bg: rgba(249, 251, 249, 0.92);
+    --font-kai: "標楷體", "BiauKai", "DFKai-SB", "STKaiti", "Kaiti SC", serif;
+    --shadow-soft: 0 10px 30px rgba(26, 48, 33, 0.05);
+    --shadow-hover: 0 15px 35px rgba(26, 48, 33, 0.09);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--off-white);
+    color: var(--dark-forest);
+    font-family: var(--font-kai);
+    line-height: 1.8;
+    letter-spacing: 0.06em;
+    overflow-x: hidden;
+}
+
+/* === 導覽列 Navbar === */
+.navbar {
+    padding: 14px 5%;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    position: sticky; 
+    top: 0; 
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.logo {
+    font-size: 1.35rem;
+    font-weight: bold;
+    letter-spacing: 0.12em;
+    color: var(--dark-forest);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.logo-icon {
+    color: var(--accent-gold);
+    font-size: 1.2rem;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logo:hover .logo-icon {
+    transform: rotate(-12deg) scale(1.15);
+}
+
+.nav-center {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+    padding: 0 15px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    white-space: nowrap;
+}
+
+.nav-links a {
+    text-decoration: none; 
+    color: var(--dark-forest);
+    font-size: 0.9rem;
+    transition: 0.3s; 
+    position: relative;
+    display: flex; 
+    align-items: center; 
+    gap: 6px;
+    padding: 4px 0;
+}
+
+.nav-links a i {
+    color: var(--sage-green);
+    font-size: 0.85rem;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover i, .nav-links a.active i {
+    color: var(--accent-gold);
+}
+
+.nav-links a::after {
+    content: ''; 
+    position: absolute; 
+    bottom: 0; 
+    left: 0;
+    width: 0; 
+    height: 1.5px; 
+    background: var(--accent-gold);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after, .nav-links a.active::after { 
+    width: 100%; 
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 未登入狀態按鈕 */
+.btn-auth {
+    background: transparent;
+    border: 1px solid var(--dark-forest);
+    color: var(--dark-forest);
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    font-family: var(--font-kai);
+    cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+}
+
+.btn-auth:hover {
+    background: var(--dark-forest);
+    color: var(--off-white);
+    box-shadow: 0 4px 12px rgba(26, 48, 33, 0.15);
+}
+
+/* 已登入狀態頭像與選單 */
+.user-profile-menu {
+    position: relative;
+    display: none; 
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 12px 4px 6px;
+    border-radius: 20px;
+    background: var(--accent-gold-light);
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--dark-forest);
+    color: var(--accent-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    border: 1px solid var(--accent-gold);
+}
+
+.user-name {
+    font-size: 0.9rem;
+    color: var(--dark-forest);
+    font-weight: bold;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: var(--off-white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    width: 180px;
+    padding: 6px 0;
+    display: none;
+    flex-direction: column;
+    z-index: 1001;
+}
+
+.user-dropdown.active {
+    display: flex;
+    animation: fadeInDown 0.25s forwards;
+}
+
+.user-dropdown a, .user-dropdown button {
+    padding: 10px 16px;
+    color: var(--dark-forest);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-family: var(--font-kai);
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.user-dropdown a:hover, .user-dropdown button:hover {
+    background: var(--accent-gold-light);
+    color: var(--dark-forest);
+}
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--dark-forest);
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* === 主視覺 Hero === */
+.hero {
+    padding: 120px 20px 100px;
+    text-align: center;
+    background: linear-gradient(rgba(26, 48, 33, 0.82), rgba(26, 48, 33, 0.82)),
+                url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1920') center/cover no-repeat;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 2.8rem;
+    font-weight: normal;
+    letter-spacing: 0.22em;
+    margin-bottom: 16px;
+}
+
+.hero p {
+    color: #e5e9e4;
+    font-size: 1.15rem;
+    opacity: 0.92;
+    letter-spacing: 0.12em;
+}
+
+/* 靈感小語列 */
+.inspiration-strip {
+    background: var(--accent-gold-light);
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px 20px 34px;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--dark-forest);
+    letter-spacing: 0.1em;
+}
+
+/* === 分頁切換膠囊列 (Tab Switcher) === */
+.tab-switcher-wrapper {
+    max-width: 520px;
+    margin: -24px auto 10px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.tab-switcher {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: #ffffff;
+    padding: 6px;
+    border-radius: 50px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(26, 48, 33, 0.08);
+}
+
+.tab-btn {
+    border: none;
+    background: transparent;
+    color: var(--sage-green);
+    font-family: var(--font-kai);
+    font-size: 0.98rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    padding: 11px 16px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.tab-btn i {
+    color: var(--accent-gold);
+    font-size: 0.95rem;
+}
+
+.tab-btn:hover {
+    color: var(--dark-forest);
+    background: var(--accent-gold-light);
+}
+
+.tab-btn.active {
+    background: var(--dark-forest);
+    color: var(--off-white);
+    box-shadow: 0 4px 12px rgba(26, 48, 33, 0.18);
+}
+
+.tab-content-section {
+    display: none;
+}
+
+.tab-content-section.active {
+    display: block;
+    animation: fadeInDown 0.35s ease;
+}
+
+/* === 專屬旅遊規劃分頁專屬樣式 === */
+.plan-top-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-gold);
+    padding: 20px 26px;
+    border-radius: 10px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-soft);
+}
+
+.plan-summary-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.summary-badge {
+    background: var(--accent-gold-light);
+    color: var(--dark-forest);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(184,151,126,0.3);
+}
+
+.action-btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-outline-forest {
+    background: transparent;
+    border: 1px solid var(--dark-forest);
+    color: var(--dark-forest);
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-family: var(--font-kai);
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-outline-forest:hover {
+    background: var(--dark-forest);
+    color: var(--off-white);
+}
+
+.btn-gold-solid {
+    background: var(--accent-gold);
+    border: 1px solid var(--accent-gold);
+    color: #ffffff;
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-family: var(--font-kai);
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(184, 151, 126, 0.3);
+}
+
+.btn-gold-solid:hover {
+    background: #a38268;
+    transform: translateY(-1px);
+}
+
+/* 預訂狀態卡片 */
+.booking-card {
+    background: #fafcfa;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 24px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.booking-card.is-booked {
+    border: 2px solid var(--dark-forest);
+    background: #f4f8f5;
+}
+
+.booked-ribbon {
+    display: none;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--dark-forest);
+    color: var(--accent-gold);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border: 1px solid var(--accent-gold);
+}
+
+.booking-card.is-booked .booked-ribbon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-book-action {
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: var(--font-kai);
+    font-size: 0.98rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--dark-forest);
+    background: var(--dark-forest);
+    color: #ffffff;
+}
+
+.btn-book-action:hover {
+    background: var(--sage-green);
+}
+
+.btn-book-action.cancel-mode {
+    background: #ffffff;
+    color: #b54747;
+    border-color: #b54747;
+}
+
+.btn-book-action.cancel-mode:hover {
+    background: #fdf2f2;
+}
+
+/* 行程時間軸樣式 */
+.day-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+.day-tab-btn {
+    padding: 8px 20px;
+    border-radius: 25px;
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    color: var(--sage-green);
+    font-family: var(--font-kai);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.day-tab-btn.active, .day-tab-btn:hover {
+    background: var(--dark-forest);
+    color: #ffffff;
+    border-color: var(--dark-forest);
+}
+
+.timeline-list {
+    position: relative;
+    padding-left: 26px;
+    border-left: 2px dashed var(--accent-gold);
+    margin-left: 12px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 24px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: all 0.25s ease;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 22px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    border: 3px solid var(--off-white);
+    box-shadow: 0 0 0 2px var(--accent-gold);
+}
+
+.timeline-item.clickable-spot {
+    cursor: pointer;
+}
+
+.timeline-item.clickable-spot:hover {
+    border-color: var(--accent-gold);
+    background: #fffdf9;
+    transform: translateX(4px);
+    box-shadow: var(--shadow-soft);
+}
+
+.timeline-time-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.time-badge {
+    font-weight: bold;
+    color: var(--dark-forest);
+    font-size: 0.98rem;
+}
+
+.type-tag {
+    font-size: 0.78rem;
+    padding: 2px 10px;
+    border-radius: 12px;
+    background: var(--accent-gold-light);
+    color: var(--dark-forest);
+}
+
+.transport-box {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #f4f7f5;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    color: var(--sage-green);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.transport-box i {
+    color: var(--dark-forest);
+    margin-top: 4px;
+}
+
+/* 警告標籤與官方連結 */
+.ai-verify-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff8e6;
+    border: 1px solid #e6c27a;
+    color: #8a5a00;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.84rem;
+    margin-bottom: 14px;
+}
+
+.ext-link-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.ext-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--off-white);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--dark-forest);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: all 0.25s ease;
+}
+
+.ext-link-btn:hover {
+    background: var(--dark-forest);
+    color: #ffffff;
+    border-color: var(--dark-forest);
+}
+
+/* 行李清單勾選 */
+.checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #fafcfa;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* === 景點/美食詳細介紹 Modal === */
+.spot-modal-box {
+    background: var(--off-white);
+    border: 1px solid var(--border-color);
+    border-top: 4px solid var(--accent-gold);
+    width: 100%;
+    max-width: 560px;
+    border-radius: 12px;
+    padding: 28px 26px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.22);
+    position: relative;
+    max-height: 88vh;
+    overflow-y: auto;
+}
+
+.spot-modal-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.ai-verified-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eaf4ed;
+    color: #1A3021;
+    border: 1px solid #a8cbb3;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.review-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-top: 10px;
+    font-size: 0.88rem;
+}
+
+/* === 懸浮 AI 助手對話框 === */
+.ai-chat-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: 0 18px 45px rgba(26, 48, 33, 0.22);
+    z-index: 2500;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeInDown 0.3s ease;
+}
+
+.ai-chat-widget.active {
+    display: flex;
+}
+
+.ai-chat-header {
+    background: var(--dark-forest);
+    color: var(--off-white);
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-chat-body {
+    padding: 16px;
+    height: 310px;
+    overflow-y: auto;
+    background: var(--off-white);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chat-msg {
+    max-width: 86%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.chat-msg.ai {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    color: var(--dark-forest);
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.chat-msg.user {
+    background: var(--dark-forest);
+    color: #ffffff;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.chat-quick-prompts {
+    padding: 10px 14px;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.prompt-builder-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    background: var(--accent-gold-light);
+    border: 1px solid rgba(184,151,126,0.45);
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    color: var(--dark-forest);
+}
+
+.prompt-inline-select {
+    width: auto !important;
+    padding: 2px 6px !important;
+    font-size: 0.82rem !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--accent-gold) !important;
+    background: #ffffff !important;
+    color: var(--dark-forest) !important;
+    font-weight: bold;
+}
+
+.prompt-inline-input {
+    width: 72px !important;
+    padding: 2px 6px !important;
+    font-size: 0.82rem !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--accent-gold) !important;
+    background: #ffffff !important;
+    text-align: center !important;
+}
+
+.prompt-apply-btn {
+    margin-left: auto;
+    background: var(--dark-forest);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-family: var(--font-kai);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.prompt-apply-btn:hover {
+    background: var(--sage-green);
+}
+
+@keyframes highlightPulse {
+    0% { box-shadow: 0 0 0 0 rgba(184, 151, 126, 0.7); border-color: var(--accent-gold); background: #fffaf0; }
+    70% { box-shadow: 0 0 0 10px rgba(184, 151, 126, 0); border-color: var(--accent-gold); background: #fffaf0; }
+    100% { box-shadow: none; }
+}
+
+.timeline-item.ai-updated-highlight {
+    animation: highlightPulse 2.2s ease-out;
+    border: 1.5px solid var(--accent-gold);
+}
+
+.prompt-chip {
+    background: var(--accent-gold-light);
+    border: 1px solid rgba(184,151,126,0.4);
+    color: var(--dark-forest);
+    padding: 5px 11px;
+    border-radius: 16px;
+    font-family: var(--font-kai);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.prompt-chip:hover {
+    background: var(--dark-forest);
+    color: #ffffff;
+}
+
+.ai-chat-footer {
+    display: flex;
+    padding: 10px 12px;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    gap: 8px;
+}
+
+.ai-chat-footer input {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+/* === 主要內容容器 === */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 90px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 1.65rem;
+    font-weight: normal;
+    margin-bottom: 38px;
+    color: var(--dark-forest);
+    letter-spacing: 0.18em;
+    position: relative;
+}
+
+.section-title::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: var(--accent-gold);
+    margin: 14px auto 0;
+}
+
+/* 卡片面板 */
+.panel {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-top: 3px solid var(--dark-forest);
+    border-radius: 12px;
+    padding: 36px 32px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.panel:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.panel h3 {
+    font-size: 1.25rem;
+    margin-bottom: 24px;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    letter-spacing: 0.12em;
+}
+
+.panel h3 i {
+    color: var(--accent-gold);
+    font-size: 1.15rem;
+}
+
+/* 1. 天數與日期整合區塊 */
+.days-control-wrap {
+    background: var(--accent-gold-light);
+    border-radius: 10px;
+    padding: 26px;
+    text-align: center;
+    border: 1px solid rgba(184,151,126,0.25);
+    margin-bottom: 25px;
+}
+
+.days-input-group {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+}
+
+.days-input-group input {
+    width: 85px;
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--dark-forest);
+    padding: 2px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    outline: none;
+    font-family: var(--font-kai);
+}
+
+.days-input-group span {
+    font-size: 1.2rem;
+    color: var(--sage-green);
+}
+
+.days-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.step-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-gold);
+    background: white;
+    color: var(--dark-forest);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-btn:hover {
+    background: var(--dark-forest);
+    color: white;
+    border-color: var(--dark-forest);
+}
+
+.quick-days {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.quick-tag {
+    padding: 6px 16px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: var(--sage-green);
+}
+
+.quick-tag:hover, .quick-tag.active {
+    background: var(--dark-forest);
+    color: white;
+    border-color: var(--dark-forest);
+    box-shadow: 0 4px 12px rgba(26,48,33,0.15);
+}
+
+/* 兩欄左右平行排版 */
+.two-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* 選項按鈕卡片 */
+.option-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.option {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: white;
+}
+
+.option:hover,
+.option.active {
+    border: 2px solid var(--accent-gold);
+    background: var(--accent-gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(184,151,126,0.18);
+}
+
+.option .emoji {
+    display: block;
+    font-size: 1.7rem;
+    margin-bottom: 6px;
+}
+
+.option small {
+    display: block;
+    color: var(--sage-green);
+    font-size: 0.78rem;
+    margin-top: 4px;
+}
+
+/* 表單元件美化 */
+input[type="text"], input[type="date"], select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    font-family: var(--font-kai);
+    font-size: 0.98rem;
+    color: var(--dark-forest);
+    outline: none;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+input:focus, select:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(184,151,126,0.15);
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: var(--dark-forest);
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.08em;
+}
+
+/* 常見問題 FAQ 區塊 */
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+}
+
+.faq-item {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px 20px;
+    background: #fafcfa;
+}
+
+.faq-item h4 {
+    font-size: 1.02rem;
+    color: var(--dark-forest);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.faq-item h4 i {
+    color: var(--accent-gold);
+}
+
+.faq-item p {
+    font-size: 0.9rem;
+    color: var(--sage-green);
+    margin-left: 24px;
+    line-height: 1.6;
+}
+
+/* 開始規劃按鈕 */
+.btn-start {
+    width: 100%;
+    padding: 18px;
+    background: var(--dark-forest);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-kai);
+    font-size: 1.2rem;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(26,48,33,0.18);
+}
+
+.btn-start:hover {
+    background: var(--sage-green);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(26,48,33,0.25);
+}
+
+.note {
+    text-align: center;
+    color: var(--sage-green);
+    font-size: 0.92rem;
+    margin-top: 22px;
+    letter-spacing: 0.08em;
+}
+
+/* === 登入 / 註冊 Modal === */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(26, 48, 33, 0.55);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 15px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: var(--off-white);
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 420px;
+    border-radius: 8px;
+    padding: 30px 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-container {
+    transform: translateY(0);
+}
+
+.modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--sage-green);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--dark-forest);
+}
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 10px 0;
+    text-align: center;
+    background: none;
+    border: none;
+    font-family: var(--font-kai);
+    font-size: 1rem;
+    color: var(--sage-green);
+    cursor: pointer;
+    position: relative;
+    transition: 0.3s;
+    letter-spacing: 0.08em;
+}
+
+.auth-tab.active {
+    color: var(--dark-forest);
+    font-weight: bold;
+}
+
+.auth-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-gold);
+}
+
+.modal-form-group {
+    margin-bottom: 18px;
+    position: relative;
+    text-align: left;
+}
+
+.modal-form-group label {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--dark-forest);
+    margin-bottom: 6px;
+    letter-spacing: 0.06em;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i.input-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--sage-green);
+    font-size: 0.88rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 11px 14px 11px 38px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: var(--font-kai);
+    font-size: 0.92rem;
+    color: var(--dark-forest);
+    transition: 0.3s;
+    outline: none;
+    text-align: left !important;
+}
+
+.form-control:focus {
+    border-color: var(--dark-forest);
+    box-shadow: 0 0 0 3px rgba(26, 48, 33, 0.06);
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    color: var(--sage-green);
+    cursor: pointer;
+    font-size: 0.88rem;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    margin-bottom: 20px;
+    color: var(--sage-green);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.forgot-link {
+    color: var(--sage-green);
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.forgot-link:hover {
+    color: var(--accent-gold);
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 11px;
+    background: var(--dark-forest);
+    color: var(--off-white);
+    border: none;
+    border-radius: 4px;
+    font-family: var(--font-kai);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: 0.3s;
+    letter-spacing: 0.12em;
+}
+
+.btn-submit:hover {
+    background: #25442f;
+    box-shadow: 0 4px 12px rgba(26, 48, 33, 0.2);
+}
+
+.social-divider {
+    text-align: center;
+    margin: 22px 0 16px;
+    position: relative;
+}
+
+.social-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0;
+    width: 100%; height: 1px;
+    background: var(--border-color);
+}
+
+.social-divider span {
+    background: var(--off-white);
+    padding: 0 10px;
+    position: relative;
+    font-size: 0.80rem;
+    color: var(--sage-green);
+}
+
+.social-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-social {
+    flex: 1;
+    padding: 8px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: var(--font-kai);
+    font-size: 0.82rem;
+    color: var(--dark-forest);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: 0.3s;
+}
+
+.btn-social:hover {
+    background: var(--accent-gold-light);
+    border-color: var(--accent-gold);
+}
+
+/* === 登入成功浮動提示 Toast === */
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--dark-forest);
+    color: var(--off-white);
+    padding: 14px 24px;
+    border-radius: 6px;
+    border-left: 4px solid var(--accent-gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    font-family: var(--font-kai);
+    font-size: 0.95rem;
+    z-index: 3000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.35s ease;
+    pointer-events: none;
+    letter-spacing: 0.08em;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* === 頁尾 === */
+.footer {
+    background-color: var(--dark-forest);
+    color: var(--off-white);
+    padding: 45px 5% 35px;
+    text-align: center; 
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+}
+
+.footer-logo {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--accent-gold);
+}
+
+@media (max-width: 1050px) {
+    .nav-center { display: none; }
+    .mobile-menu-toggle { display: block; }
+}
+
+@media (max-width: 768px) {
+    .two-col-grid { grid-template-columns: 1fr; }
+    .hero { padding: 90px 15px 70px; }
+    .hero h1 { font-size: 2.1rem; }
+    .panel { padding: 24px 18px; }
+    .tab-btn { font-size: 0.88rem; padding: 10px 8px; }
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 頂部導覽列 Navbar：已將 active 指標移至「AI 助手」 -->
+<nav class="navbar" id="mainNavbar">
+    <a href="index.html" class="logo">
+        <i class="fas fa-paper-plane logo-icon"></i>
+        <span>我的口袋導遊</span>
+    </a>
+
+    <div class="nav-center" id="navCenterMenu">
+        <div class="nav-links">
+            <a href="index.html"><i class="fas fa-home"></i> 首頁 Home</a>
+            <a href="航班.html"><i class="fas fa-plane"></i> 航班 Search</a>
+            <a href="住宿.html"><i class="fas fa-hotel"></i> 住宿 Hotel</a>
+            <a href="美食.html"><i class="fas fa-utensils"></i> 美食 Dining</a>
+            <a href="旅遊.html"><i class="fas fa-compass"></i> 旅遊 Travel</a>
+            <a href="保險.html"><i class="fas fa-shield-alt"></i> 保險 Insurance</a>
+            <a href="chatbot.html" class="active"><i class="fas fa-robot"></i> AI 助手</a>
+        </div>
+    </div>
+
+    <div class="nav-actions">
+        <!-- 未登入狀態按鈕 -->
+        <button class="btn-auth" id="openAuthBtn">
+            <i class="far fa-user"></i>
+            <span>登入 / 註冊</span>
+        </button>
+
+        <!-- 已登入狀態頭像與選單 -->
+        <div class="user-profile-menu" id="userProfileMenu">
+            <div class="user-avatar" id="avatarInitial">旅</div>
+            <span class="user-name" id="userNameDisplay">貴賓</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--sage-green);"></i>
+
+            <div class="user-dropdown" id="userDropdown">
+                <a href="chatbot.html?tab=plan" onclick="openMyPlanFromMenu(event)"><i class="far fa-id-card"></i> 個人行程資料</a>
+                <a href="旅遊.html"><i class="far fa-bookmark"></i> 收藏景點清單</a>
+                <button id="logoutBtn" type="button"><i class="fas fa-sign-out-alt"></i> 登出帳號</button>
+            </div>
+        </div>
+
+        <!-- 手機漢堡選單按鈕 -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+<!-- 登入成功浮動提示 Toast -->
+<div class="toast-notification" id="toastNotification">
+    <i class="fas fa-check-circle" style="color: var(--accent-gold);"></i> <span id="toastText">登入成功！歡迎回來</span>
+</div>
+
+<header class="hero">
+    <h1>開啟一場專屬於你的旅程</h1>
+    <p>自訂天數與喜好，讓 AI 助手為您量身打造完美行程</p>
+</header>
+
+<div class="inspiration-strip">
+    ✨ 「世界是一本書，而不旅行的人只讀了一頁。」—— 讓我們為您翻開最精彩的下一頁。
+</div>
+
+<!-- 分頁切換按鈕列 -->
+<div class="tab-switcher-wrapper">
+    <div class="tab-switcher" role="tablist">
+        <button type="button" class="tab-btn active" id="tabBtnSetup" onclick="switchPlannerTab('setup')">
+            <i class="fas fa-sliders-h"></i>
+            <span>深度旅程規劃設定</span>
+        </button>
+        <button type="button" class="tab-btn" id="tabBtnPlan" onclick="switchPlannerTab('plan')">
+            <i class="fas fa-route"></i>
+            <span>專屬旅遊規劃</span>
+        </button>
+    </div>
+</div>
+
+<!-- 分頁 1：深度旅程規劃設定（完整保留原本內容不動） -->
+<div id="tab-setup" class="tab-content-section active">
+<main class="container">
+
+    <h2 class="section-title">深度旅程規劃設定</h2>
+
+    <!-- 1. 天數與日期整合面板 -->
+    <section class="panel">
+        <h3><i class="far fa-calendar-alt"></i> 第一步：您的旅遊天數與日期</h3>
+
+        <div class="days-control-wrap">
+            <div class="days-input-group">
+                <input type="number" id="tripDaysInput" value="3" min="1" max="30" onchange="updateDays(this.value)">
+                <span>天</span>
+            </div>
+            
+            <div class="days-stepper">
+                <button type="button" class="step-btn" onclick="adjustDays(-1)"><i class="fas fa-minus"></i></button>
+                <span style="color: var(--sage-green); font-size: 0.88rem;">微調天數或點擊下方快速標籤</span>
+                <button type="button" class="step-btn" onclick="adjustDays(1)"><i class="fas fa-plus"></i></button>
+            </div>
+
+            <div class="quick-days">
+                <div class="quick-tag" onclick="setDays(1, this)">1天輕旅行</div>
+                <div class="quick-tag active" onclick="setDays(3, this)">3天小度假</div>
+                <div class="quick-tag" onclick="setDays(5, this)">5天深度遊</div>
+                <div class="quick-tag" onclick="setDays(7, this)">7天大漫遊</div>
+            </div>
+        </div>
+
+        <div class="two-col-grid">
+            <div class="form-group">
+                <label for="startDate">預計出發日期</label>
+                <input type="date" id="startDate" onchange="calculateEndDate()">
+            </div>
+
+            <div class="form-group">
+                <label for="endDate">預計結束日期 <span style="font-size:0.75rem; color:var(--sage-green); font-weight:normal;">(依天數自動計算)</span></label>
+                <input type="date" id="endDate">
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. 地區目的地與旅伴人數 -->
+    <section class="panel">
+        <h3><i class="fas fa-globe-asia"></i> 第二步：目的地與同行夥伴</h3>
+        <div class="two-col-grid" style="align-items: start;">
+            <div>
+                <div class="option-grid" id="regionOptions" style="margin-bottom: 20px;">
+                    <div class="option active" data-value="國內旅遊" onclick="selectOption('regionOptions', this)">
+                        <span class="emoji">🏞️</span>
+                        <strong>國內旅遊</strong>
+                        <small>探索台灣之美</small>
+                    </div>
+
+                    <div class="option" data-value="國外旅遊" onclick="selectOption('regionOptions', this)">
+                        <span class="emoji">✈️</span>
+                        <strong>國外旅遊</strong>
+                        <small>探索世界各地</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="destination">預計前往的目的地</label>
+                    <input id="destination" type="text" placeholder="例如：日本東京、台灣花蓮">
+                </div>
+            </div>
+
+            <div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="people">選擇同行人數</label>
+                    <select id="people" style="padding: 13px 16px;">
+                        <option value="1">1 位（獨自旅行）</option>
+                        <option value="2" selected>2 位（雙人旅行）</option>
+                        <option value="3">3 位（小團體）</option>
+                        <option value="4">4 位（家族/好友）</option>
+                        <option value="5">5 位（多人出遊）</option>
+                        <option value="6">6 位以上（團體熱鬧）</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">預算範圍選擇</label>
+                    <select id="budget" style="padding: 13px 16px;">
+                        <option value="經濟型 ($5,000 - $15,000)">💰 經濟型 ($5,000 - $15,000)</option>
+                        <option value="舒適質感 ($15,000 - $35,000)" selected>✨ 舒適質感 ($15,000 - $35,000)</option>
+                        <option value="輕奢享受 ($35,000 - $60,000)">🌟 輕奢享受 ($35,000 - $60,000)</option>
+                        <option value="頂級奢華 ($60,000以上)">👑 頂級奢華 ($60,000以上)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 旅遊風格偏好 -->
+    <section class="panel">
+        <h3><i class="fas fa-compass"></i> 第三步：您偏好的旅遊風格與步調</h3>
+
+        <!-- 步調選擇 -->
+        <div style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 10px; font-size: 0.95rem; color: var(--dark-forest); font-weight: bold; text-align: center; letter-spacing: 0.08em;">旅程節奏偏好</label>
+            <div class="option-grid" id="paceOptions" style="grid-template-columns: 1fr 1fr;">
+                <div class="option active" data-value="悠閒慢節奏" onclick="selectOption('paceOptions', this)">
+                    <span class="emoji">☕</span>
+                    <strong>悠閒慢節奏</strong>
+                    <small>放鬆漫步、留白充電</small>
+                </div>
+
+                <div class="option" data-value="充實快節奏" onclick="selectOption('paceOptions', this)">
+                    <span class="emoji">⚡</span>
+                    <strong>充實快節奏</strong>
+                    <small>豐富緊湊、打卡踩點</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主題風格選擇 -->
+        <label style="display: block; margin-bottom: 10px; font-size: 0.95rem; color: var(--dark-forest); font-weight: bold; text-align: center; letter-spacing: 0.08em;">核心主題風格</label>
+        <div class="option-grid" id="styleOptions" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
+            <div class="option active" data-value="自然景觀" onclick="selectOption('styleOptions', this)">
+                <span class="emoji">🌿</span>
+                <strong>自然景觀</strong>
+                <small>山林、海岸</small>
+            </div>
+
+            <div class="option" data-value="美食探索" onclick="selectOption('styleOptions', this)">
+                <span class="emoji">🍜</span>
+                <strong>美食探索</strong>
+                <small>在地特色</small>
+            </div>
+
+            <div class="option" data-value="文化歷史" onclick="selectOption('styleOptions', this)">
+                <span class="emoji">🏛️</span>
+                <strong>文化歷史</strong>
+                <small>古蹟、藝術</small>
+            </div>
+
+            <div class="option" data-value="購物休閒" onclick="selectOption('styleOptions', this)">
+                <span class="emoji">🛍️</span>
+                <strong>購物休閒</strong>
+                <small>逛街、放鬆</small>
+            </div>
+
+            <div class="option" data-value="冒險體驗" onclick="selectOption('styleOptions', this)">
+                <span class="emoji">🏕️</span>
+                <strong>冒險體驗</strong>
+                <small>戶外活動</small>
+            </div>
+
+            <div class="option" data-value="深度慢旅" onclick="selectOption('styleOptions', this)">
+                <span class="emoji">🍃</span>
+                <strong>深度慢旅</strong>
+                <small>悠閒探索</small>
+            </div>
+        </div>
+
+        <div class="two-col-grid">
+            <div>
+                <div class="form-group">
+                    <label for="transport">慣用交通方式</label>
+                    <select id="transport" style="padding: 13px 16px;">
+                        <option value="大眾運輸">🚆 大眾運輸（鐵路/捷運/公車）</option>
+                        <option value="自駕租車">🚗 自駕租車（彈性自由行）</option>
+                        <option value="包車導覽">🚐 包車導覽（輕鬆無負擔）</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="specialReq">其他特殊需求（選填）</label>
+                    <input type="text" id="specialReq" placeholder="例如：無障礙友善、親子同行、素食餐飲">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 常見問題說明 -->
+    <section class="panel">
+        <h3><i class="fas fa-question-circle"></i> 關於口袋導遊 AI 行程規劃</h3>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h4><i class="fas fa-chevron-right"></i> 填寫設定後，AI 如何為我規劃？</h4>
+                <p>AI 助手會綜合您選擇的天數、目的地、預算範圍與步調偏好，自動篩選最佳景點、餐館與順暢交通動線，並在「專屬旅遊規劃」分頁為您量身打造專屬行程。</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-chevron-right"></i> 生成的行程可以隨時修改或調整嗎？</h4>
+                <p>當然可以！生成行程後，您可以隨時增加、刪除景點，或是交由 AI 助手針對特定天數重新排版。</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-chevron-right"></i> 登入會員有什麼專屬好處？</h4>
+                <p>登入會員後，您的所有客製化行程、收藏景點與訂單資訊都會安全同步在雲端，隨時隨地都能在手機或電腦上查看。</p>
+            </div>
+        </div>
+    </section>
+
+    <button class="btn-start" onclick="startPlanning()">
+        開始規劃我的專屬旅程 →
+    </button>
+
+    <p class="note">
+        ✨ 讓 AI 助手依照您的喜好，打造專屬您的質感旅遊行程。
+    </p>
+
+</main>
+</div>
+
+<!-- 分頁 2：專屬旅遊規劃 -->
+<div id="tab-plan" class="tab-content-section">
+    <main class="container">
+        <h2 class="section-title">專屬旅遊規劃</h2>
+
+        <!-- 頂部操作與條件摘要列 -->
+        <div class="plan-top-actions">
+            <div>
+                <h3 style="font-size: 1.2rem; color: var(--dark-forest); margin-bottom: 4px;">
+                    <i class="fas fa-sparkles" style="color: var(--accent-gold);"></i> 為您量身打造的專屬行程
+                </h3>
+                <div class="plan-summary-badges" id="planSummaryBadges">
+                    <!-- JS 動態填入條件標籤 -->
+                </div>
+            </div>
+            <div class="action-btn-group">
+                <button type="button" class="btn-outline-forest" onclick="switchPlannerTab('setup')">
+                    <i class="fas fa-edit"></i> 修改行程設定
+                </button>
+                <button type="button" class="btn-gold-solid" onclick="openAiChat()">
+                    <i class="fas fa-robot"></i> AI 助手對話調整
+                </button>
+            </div>
+        </div>
+
+        <!-- 已預訂的航班 & 已預訂的住宿（從航班/住宿頁面預訂後顯示於此） -->
+        <div class="two-col-grid" id="externalBookedSection" style="margin-bottom: 32px; display: none;">
+            <!-- 已預訂的航班 -->
+            <section class="panel" id="externalBookedFlightPanel" style="margin-bottom: 0; display: none;">
+                <h3><i class="fas fa-plane-departure"></i> 已預訂的航班</h3>
+                <div class="booking-card is-booked">
+                    <span class="booked-ribbon"><i class="fas fa-check-circle"></i> 已預訂</span>
+                    <div id="externalBookedFlightInfo"></div>
+                    <button type="button" class="btn-book-action cancel-mode" onclick="cancelExternalBooking('flight')">
+                        取消預定
+                    </button>
+                </div>
+            </section>
+
+            <!-- 已預訂的住宿 -->
+            <section class="panel" id="externalBookedHotelPanel" style="margin-bottom: 0; display: none;">
+                <h3><i class="fas fa-hotel"></i> 已預訂的住宿</h3>
+                <div class="booking-card is-booked">
+                    <span class="booked-ribbon"><i class="fas fa-check-circle"></i> 已預訂</span>
+                    <div id="externalBookedHotelInfo"></div>
+                    <button type="button" class="btn-book-action cancel-mode" onclick="cancelExternalBooking('hotel')">
+                        取消預定
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- 1. 推薦的航班 & 2. 推薦的住宿 -->
+        <div class="two-col-grid" style="margin-bottom: 32px;">
+            <!-- 推薦航班 -->
+            <section class="panel" style="margin-bottom: 0;">
+                <h3><i class="fas fa-plane-departure"></i> 推薦的航班</h3>
+                <div class="booking-card" id="flightBookingCard">
+                    <span class="booked-ribbon"><i class="fas fa-check-circle"></i> 已預訂</span>
+                    <div id="recommendedFlightInfo">
+                        <!-- JS 動態渲染推薦航班 -->
+                    </div>
+                    <button type="button" class="btn-book-action" id="btnBookFlight" onclick="toggleBooking('flight')">
+                        立即預訂此航班
+                    </button>
+                </div>
+            </section>
+
+            <!-- 推薦住宿 -->
+            <section class="panel" style="margin-bottom: 0;">
+                <h3><i class="fas fa-hotel"></i> 推薦的住宿</h3>
+                <div class="booking-card" id="hotelBookingCard">
+                    <span class="booked-ribbon"><i class="fas fa-check-circle"></i> 已預訂</span>
+                    <div id="recommendedHotelInfo">
+                        <!-- JS 動態渲染推薦住宿 -->
+                    </div>
+                    <button type="button" class="btn-book-action" id="btnBookHotel" onclick="toggleBooking('hotel')">
+                        立即預訂此住宿
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- 3. 行程安排規劃表 -->
+        <section class="panel">
+            <h3><i class="fas fa-route"></i> 每日詳細行程安排規劃表</h3>
+            <p style="text-align: center; color: var(--sage-green); font-size: 0.9rem; margin-top: -14px; margin-bottom: 22px;">
+                💡 包含機場接駁、每日飯店往返動線與詳細路線；點擊「景點」或「美食」可查看簡要介紹與旅客真實評價
+            </p>
+
+            <div class="day-tabs" id="dayTabsContainer">
+                <!-- JS 動態產生天數按鈕 -->
+            </div>
+
+            <div class="timeline-list" id="itineraryTimeline">
+                <!-- JS 動態產生當日時間軸 -->
+            </div>
+        </section>
+
+        <!-- 4. 推薦購買的保險 & 5. 醫療資訊 -->
+        <div class="two-col-grid" style="margin-bottom: 32px;">
+            <!-- 推薦保險 -->
+            <section class="panel" style="margin-bottom: 0;">
+                <h3><i class="fas fa-shield-alt"></i> 推薦購買的旅遊保險</h3>
+                <div class="ai-verify-alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>⚠️ AI 生成資訊需查核：實際理賠條款與保費請以各產險公司官網公告為準。</span>
+                </div>
+                <div id="insurancePlanContent" style="font-size: 0.93rem; color: var(--dark-forest); line-height: 1.8;">
+                    <!-- JS 動態產生保險建議 -->
+                </div>
+                <div class="ext-link-list">
+                    <a href="https://www.cathay-ins.com.tw/cathayins/personal/travel/" target="_blank" rel="noopener noreferrer" class="ext-link-btn">
+                        <i class="fas fa-external-link-alt"></i> 國泰產險旅平險試算
+                    </a>
+                    <a href="https://www.fubon.com/insurance/b2c/content/travel/index.html" target="_blank" rel="noopener noreferrer" class="ext-link-btn">
+                        <i class="fas fa-external-link-alt"></i> 富邦產險海外旅平險
+                    </a>
+                </div>
+            </section>
+
+            <!-- 醫療資訊 -->
+            <section class="panel" style="margin-bottom: 0;">
+                <h3><i class="fas fa-hospital-alt"></i> 目的地醫療與就醫資訊</h3>
+                <div id="medicalInfoContent" style="font-size: 0.93rem; color: var(--dark-forest); line-height: 1.8;">
+                    <!-- JS 動態產生醫療注意事項與附近醫院 -->
+                </div>
+            </section>
+        </div>
+
+        <!-- 6. 行前須知（含天氣預估、依天數行李清單、換匯與Wi-Fi） -->
+        <section class="panel">
+            <h3><i class="fas fa-suitcase-rolling"></i> 行前須知與當地氣象預估</h3>
+            <div id="preTripContent">
+                <!-- JS 動態產生氣象、行李清單、換匯與網卡建議 -->
+            </div>
+        </section>
+
+        <!-- 7. 機場出入境注意事項（含查證提醒與官方連結） -->
+        <section class="panel">
+            <h3><i class="fas fa-passport"></i> 機場出入境注意事項與官方查證</h3>
+            <div class="ai-verify-alert">
+                <i class="fas fa-info-circle"></i>
+                <span>⚠️ 重要查證提醒：各國簽證、海關申報與檢疫規定可能隨時調整，出發前請務必點擊下方官方連結進行最終確認。</span>
+            </div>
+            <div id="immigrationContent" style="font-size: 0.94rem; color: var(--dark-forest); line-height: 1.85;">
+                <!-- JS 動態產生出入境須知 -->
+            </div>
+            <div class="ext-link-list">
+                <a href="https://www.boca.gov.tw/" target="_blank" rel="noopener noreferrer" class="ext-link-btn">
+                    <i class="fas fa-landmark"></i> 外交部領事事務局（簽證與旅遊警示）
+                </a>
+                <a href="https://www.immigration.gov.tw/" target="_blank" rel="noopener noreferrer" class="ext-link-btn">
+                    <i class="fas fa-id-badge"></i> 內政部移民署（出入境通關規範）
+                </a>
+                <a href="https://web.customs.gov.tw/" target="_blank" rel="noopener noreferrer" class="ext-link-btn">
+                    <i class="fas fa-boxes"></i> 財政部關務署（旅客攜帶物品申報）
+                </a>
+            </div>
+        </section>
+
+        <!-- 底部快捷按鈕列 -->
+        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 20px;">
+            <button type="button" class="btn-outline-forest" style="padding: 14px 28px; font-size: 1rem;" onclick="switchPlannerTab('setup')">
+                <i class="fas fa-arrow-left"></i> 修改行程條件設定
+            </button>
+            <button type="button" class="btn-gold-solid" style="padding: 14px 30px; font-size: 1rem;" onclick="openAiChat()">
+                <i class="fas fa-comments"></i> 呼叫 AI 助手微調行程
+            </button>
+        </div>
+    </main>
+</div>
+
+<!-- 景點 / 美食詳細介紹彈窗 Modal -->
+<div class="modal-overlay" id="spotDetailModal">
+    <div class="spot-modal-box">
+        <button class="modal-close" type="button" onclick="closeSpotModal()"><i class="fas fa-times"></i></button>
+        <div id="spotModalBody">
+            <!-- JS 動態填入景點/美食介紹與旅客評價 -->
+        </div>
+    </div>
+</div>
+
+<!-- 懸浮 AI 助手對話框 -->
+<div class="ai-chat-widget" id="aiChatWidget">
+    <div class="ai-chat-header">
+        <div style="display: flex; align-items: center; gap: 8px; font-weight: bold;">
+            <i class="fas fa-robot" style="color: var(--accent-gold);"></i>
+            <span>口袋導遊 AI 行程微調助手</span>
+        </div>
+        <button type="button" onclick="closeAiChat()" style="background:none; border:none; color:#ffffff; cursor:pointer; font-size:1rem;">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="ai-chat-body" id="aiChatBody">
+        <!-- JS 動態產生對話訊息 -->
+    </div>
+    <div class="chat-quick-prompts">
+        <!-- 具體模板 1：推薦時間更早/晚的班機 -->
+        <div class="prompt-builder-row">
+            <span>✈️ 推薦時間</span>
+            <select id="promptFlightTime" class="prompt-inline-select">
+                <option value="更早">更早</option>
+                <option value="更晚">更晚</option>
+            </select>
+            <span>的班機</span>
+            <button type="button" class="prompt-apply-btn" onclick="applyFlightPrompt()">套用修改</button>
+        </div>
+
+        <!-- 具體模板 2：將第_天的[早餐/午餐/晚餐]改成_料理 -->
+        <div class="prompt-builder-row">
+            <span>🍜 將第</span>
+            <select id="promptMealDay" class="prompt-inline-select">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+            </select>
+            <span>天的</span>
+            <select id="promptMealType" class="prompt-inline-select">
+                <option value="早餐">早餐</option>
+                <option value="午餐" selected>午餐</option>
+                <option value="晚餐">晚餐</option>
+            </select>
+            <span>改成</span>
+            <input type="text" id="promptMealCuisine" class="prompt-inline-input" placeholder="如：拉麵" value="壽司">
+            <span>料理</span>
+            <button type="button" class="prompt-apply-btn" onclick="applyMealPrompt()">套用修改</button>
+        </div>
+
+        <!-- 具體模板 3：更換_[當前各個行程名稱下拉式選單]_行程 -->
+        <div class="prompt-builder-row">
+            <span>🗺️ 更換</span>
+            <select id="promptReplaceSpotSelect" class="prompt-inline-select" style="max-width: 175px; text-overflow: ellipsis;">
+                <!-- JS 動態同步當前所有行程名稱 -->
+            </select>
+            <span>行程</span>
+            <button type="button" class="prompt-apply-btn" onclick="applyReplaceSpotPrompt()">套用修改</button>
+        </div>
+    </div>
+    <form class="ai-chat-footer" onsubmit="handleChatSubmit(event)">
+        <input type="text" id="aiChatInput" placeholder="輸入想調整的需求，例如：第2天改悠閒一點...">
+        <button type="submit" class="btn-submit" style="width: auto; padding: 8px 16px;">送出</button>
+    </form>
+</div>
+
+<!-- 登入 / 註冊 Modal -->
+<div class="modal-overlay" id="authModal">
+    <div class="modal-container">
+        <button class="modal-close" id="closeAuthBtn"><i class="fas fa-times"></i></button>
+        
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" type="button">帳號登入</button>
+            <button class="auth-tab" id="tabRegister" type="button">新用戶註冊</button>
+        </div>
+
+        <!-- 登入表單 -->
+        <form id="loginForm" onsubmit="handleAuthSubmit(event, 'login')">
+            <div class="modal-form-group">
+                <label for="loginEmail">電子郵件 / 帳號</label>
+                <div class="input-wrapper">
+                    <i class="far fa-envelope input-icon"></i>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="example@domain.com" required value="traveler@pocketguide.com">
+                </div>
+            </div>
+
+            <div class="modal-form-group">
+                <label for="loginPassword">密碼</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="請輸入密碼" required value="password123">
+                    <i class="far fa-eye toggle-password" onclick="togglePasswordVisibility('loginPassword', this)"></i>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" checked> 記住登入狀態
+                </label>
+                <a href="#forgot" class="forgot-link" onclick="showToast('請聯繫客服重設密碼'); return false;">忘記密碼？</a>
+            </div>
+
+            <button type="submit" class="btn-submit">開啟我的旅程</button>
+        </form>
+
+        <!-- 註冊表單 -->
+        <form id="registerForm" style="display: none;" onsubmit="handleAuthSubmit(event, 'register')">
+            <div class="modal-form-group">
+                <label for="regName">您的稱呼 / 暱稱</label>
+                <div class="input-wrapper">
+                    <i class="far fa-user input-icon"></i>
+                    <input type="text" id="regName" class="form-control" placeholder="例如：林漫旅">
+                </div>
+            </div>
+
+            <div class="modal-form-group">
+                <label for="regEmail">電子郵件</label>
+                <div class="input-wrapper">
+                    <i class="far fa-envelope input-icon"></i>
+                    <input type="email" id="regEmail" class="form-control" placeholder="example@domain.com">
+                </div>
+            </div>
+
+            <div class="modal-form-group">
+                <label for="regPassword">設定密碼</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="regPassword" class="form-control" placeholder="至少8位數密碼">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">註冊並登入</button>
+        </form>
+
+        <div class="social-divider">
+            <span>快速登入體驗</span>
+        </div>
+
+        <div class="social-btns">
+            <button type="button" class="btn-social" onclick="simulateGuestLogin('靜享旅客')">
+                <i class="far fa-compass" style="color: var(--accent-gold);"></i> 訪客試用
+            </button>
+            <button type="button" class="btn-social" onclick="simulateGuestLogin('Google用戶')">
+                <i class="fab fa-google" style="color: #4285F4;"></i> Google 登入
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-logo">
+        <i class="fas fa-paper-plane"></i> 我的口袋導遊
+    </div>
+    <p>&copy; 2026 我的口袋導遊 Pocket Guide. 靜享熱帶陽光的溫潤與從容。</p>
+</footer>
+
+<script>
+// === 讀取「深度旅程規劃設定」分頁目前填寫的所有值 ===
+function collectCurrentSetupData() {
+    const region = document.querySelector('#regionOptions .option.active')?.getAttribute('data-value') || '國內旅遊';
+    const rawDest = document.getElementById("destination").value.trim();
+    const destination = rawDest || (region === '國外旅遊' ? '日本東京' : '台灣花蓮');
+    const days = parseInt(document.getElementById("tripDaysInput").value) || currentDays || 3;
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    const people = document.getElementById("people").value;
+    const budget = document.getElementById("budget").value;
+    const pace = document.querySelector('#paceOptions .option.active')?.getAttribute('data-value') || '悠閒慢節奏';
+    const style = document.querySelector('#styleOptions .option.active')?.getAttribute('data-value') || '自然景觀';
+    const transport = document.getElementById("transport").value;
+    const specialReq = document.getElementById("specialReq").value.trim();
+
+    return {
+        region, destination, days, startDate, endDate, people, budget, pace, style, transport, specialReq
+    };
+}
+
+// === 0. 分頁切換控制邏輯 ===
+function switchPlannerTab(tabName) {
+    const btnSetup = document.getElementById('tabBtnSetup');
+    const btnPlan = document.getElementById('tabBtnPlan');
+    const secSetup = document.getElementById('tab-setup');
+    const secPlan = document.getElementById('tab-plan');
+
+    if (tabName === 'setup') {
+        btnSetup.classList.add('active');
+        btnPlan.classList.remove('active');
+        secSetup.classList.add('active');
+        secPlan.classList.remove('active');
+    } else {
+        // 切換至「專屬旅遊規劃」分頁前，即時依據「深度旅程規劃設定」表單填寫的結果產出對應行程
+        const currentSettings = collectCurrentSetupData();
+        sessionStorage.setItem("userTripSettings", JSON.stringify(currentSettings));
+        generatePersonalizedPlan(currentSettings);
+        renderExternalBookings();
+
+        btnPlan.classList.add('active');
+        btnSetup.classList.remove('active');
+        secPlan.classList.add('active');
+        secSetup.classList.remove('active');
+    }
+}
+
+// === 1. 天數與日期連動邏輯 ===
+let currentDays = parseInt(sessionStorage.getItem("tripDays")) || 3;
+document.getElementById("tripDaysInput").value = currentDays;
+
+const todayStr = new Date().toISOString().split('T')[0];
+document.getElementById("startDate").value = todayStr;
+calculateEndDate();
+
+function updateDays(val) {
+    let days = parseInt(val);
+    if (isNaN(days) || days < 1) days = 1;
+    if (days > 30) days = 30;
+    currentDays = days;
+    document.getElementById("tripDaysInput").value = currentDays;
+    
+    document.querySelectorAll('.quick-tag').forEach(tag => tag.classList.remove('active'));
+    calculateEndDate();
+}
+
+function adjustDays(amount) {
+    currentDays += amount;
+    if (currentDays < 1) currentDays = 1;
+    if (currentDays > 30) currentDays = 30;
+    document.getElementById("tripDaysInput").value = currentDays;
+    calculateEndDate();
+}
+
+function setDays(days, el) {
+    currentDays = days;
+    document.getElementById("tripDaysInput").value = currentDays;
+    
+    document.querySelectorAll('.quick-tag').forEach(tag => tag.classList.remove('active'));
+    if (el) el.classList.add('active');
+    
+    calculateEndDate();
+}
+
+function calculateEndDate() {
+    const startInput = document.getElementById("startDate").value;
+    if (!startInput) return;
+    
+    let startDate = new Date(startInput);
+    startDate.setDate(startDate.getDate() + (currentDays - 1));
+    
+    let endStr = startDate.toISOString().split('T')[0];
+    document.getElementById("endDate").value = endStr;
+}
+
+// === 2. 選項卡片點擊切換邏輯 ===
+function selectOption(containerId, element) {
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.option').forEach(opt => opt.classList.remove('active'));
+    element.classList.add('active');
+}
+
+// === 3. 開始規劃並切換至「專屬旅遊規劃」分頁 ===
+function startPlanning() {
+    const tripData = collectCurrentSetupData();
+    sessionStorage.setItem("userTripSettings", JSON.stringify(tripData));
+
+    showToast(`已依您的 ${tripData.destination}（${tripData.days} 天・${tripData.style}）設定產出專屬規劃...`);
+    
+    setTimeout(() => {
+        switchPlannerTab('plan');
+        window.scrollTo({ top: document.querySelector('.tab-switcher-wrapper').offsetTop - 80, behavior: 'smooth' });
+    }, 450);
+}
+
+// === 3.5 專屬旅遊規劃動態資料庫與渲染邏輯 ===
+let bookingState = { flight: false, hotel: false };
+let activePlanData = null;
+let currentSelectedDay = 1;
+
+const destinationDatabase = {
+    "東京": {
+        city: "日本東京",
+        weather: "白天約 17°C～22°C，早晚微涼約 12°C，降雨機率約 20%。建議採「洋蔥式穿搭」，攜帶輕便風衣或薄針織外套與折疊晴雨傘。",
+        currency: "建議在台灣先兌換適量日圓現鈔（約每人每日 ¥8,000～¥12,000），市區地鐵、超商與百貨刷卡或綁定 Apple Pay Suica / ICOCA 極為便利。",
+        wifi: "推薦提前購買日本 5G 雙電信（SoftBank/KDDI）eSIM 或每日 2GB 漫遊方案，導航查地鐵時刻表最穩定。",
+        flights: {
+            budget: { airline: "台灣虎航 IT200", route: "桃園 TPE (06:35) ➔ 成田 NRT (10:35) ｜ 回程 NRT (11:25) ➔ TPE (14:20)", seat: "經濟艙（含 20kg 託運行李）", price: "NT$ 10,800 / 人" },
+            standard: { airline: "長榮航空 BR198", route: "桃園 TPE (08:50) ➔ 成田 NRT (13:15) ｜ 回程 NRT (14:15) ➔ TPE (16:55)", seat: "經濟艙（含 2 件 23kg 行李與機上餐）", price: "NT$ 15,600 / 人" },
+            luxury: { airline: "星宇航空 JX800", route: "桃園 TPE (08:30) ➔ 成田 NRT (12:45) ｜ 回程 NRT (15:40) ➔ TPE (18:25)", seat: "商務艙（專屬貴賓室與優先登機）", price: "NT$ 38,500 / 人" }
+        },
+        hotels: {
+            budget: { name: "上野御徒町相鐵 Fresa Inn", area: "JR 上野站步行 4 分鐘 / 京成上野站步行 3 分鐘", room: "精緻雙人房（含免費備品吧）", price: "NT$ 3,400 / 晚" },
+            standard: { name: "新宿格拉斯麗飯店 (哥吉拉飯店)", area: "JR 新宿站東口步行 5 分鐘 / 地鐵新宿三丁目站 4 分鐘", room: "舒適雙床房（獨立衛浴乾濕分離）", price: "NT$ 5,800 / 晚" },
+            luxury: { name: "東京丸之內四季酒店", area: "JR 東京站八重洲南口步行 3 分鐘", room: "尊榮城市景觀大床套房（含雙人早餐）", price: "NT$ 18,500 / 晚" }
+        },
+        medical: {
+            emergency: "日本緊急救援：救護車／火警請撥 <strong>119</strong>，警察局請撥 <strong>110</strong>（可要求英文或中文翻譯協助）。",
+            notes: "日本醫療費用較高且多數診所採預約制，就醫時請務必攜帶護照與海外突發疾病醫療險英文投保證明，並索取詳細診斷書與收據以便回國申請理賠。",
+            hospitals: [
+                "<strong>聖路加國際醫院 (St. Luke's International Hospital)</strong>：東京都中央區明石町 9-1（地鐵日比谷線築地站步行 5 分鐘），設有國際醫療門診。",
+                "<strong>國立國際醫療研究中心病院</strong>：東京都新宿區戶山 1-21-1（都營大江戶線若松河田站步行 5 分鐘），提供多語種急診諮詢。"
+            ]
+        },
+        spots: {
+            "明治神宮與代代木森林公園": {
+                category: "自然景觀景點",
+                styles: ["自然景觀", "深度慢旅", "文化歷史"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1583766395091-2eb9994ed094?q=80&w=900&auto=format&fit=crop",
+                desc: "市中心難得的百年森林聖地，穿過巨大木造鳥居感受靜謐芬多精，沿著碎石林蔭參道與代代木公園漫步，享受自然綠意。",
+                rating: "4.8 ★ (Google 29,300 則評論)",
+                reviews: [
+                    { user: "蔡小姐 · 2週前", comment: "走進參道瞬間安靜下來，百年巨木林立，完全不像在繁華的東京市區。" },
+                    { user: "鄭先生 · 1個月前", comment: "清晨散步空氣非常清新，非常適合想遠離都市喧囂的旅客。" }
+                ]
+            },
+            "高尾山纜車與森林健行步道": {
+                category: "自然景觀景點",
+                styles: ["自然景觀", "冒險體驗"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=900&auto=format&fit=crop",
+                desc: "米其林三星級近郊名山，搭乘日本最陡坡度登山纜車俯瞰關東平原，沿著山林吊橋與藥王院步道健行，天氣晴朗時可遠眺富士山。",
+                rating: "4.8 ★ (Google 18,400 則評論)",
+                reviews: [
+                    { user: "林先生 · 2週前", comment: "步道規劃完善好走，山頂展望台看到富士山真的超感動！" },
+                    { user: "周小姐 · 1個月前", comment: "山腳下的現烤糰子跟蕎麥麵很有特色，半日自然小旅行首選。" }
+                ]
+            },
+            "築地場外市場海鮮丼": {
+                category: "在地特色美食",
+                styles: ["美食探索", "文化歷史", "購物休閒"],
+                isFood: true,
+                img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=900&auto=format&fit=crop",
+                desc: "匯集數百家新鮮海產、玉子燒與現切鮪魚生魚片的美食聖地，推薦品嚐海膽鮪魚三色丼與現煎厚燒玉子。",
+                rating: "4.7 ★ (Google 15,210 則評論)",
+                reviews: [
+                    { user: "王先生 · 3週前", comment: "海膽完全沒有腥味、入口即化！建議10點前來排隊比較不用等太久。" },
+                    { user: "張小姐 · 1個月前", comment: "除了海鮮丼，場外市場的抹茶拿鐵跟草莓大福也很驚豔。" }
+                ]
+            },
+            "新宿思出橫丁串燒居酒屋": {
+                category: "在地特色美食",
+                styles: ["美食探索", "深度慢旅", "購物休閒"],
+                isFood: true,
+                img: "https://images.unsplash.com/photo-1554797589-7241bb691973?q=80&w=900&auto=format&fit=crop",
+                desc: "充滿昭和懷舊氛圍的窄巷美食街，炭火現烤雞肉串、牛舌與冰涼生啤，是體驗東京道地飲食文化的必訪之地。",
+                rating: "4.6 ★ (Google 9,840 則評論)",
+                reviews: [
+                    { user: "李先生 · 2週前", comment: "炭火香氣十足，鹽烤雞蔥串和雞皮必點，氣氛非常熱鬧道地。" },
+                    { user: "周小姐 · 1個月前", comment: "很多店家都有中文菜單，店員也很熱情招呼，非常推薦晚上來小酌。" }
+                ]
+            },
+            "淺草寺雷門與仲見世通": {
+                category: "歷史文化景點",
+                styles: ["文化歷史", "美食探索"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=900&auto=format&fit=crop",
+                desc: "東京最古老的寺廟，穿過掛著巨大紅燈籠的雷門，沿著熱鬧的仲見世通品嚐人形燒與抹茶小點，感受濃厚的江戶下町風情。",
+                rating: "4.8 ★ (Google 38,420 則評論)",
+                reviews: [
+                    { user: "陳小姐 · 2週前", comment: "早上9點前抵達人潮較少，拍雷門燈籠非常壯觀，仲見世通的現烤仙貝必吃！" },
+                    { user: "林先生 · 1個月前", comment: "交通超方便，地鐵出口走1分鐘就到，傍晚點燈後的本堂也很有氣氛。" }
+                ]
+            },
+            "上野恩賜公園與東京國立博物館": {
+                category: "文化歷史景點",
+                styles: ["文化歷史", "自然景觀", "深度慢旅"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=900&auto=format&fit=crop",
+                desc: "集結日本重要國寶文物、歷史寺社與寬闊林蔭步道的藝文殿堂，能深度領略日本傳統工藝與美學脈絡。",
+                rating: "4.7 ★ (Google 22,150 則評論)",
+                reviews: [
+                    { user: "吳先生 · 2週前", comment: "館藏非常豐富且動線清晰，旁邊的不忍池散步也很愜意。" },
+                    { user: "黃小姐 · 1個月前", comment: "喜歡日本歷史與建築藝術的話，這裡可以細細品味一整個上午。" }
+                ]
+            },
+            "銀座中央通與表參道精品漫步": {
+                category: "購物休閒街區",
+                styles: ["購物休閒", "深度慢旅"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=900&auto=format&fit=crop",
+                desc: "匯集旗艦百貨、設計師品牌與優雅街邊咖啡館的時尚大道，享受寬敞舒適的逛街氛圍與精緻下午茶。",
+                rating: "4.8 ★ (Google 19,600 則評論)",
+                reviews: [
+                    { user: "張小姐 · 1週前", comment: "退稅服務非常完善，週末步行者天國在馬路中央散步超好逛！" },
+                    { user: "陳先生 · 3週前", comment: "建築設計很有質感，逛累了隨時都有高水準的咖啡廳可以歇腳。" }
+                ]
+            },
+            "澀谷 SKY 高空展望台": {
+                category: "地標景觀與冒險體驗",
+                styles: ["冒險體驗", "購物休閒", "自然景觀"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=900&auto=format&fit=crop",
+                desc: "位於澀谷 Scramble Square 頂樓 229 公尺高的 360 度露天高空展望台，無遮蔽俯瞰整個東京盆地與富士山遠景，感受高空震撼體驗。",
+                rating: "4.9 ★ (Google 21,900 則評論)",
+                reviews: [
+                    { user: "吳小姐 · 1週前", comment: "黃昏時段上來可以看到夕陽接夜景，高空微風吹拂非常震撼！" },
+                    { user: "黃先生 · 3週前", comment: "動線規劃很棒，隨身包包需寄放在置物櫃，拍照空間很寬敞。" }
+                ]
+            },
+            "中目黑川畔咖啡與代官山蔦屋書店": {
+                category: "深度慢旅街區",
+                styles: ["深度慢旅", "購物休閒", "美食探索"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=900&auto=format&fit=crop",
+                desc: "沿著綠意盎然的目黑川河畔悠閒漫步，造訪職人烘焙咖啡館與被譽為全球最美書店之一的代官山蔦屋書店，體驗東京人的慢生活。",
+                rating: "4.8 ★ (Google 14,300 則評論)",
+                reviews: [
+                    { user: "林小姐 · 1週前", comment: "步調非常悠閒舒服，獨立選物店跟咖啡廳都很有品味。" },
+                    { user: "鄭先生 · 2週前", comment: "沒有觀光客的擁擠感，很適合安排一個下午慢慢逛、喝咖啡看書。" }
+                ]
+            }
+        }
+    },
+    "台灣花蓮": {
+        city: "台灣花蓮",
+        weather: "白天約 22°C～27°C，夜晚約 18°C～21°C，山區與海邊風稍大，午後偶有短暫陣雨。建議穿著透氣棉質上衣，隨身攜帶薄外套與防曬用品。",
+        currency: "全線使用新台幣（NT$），市區餐廳多支援行動支付，但部分在地小吃攤、伴手禮與部落體驗建議準備適量現金。",
+        wifi: "台灣本島 4G/5G 訊號涵蓋良好，山區或海岸公路部分路段建議提前下載離線地圖。",
+        flights: {
+            budget: { airline: "台鐵新自強號 EMU3000", route: "台北車站 (08:00) ➔ 花蓮車站 (10:15) ｜ 回程 花蓮 (16:30) ➔ 台北 (18:45)", seat: "標準車廂對號座", price: "NT$ 880 / 人（來回）" },
+            standard: { airline: "台鐵新自強號 騰雲座艙", route: "台北車站 (08:00) ➔ 花蓮車站 (10:15) ｜ 回程 花蓮 (16:30) ➔ 台北 (18:45)", seat: "商務騰雲座艙（含精緻餐盒與飲品）", price: "NT$ 1,590 / 人（來回）" },
+            luxury: { airline: "立榮航空 B7-8971", route: "台北松山 TSA (08:20) ➔ 花蓮 HUN (09:10) ｜ 回程 HUN (17:10) ➔ TSA (18:00)", seat: "國內線商務優先禮遇", price: "NT$ 3,600 / 人（來回）" }
+        },
+        hotels: {
+            budget: { name: "花蓮站前漫旅設計旅店", area: "花蓮火車站前站步行 3 分鐘", room: "簡約雙人房（含在地早餐券）", price: "NT$ 2,200 / 晚" },
+            standard: { name: "煙波大飯店花蓮館", area: "花蓮市美崙區（距火車站車程 10 分鐘，近太平洋公園）", room: "豪華海景雙人房（含豐盛早午餐）", price: "NT$ 4,500 / 晚" },
+            luxury: { name: "太魯閣晶英酒店", area: "花蓮縣秀林鄉天祥路（提供花蓮車站定時接駁專車）", room: "峽谷河景套房（一泊二食與頂樓泳池）", price: "NT$ 13,800 / 晚" }
+        },
+        medical: {
+            emergency: "台灣緊急救援：救護車／火警請撥 <strong>119</strong>，警察局請撥 <strong>110</strong>。",
+            notes: "國內旅遊請務必攜帶健保卡與個人常備藥品，若前往山區或海岸步道請注意防蚊與防滑。",
+            hospitals: [
+                "<strong>花蓮慈濟醫院</strong>：花蓮市中央路三段 707 號（距花蓮火車站車程約 6 分鐘），24 小時急診與完整專科。",
+                "<strong>衛生福利部花蓮醫院</strong>：花蓮市中正路 600 號（花蓮市中心，車程約 8 分鐘）。"
+            ]
+        },
+        spots: {
+            "七星潭海岸風景特定區": {
+                category: "山海自然景點",
+                styles: ["自然景觀", "深度慢旅"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=900&auto=format&fit=crop",
+                desc: "擁有優美弧形海灣與潔淨鵝卵石海灘，可遠眺清水斷崖，聽著太平洋海浪拍打礫石的療癒聲響。",
+                rating: "4.8 ★ (Google 24,500 則評論)",
+                reviews: [
+                    { user: "林小姐 · 1週前", comment: "海水藍得像寶石一樣，坐在海邊吹海風放空超級療癒！" },
+                    { user: "陳先生 · 3週前", comment: "沿著海濱自行車道騎車非常舒服，建議早上或傍晚來比較不會曬。" }
+                ]
+            },
+            "鯉魚潭環潭步道與遊湖": {
+                category: "山林湖泊景點",
+                styles: ["自然景觀", "冒險體驗", "深度慢旅"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=900&auto=format&fit=crop",
+                desc: "花蓮最大的內陸湖泊，群山環抱、湖水碧綠，可體驗立式划槳 SUP、天鵝船遊湖或沿著平緩的環潭步道享受森林浴。",
+                rating: "4.6 ★ (Google 14,800 則評論)",
+                reviews: [
+                    { user: "王小姐 · 2週前", comment: "湖光山色非常平靜優美，很適合親子或長輩慢慢散步。" },
+                    { user: "劉先生 · 1個月前", comment: "對面的活跳蝦跟木瓜牛奶是經典組合，推薦順道品嚐。" }
+                ]
+            },
+            "東大門國際觀光夜市": {
+                category: "在地特色美食",
+                styles: ["美食探索", "購物休閒"],
+                isFood: true,
+                img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=900&auto=format&fit=crop",
+                desc: "集結福町夜市、原住民一條街與各省一條街，必吃炸彈蔥油餅、馬告香腸、現烤玉米與花蓮薯。",
+                rating: "4.6 ★ (Google 31,200 則評論)",
+                reviews: [
+                    { user: "黃小姐 · 2週前", comment: "走道很寬敞乾淨，原住民一條街的竹筒飯跟烤山豬肉非常有特色！" },
+                    { user: "張先生 · 1個月前", comment: "選擇超多，吃完還可以散步到旁邊的太平洋公園看海。" }
+                ]
+            },
+            "公正包子與廟口紅茶": {
+                category: "在地特色美食",
+                styles: ["美食探索", "文化歷史"],
+                isFood: true,
+                img: "https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=900&auto=format&fit=crop",
+                desc: "花蓮市區經典古早味小吃，皮薄餡多、汁多味美的小籠包，搭配鋼管流下的古早味紅茶與西點台式馬卡龍。",
+                rating: "4.5 ★ (Google 18,600 則評論)",
+                reviews: [
+                    { user: "周先生 · 1週前", comment: "包子剛出爐熱騰騰超好吃，價格親民，再配一杯冰涼紅茶剛剛好。" },
+                    { user: "吳小姐 · 3週前", comment: "排隊速度蠻快的，台式小西點酥脆不甜膩，很適合當伴手禮。" }
+                ]
+            },
+            "花蓮文創園區與松園別館": {
+                category: "歷史文化景點",
+                styles: ["文化歷史", "深度慢旅", "購物休閒"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=900&auto=format&fit=crop",
+                desc: "百年酒廠改建的紅磚老建築群與日治時期軍事古蹟松園別館，百年老松林立並可遠眺美崙溪出海口。",
+                rating: "4.6 ★ (Google 16,200 則評論)",
+                reviews: [
+                    { user: "陳小姐 · 2週前", comment: "老建築保存得很好，文創市集跟展覽都很有質感，拍照非常好看。" },
+                    { user: "林先生 · 1個月前", comment: "松園別館樹蔭涼爽，還能俯瞰花蓮港海景，很有歷史韻味。" }
+                ]
+            },
+            "慶修院與吉安鄉間單車慢旅": {
+                category: "深度慢旅與文化景點",
+                styles: ["深度慢旅", "文化歷史", "自然景觀"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=900&auto=format&fit=crop",
+                desc: "台灣保存最完整的日式寺院古蹟，沿著吉安親水自行車道騎行，欣賞中央山脈山嵐與田園風光，體驗花蓮慢活節奏。",
+                rating: "4.7 ★ (Google 19,800 則評論)",
+                reviews: [
+                    { user: "吳小姐 · 1週前", comment: "寺院清幽雅致，穿浴衣拍照很有氛圍，周邊田園小路騎單車超放鬆。" },
+                    { user: "張先生 · 3週前", comment: "步調非常悠閒，馬告香腸跟黑糖剉冰也很推薦！" }
+                ]
+            },
+            "清水斷崖獨木舟與秀姑巒溪體驗": {
+                category: "戶外冒險體驗",
+                styles: ["冒險體驗", "自然景觀"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=900&auto=format&fit=crop",
+                desc: "由專業教練帶領划行獨木舟或 SUP 仰望垂直落入太平洋的清水斷崖絕壁，感受山海交會的壯闊戶外冒險。",
+                rating: "4.9 ★ (Google 8,900 則評論)",
+                reviews: [
+                    { user: "黃先生 · 2週前", comment: "從海上回望斷崖真的太壯觀了！教練非常專業照顧新手。" },
+                    { user: "蔡小姐 · 1個月前", comment: "人生必體驗的戶外活動，海水清澈見底，照片拍出來超震撼。" }
+                ]
+            }
+        }
+    }
+};
+
+// 依據「旅遊地區、目的地、核心主題風格、慣用交通方式」動態產生完整專屬資料庫
+function getDestinationProfile(tripData) {
+    const destName = tripData.destination || "";
+    const region = tripData.region || "國內旅遊";
+    const isDomestic = region === "國內旅遊" || /台灣|花蓮|台南|台中|高雄|宜蘭|墾丁|台東|澎湖|九份|日月潭/.test(destName);
+
+    let base;
+    if (destName.includes("東京")) {
+        base = JSON.parse(JSON.stringify(destinationDatabase["東京"]));
+    } else if (destName.includes("花蓮") || (isDomestic && !destName)) {
+        base = JSON.parse(JSON.stringify(destinationDatabase["台灣花蓮"]));
+    } else if (isDomestic) {
+        const cleanCity = destName || "台灣宜蘭";
+        base = JSON.parse(JSON.stringify(destinationDatabase["台灣花蓮"]));
+        base.city = cleanCity;
+        base.flights.budget.route = `出發地台鐵／客運站 (08:00) ➔ ${cleanCity}車站 (10:10) ｜ 回程 (16:40) ➔ 出發地 (18:50)`;
+        base.flights.standard.route = `出發地高鐵／台鐵車站 (08:30) ➔ ${cleanCity}車站 (10:30) ｜ 回程 (16:40) ➔ 出發地 (18:40)`;
+        base.flights.luxury.airline = `高鐵商務車廂 + ${cleanCity}專車禮遇接駁`;
+        base.flights.luxury.route = `出發地高鐵站 (08:30) ➔ ${cleanCity}專車直達飯店 ｜ 回程專車送達高鐵站 (17:30)`;
+        base.hotels.budget.name = `${cleanCity}站前輕旅設計旅店`;
+        base.hotels.budget.area = `${cleanCity}火車站／轉運站步行 3 分鐘`;
+        base.hotels.standard.name = `${cleanCity}精品人文渡假飯店`;
+        base.hotels.standard.area = `${cleanCity}火車站／市中心轉運站步行 5 分鐘`;
+        base.hotels.luxury.name = `${cleanCity}溫泉山海頂級渡假酒店`;
+        base.hotels.luxury.area = `${cleanCity}風景區核心地段（提供車站定時禮賓接駁）`;
+        base.medical.hospitals = [
+            `<strong>衛生福利部${cleanCity.replace("台灣", "")}醫院／區域教學醫院</strong>：${cleanCity}市中心醫療園區（車程約 8 分鐘），提供 24 小時急診服務。`,
+            `<strong>${cleanCity}慈濟／長庚合作醫療院所</strong>：交通便利、科別齊全。`
+        ];
+        base.spots = {
+            [`${cleanCity}自然生態步道與秘境觀景台`]: {
+                category: "自然景觀景點",
+                styles: ["自然景觀", "深度慢旅"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=900&auto=format&fit=crop",
+                desc: `探索${cleanCity}最具代表性的山林海岸生態步道，沿途綠意盎然、視野開闊，輕鬆擁抱大自然芬多精。`,
+                rating: "4.8 ★ (Google 12,400 則評論)",
+                reviews: [
+                    { user: "林小姐 · 1週前", comment: `${cleanCity}的自然風景真的百看不厭，步道平緩好走，空氣特別清新！` },
+                    { user: "陳先生 · 3週前", comment: "觀景台視野絕佳，非常推薦安排半日來這裡放空散步。" }
+                ]
+            },
+            [`${cleanCity}百年歷史老街與古蹟文化園區`]: {
+                category: "文化歷史景點",
+                styles: ["文化歷史", "深度慢旅", "購物休閒"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=900&auto=format&fit=crop",
+                desc: `漫步於${cleanCity}保存完整的百年紅磚街屋與歷史文化園區，體驗傳統工藝手作與在地人文故事。`,
+                rating: "4.7 ★ (Google 15,800 則評論)",
+                reviews: [
+                    { user: "王先生 · 2週前", comment: "古蹟建築充滿故事感，文創小店跟伴手禮也很有在地特色。" },
+                    { user: "張小姐 · 1個月前", comment: "導覽解說很生動，適合喜歡深度認識地方歷史的旅客。" }
+                ]
+            },
+            [`${cleanCity}在地老字號招牌美食街`]: {
+                category: "在地特色美食",
+                styles: ["美食探索", "購物休閒"],
+                isFood: true,
+                img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=900&auto=format&fit=crop",
+                desc: `嚴選${cleanCity}在地人從小吃到大的排隊名店與特色小吃聚集地，一次品嚐最道地的古早味與創意料理。`,
+                rating: "4.7 ★ (Google 21,300 則評論)",
+                reviews: [
+                    { user: "黃小姐 · 1週前", comment: "每樣小吃都真材實料又平價，跟著在地人排隊完全不會踩雷！" },
+                    { user: "李先生 · 2週前", comment: "晚餐來這裡邊走邊吃氣氛超棒，選擇非常多元。" }
+                ]
+            },
+            [`${cleanCity}無菜單創意私房料理餐廳`]: {
+                category: "在地特色美食",
+                styles: ["美食探索", "深度慢旅"],
+                isFood: true,
+                img: "https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=900&auto=format&fit=crop",
+                desc: `選用${cleanCity}當季新鮮山海食材烹調的精緻料理，環境雅致舒適，最適合與旅伴悠閒品味美食。`,
+                rating: "4.8 ★ (Google 8,700 則評論)",
+                reviews: [
+                    { user: "周小姐 · 2週前", comment: "擺盤精緻、食材非常新鮮，吃得出主廚對在地風味的用心。" },
+                    { user: "吳先生 · 1個月前", comment: "用餐環境安靜舒服，非常推薦提前預約。" }
+                ]
+            },
+            [`${cleanCity}文創設計聚落與特色選物商圈`]: {
+                category: "購物休閒街區",
+                styles: ["購物休閒", "深度慢旅"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=900&auto=format&fit=crop",
+                desc: `集結在地設計師品牌、手工烘焙咖啡館與特色伴手禮的質感商圈，輕鬆享受逛街採買與午茶時光。`,
+                rating: "4.6 ★ (Google 11,200 則評論)",
+                reviews: [
+                    { user: "蔡小姐 · 1週前", comment: "很多只有這裡才買得到的特色伴手禮，咖啡廳也很好拍！" },
+                    { user: "鄭先生 · 3週前", comment: "動線寬敞好逛，很適合安排在旅程最後一天採買紀念品。" }
+                ]
+            },
+            [`${cleanCity}山海戶外探索與體驗基地`]: {
+                category: "冒險體驗景點",
+                styles: ["冒險體驗", "自然景觀"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?q=80&w=900&auto=format&fit=crop",
+                desc: `結合水域或山林戶外活動的特色體驗園區，由專業教練帶領，安全享受充滿活力的探索樂趣。`,
+                rating: "4.8 ★ (Google 7,600 則評論)",
+                reviews: [
+                    { user: "劉先生 · 2週前", comment: "裝備齊全、教練解說清楚，新手也能玩得非常盡興！" },
+                    { user: "陳小姐 · 1個月前", comment: "景色壯麗又刺激，是整趟旅程最難忘的亮點。" }
+                ]
+            }
+        };
+    } else {
+        const cleanCity = destName || "日本大阪";
+        base = JSON.parse(JSON.stringify(destinationDatabase["東京"]));
+        base.city = cleanCity;
+        base.flights.budget.airline = "樂桃航空 / 台灣虎航 直飛班機";
+        base.flights.budget.route = `桃園 TPE (07:00) ➔ ${cleanCity}國際機場 (10:40) ｜ 回程 (11:40) ➔ 桃園 TPE (14:20)`;
+        base.flights.standard.airline = "長榮航空 / 中華航空 直飛航班";
+        base.flights.standard.route = `桃園 TPE (08:40) ➔ ${cleanCity}國際機場 (12:30) ｜ 回程 (14:20) ➔ 桃園 TPE (17:10)`;
+        base.flights.luxury.airline = "星宇航空 / 國泰航空 商務直飛航班";
+        base.flights.luxury.route = `桃園 TPE (08:30) ➔ ${cleanCity}國際機場 (12:20) ｜ 回程 (16:00) ➔ 桃園 TPE (18:50)`;
+        base.hotels.budget.name = `${cleanCity}中央車站商務設計旅店`;
+        base.hotels.budget.area = `${cleanCity}中央車站／地鐵站步行 3 分鐘`;
+        base.hotels.standard.name = `${cleanCity}市中心車站景觀精品酒店`;
+        base.hotels.standard.area = `${cleanCity}中央車站／地鐵轉乘樞紐步行 4 分鐘`;
+        base.hotels.luxury.name = `${cleanCity}奢華天際線五星級酒店`;
+        base.hotels.luxury.area = `${cleanCity}核心地標商圈（提供機場豪華專車接送）`;
+        base.medical.hospitals = [
+            `<strong>${cleanCity}國際綜合醫院 (International Medical Center)</strong>：${cleanCity}市中心地鐵站步行 5 分鐘，設有外語國際門診部。`,
+            `<strong>${cleanCity}市立大學附設醫院</strong>：24 小時急診中心，提供多語種醫療翻譯協助。`
+        ];
+        base.spots = {
+            [`${cleanCity}國家公園與自然景觀展望台`]: {
+                category: "自然景觀景點",
+                styles: ["自然景觀", "深度慢旅"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=900&auto=format&fit=crop",
+                desc: `走進${cleanCity}最負盛名的自然森林公園與全景展望台，遠離都市塵囂，欣賞四季變幻的壯麗山海與城市天際線。`,
+                rating: "4.8 ★ (Google 19,200 則評論)",
+                reviews: [
+                    { user: "林小姐 · 1週前", comment: "自然景色非常療癒，空氣清新、步道完善，拍照怎麼拍都美！" },
+                    { user: "陳先生 · 3週前", comment: "展望台視野一望無際，非常推薦安排上午來這裡散步。" }
+                ]
+            },
+            [`${cleanCity}世界遺產古蹟與歷史文化區`]: {
+                category: "文化歷史景點",
+                styles: ["文化歷史", "深度慢旅"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=900&auto=format&fit=crop",
+                desc: `探訪${cleanCity}最具代表性的百年古蹟建築與文化歷史街區，感受深厚的傳統人文底蘊與精湛建築工藝。`,
+                rating: "4.8 ★ (Google 26,400 則評論)",
+                reviews: [
+                    { user: "王先生 · 2週前", comment: "建築細節非常震撼，周邊還有傳統茶屋可以歇腳體驗文化。" },
+                    { user: "張小姐 · 1個月前", comment: "建議早點抵達避開人潮，靜靜欣賞古蹟非常有韻味。" }
+                ]
+            },
+            [`${cleanCity}百年中央市場與道地美食街`]: {
+                category: "在地特色美食",
+                styles: ["美食探索", "購物休閒"],
+                isFood: true,
+                img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=900&auto=format&fit=crop",
+                desc: `匯集${cleanCity}最新鮮食材與傳統庶民美食的經典市場，現點現做的招牌料理讓人一試難忘。`,
+                rating: "4.7 ★ (Google 17,500 則評論)",
+                reviews: [
+                    { user: "李先生 · 1週前", comment: "食材新鮮度滿分，沿路品嚐各種在地招牌小吃超級滿足！" },
+                    { user: "周小姐 · 2週前", comment: "氣氛熱鬧道地，價格透明合理，美食愛好者必訪。" }
+                ]
+            },
+            [`${cleanCity}職人主廚特色料理名店`]: {
+                category: "在地特色美食",
+                styles: ["美食探索", "深度慢旅"],
+                isFood: true,
+                img: "https://images.unsplash.com/photo-1554797589-7241bb691973?q=80&w=900&auto=format&fit=crop",
+                desc: `深受當地饕客推崇的高評價特色餐館，以傳統工法結合當季食材，呈現${cleanCity}最道地的餐桌風味。`,
+                rating: "4.8 ★ (Google 11,300 則評論)",
+                reviews: [
+                    { user: "吳小姐 · 2週前", comment: "每道菜都很有水準，服務親切細心，是整趟旅行最棒的一餐。" },
+                    { user: "黃先生 · 1個月前", comment: "離地鐵站步行 3 分鐘就到，用餐環境很有質感。" }
+                ]
+            },
+            [`${cleanCity}中央大道旗艦百貨與潮流商圈`]: {
+                category: "購物休閒街區",
+                styles: ["購物休閒", "美食探索"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=900&auto=format&fit=crop",
+                desc: `匯聚國際精品、在地設計師選物店與免稅百貨的核心商圈，享受輕鬆愜意的購物與下午茶時光。`,
+                rating: "4.7 ★ (Google 20,100 則評論)",
+                reviews: [
+                    { user: "張小姐 · 1週前", comment: "品牌齊全、退稅動線順暢，逛累了旁邊就有許多質感咖啡廳。" },
+                    { user: "陳先生 · 3週前", comment: "夜晚街景燈光很美，散步逛街非常舒服。" }
+                ]
+            },
+            [`${cleanCity}高空觀景台與戶外探索體驗`]: {
+                category: "冒險體驗景點",
+                styles: ["冒險體驗", "自然景觀", "購物休閒"],
+                isFood: false,
+                img: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=900&auto=format&fit=crop",
+                desc: `登上${cleanCity}最高露天觀景平台或參與特色戶外探索體驗，以 360 度震撼視角將整座城市與自然美景盡收眼底。`,
+                rating: "4.9 ★ (Google 16,800 則評論)",
+                reviews: [
+                    { user: "蔡小姐 · 1週前", comment: "黃昏到夜景的轉換非常夢幻，高空視野令人難忘！" },
+                    { user: "鄭先生 · 2週前", comment: "設施安全又新穎，非常推薦排進行程中。" }
+                ]
+            }
+        };
+    }
+
+    return base;
+}
+
+// 依據「慣用交通方式」產生對應的交通動線描述
+function buildTransportText(transportMode, isTokyo, stepType, targetName, hotelName) {
+    if (transportMode === "自駕租車") {
+        if (stepType === "airport") {
+            return `於機場／車站租車中心完成取車檢查（設定導航目的地：${hotelName}），沿主要快速道路行駛約 35～45 分鐘抵達飯店專屬停車場。`;
+        }
+        if (stepType === "hotel_out") {
+            return `由「${hotelName}」停車場出發，設定車用導航前往「${targetName}」（車程約 15～25 分鐘，建議停放於園區第一立體／平面收費停車場）。`;
+        }
+        if (stepType === "hotel_back") {
+            return `結束行程後自駕沿市區幹道返回「${hotelName}」（車程約 15～20 分鐘），停妥車輛後回房休憩。`;
+        }
+        if (stepType === "to_airport") {
+            return `從飯店出發自駕前往機場／車站租車中心辦理還車（車程約 40 分鐘，請預留 30 分鐘驗車與接駁至航廈時間）。`;
+        }
+        return `自駕前往「${targetName}」（車程約 10～18 分鐘，周邊設有專屬觀光停車場，步行 2 分鐘即可抵達入口）。`;
+    }
+
+    if (transportMode === "包車導覽") {
+        if (stepType === "airport") {
+            return `專屬中文司機導遊於入境大廳／車站出口舉牌迎接，協助搬運行李並搭乘舒適專車直達「${hotelName}」（車程約 40 分鐘）。`;
+        }
+        if (stepType === "hotel_out") {
+            return `專屬包車司機於「${hotelName}」大廳門口準時接送，免去轉車與找路煩惱，直達「${targetName}」入口（車程約 15～20 分鐘）。`;
+        }
+        if (stepType === "hotel_back") {
+            return `由專屬包車司機於約定集合點接送，輕鬆直達「${hotelName}」門口下車休息（車程約 15 分鐘）。`;
+        }
+        if (stepType === "to_airport") {
+            return `專屬包車司機協助將行李搬運上車，由飯店直達機場航廈／車站出發層（車程約 40 分鐘）。`;
+        }
+        return `搭乘專屬包車由上一站點對點直達「${targetName}」（車程約 10～15 分鐘），隨車可彈性調整停留時間。`;
+    }
+
+    // 預設：大眾運輸
+    if (stepType === "airport") {
+        return isTokyo
+            ? `搭乘【京成電鐵 Skyliner 特快列車】（成田機場站 ➔ 京成上野站，車程約 41 分鐘），站內轉乘【東京地鐵銀座線】（約 15 分鐘）至「${hotelName}」鄰近出口步行 4 分鐘。`
+            : `搭乘【機場捷運／台灣好行接駁快線】（機場／車站 ➔ 市中心轉運站，車程約 25 分鐘），轉乘市區公車或計程車至「${hotelName}」（約 8 分鐘）。`;
+    }
+    if (stepType === "hotel_out") {
+        return isTokyo
+            ? `從「${hotelName}」步行 4 分鐘至地鐵站，搭乘【東京地鐵／JR 山手線】（車程約 12～18 分鐘）前往「${targetName}」最近出口。`
+            : `於「${hotelName}」門口站牌搭乘【市區觀光接駁巴士 301 線】（車程約 18 分鐘）直達「${targetName}」。`;
+    }
+    if (stepType === "hotel_back") {
+        return isTokyo
+            ? `搭乘【JR 山手線】或【東京地鐵】（車程約 18 分鐘）返回「${hotelName}」鄰近車站，出站步行 4 分鐘抵達。`
+            : `搭乘【市區公車 105 線】或計程車（車程約 15 分鐘）返回「${hotelName}」。`;
+    }
+    if (stepType === "to_airport") {
+        return isTokyo
+            ? `前往【JR 新宿站】或【京成上野站】搭乘【成田特快 N'EX】或【Skyliner 特快列車】（車程約 45～55 分鐘）直達機場航廈。`
+            : `搭乘【機場捷運／快速接駁巴士】（車程約 30 分鐘）直達機場／車站辦理報到。`;
+    }
+    return isTokyo
+        ? `搭乘【東京地鐵／都營地鐵】（約 2～4 站、車程約 10 分鐘）抵達「${targetName}」鄰近站點，出站依指標步行 3 分鐘。`
+        : `搭乘【市區觀光公車】或計程車（車程約 12 分鐘）前往「${targetName}」。`;
+}
+
+function generatePersonalizedPlan(tripData) {
+    bookingState = { flight: false, hotel: false };
+    document.getElementById("flightBookingCard").classList.remove("is-booked");
+    document.getElementById("hotelBookingCard").classList.remove("is-booked");
+    const btnF = document.getElementById("btnBookFlight");
+    const btnH = document.getElementById("btnBookHotel");
+    btnF.classList.remove("cancel-mode");
+    btnF.innerHTML = "立即預訂此航班";
+    btnH.classList.remove("cancel-mode");
+    btnH.innerHTML = "立即預訂此住宿";
+
+    const profile = getDestinationProfile(tripData);
+    const tier = tripData.budget.includes("經濟") ? "budget" : (tripData.budget.includes("奢華") || tripData.budget.includes("輕奢") ? "luxury" : "standard");
+    const flight = profile.flights[tier] || profile.flights.standard;
+    const hotel = profile.hotels[tier] || profile.hotels.standard;
+    const isFastPace = tripData.pace.includes("充實") || tripData.pace.includes("快");
+
+    // 1. 頂部條件摘要標籤（完整顯示使用者填寫的所有條件）
+    document.getElementById("planSummaryBadges").innerHTML = `
+        <span class="summary-badge"><i class="fas fa-globe-asia"></i> ${tripData.region} · ${profile.city}</span>
+        <span class="summary-badge"><i class="far fa-calendar-alt"></i> ${tripData.startDate} ～ ${tripData.endDate}（共 ${tripData.days} 天）</span>
+        <span class="summary-badge"><i class="fas fa-users"></i> ${tripData.people} 位同行</span>
+        <span class="summary-badge"><i class="fas fa-wallet"></i> ${tripData.budget.split(' ')[0]}</span>
+        <span class="summary-badge"><i class="fas fa-walking"></i> ${tripData.pace} · ${tripData.style}</span>
+        <span class="summary-badge"><i class="fas fa-train"></i> ${tripData.transport}</span>
+        ${tripData.specialReq ? `<span class="summary-badge"><i class="fas fa-heart"></i> 特殊需求：${tripData.specialReq}</span>` : ''}
+    `;
+
+    // 2. 渲染推薦航班（依據預算等級與同行人數）
+    document.getElementById("recommendedFlightInfo").innerHTML = `
+        <h4 style="font-size: 1.12rem; color: var(--dark-forest); margin-bottom: 8px;">${flight.airline}</h4>
+        <p style="font-size: 0.92rem; color: var(--sage-green); margin-bottom: 6px;"><i class="fas fa-exchange-alt" style="color:var(--accent-gold);"></i> ${flight.route}</p>
+        <p style="font-size: 0.9rem; color: var(--sage-green); margin-bottom: 10px;"><i class="fas fa-chair" style="color:var(--accent-gold);"></i> ${flight.seat}（預留 ${tripData.people} 位）</p>
+        <div style="font-size: 1.15rem; font-weight: bold; color: var(--dark-forest);">預估票價：${flight.price}</div>
+    `;
+
+    // 3. 渲染推薦住宿（依據預算等級、天數與同行人數）
+    const roomConfig = parseInt(tripData.people) >= 4 ? `連通雙人房 x2 或家庭四人房（${tripData.people} 位入住）` : `${hotel.room}（${tripData.people} 位入住）`;
+    document.getElementById("recommendedHotelInfo").innerHTML = `
+        <h4 style="font-size: 1.12rem; color: var(--dark-forest); margin-bottom: 8px;">${hotel.name}</h4>
+        <p style="font-size: 0.92rem; color: var(--sage-green); margin-bottom: 6px;"><i class="fas fa-map-pin" style="color:var(--accent-gold);"></i> ${hotel.area}</p>
+        <p style="font-size: 0.9rem; color: var(--sage-green); margin-bottom: 10px;"><i class="fas fa-bed" style="color:var(--accent-gold);"></i> ${roomConfig}</p>
+        <div style="font-size: 1.15rem; font-weight: bold; color: var(--dark-forest);">參考房價：${hotel.price}（共 ${Math.max(1, tripData.days - 1)} 晚）</div>
+    `;
+
+    // 4. 依據「核心主題風格」優先排序景點與美食，並依據「旅程節奏偏好」決定每日行程密度
+    const allSpotKeys = Object.keys(profile.spots);
+    const nonFoodSpots = allSpotKeys.filter(k => !profile.spots[k].isFood);
+    const foodSpots = allSpotKeys.filter(k => profile.spots[k].isFood);
+
+    // 優先將符合使用者所選「核心主題風格 (tripData.style)」的景點排在最前面
+    const matchedSpots = nonFoodSpots.filter(k => (profile.spots[k].styles || []).includes(tripData.style));
+    const otherSpots = nonFoodSpots.filter(k => !(profile.spots[k].styles || []).includes(tripData.style));
+    const prioritizedSpots = [...matchedSpots, ...otherSpots];
+    const safeSpots = prioritizedSpots.length > 0 ? prioritizedSpots : allSpotKeys;
+    const safeFoods = foodSpots.length > 0 ? foodSpots : allSpotKeys;
+
+    const daysArray = [];
+    const isTokyo = profile.city.includes("東京");
+    const specialNoteText = tripData.specialReq ? `（已特別考量您的「${tripData.specialReq}」需求規劃動線與餐飲）` : "";
+
+    let spotCursor = 0;
+    let foodCursor = 0;
+    const nextSpot = () => safeSpots[(spotCursor++) % safeSpots.length];
+    const nextFood = () => safeFoods[(foodCursor++) % safeFoods.length];
+
+    for (let d = 1; d <= tripData.days; d++) {
+        let items = [];
+        if (d === 1) {
+            items.push({
+                time: "12:30 - 14:00（約 90 分鐘）",
+                title: isTokyo ? "成田機場入境 ➔ 前往飯店辦理入住" : `${profile.city}機場／車站抵達 ➔ 前往飯店寄放行李`,
+                type: "機場接駁",
+                clickable: false,
+                desc: `完成入境／到站手續並領取行李後，依您偏好的「${tripData.transport}」前往下榻飯店。${specialNoteText}`,
+                transport: buildTransportText(tripData.transport, isTokyo, "airport", "", hotel.name)
+            });
+
+            const s1 = nextSpot();
+            items.push({
+                time: isFastPace ? "14:20 - 16:10（停留約 2 小時）" : "14:30 - 17:00（停留 2.5 小時）",
+                title: s1,
+                type: `${tripData.style}精選景點（點擊看評價）`,
+                clickable: true,
+                spotKey: s1,
+                desc: profile.spots[s1].desc,
+                transport: buildTransportText(tripData.transport, isTokyo, "hotel_out", s1, hotel.name)
+            });
+
+            if (isFastPace) {
+                const s1Extra = nextSpot();
+                items.push({
+                    time: "16:30 - 18:00（停留 1.5 小時）",
+                    title: s1Extra,
+                    type: `充實踩點加碼（點擊看評價）`,
+                    clickable: true,
+                    spotKey: s1Extra,
+                    desc: profile.spots[s1Extra].desc,
+                    transport: buildTransportText(tripData.transport, isTokyo, "spot", s1Extra, hotel.name)
+                });
+            }
+
+            const f1 = nextFood();
+            items.push({
+                time: isFastPace ? "18:20 - 20:00（停留 1.5 小時）" : "17:30 - 19:30（停留 2 小時）",
+                title: f1,
+                type: "在地美食（點擊看評價）",
+                clickable: true,
+                spotKey: f1,
+                desc: `${profile.spots[f1].desc}${tripData.specialReq ? `【貼心備註：可依「${tripData.specialReq}」需求客製餐點】` : ""}`,
+                transport: buildTransportText(tripData.transport, isTokyo, "spot", f1, hotel.name)
+            });
+
+            items.push({
+                time: isFastPace ? "20:20 - 20:50（車程約 25 分鐘）" : "20:00 - 20:30（車程約 25 分鐘）",
+                title: `返回下榻飯店：${hotel.name}`,
+                type: "返回飯店休息",
+                clickable: false,
+                desc: "結束第一天精彩的探索，返回飯店辦理正式入住與休憩充電。",
+                transport: buildTransportText(tripData.transport, isTokyo, "hotel_back", "", hotel.name)
+            });
+        } else if (d === tripData.days) {
+            items.push({
+                time: "08:30 - 09:30（約 60 分鐘）",
+                title: `飯店享用早餐與辦理退房（${hotel.name}）`,
+                type: "飯店出發",
+                clickable: false,
+                desc: "整理隨身行李並確認護照、充電器等貴重物品，辦理退房手續。",
+                transport: "飯店櫃檯辦理退房（可先將大型行李寄放櫃檯或隨身攜帶前往出發車站／機場）。"
+            });
+
+            const lastSpot = nextSpot();
+            items.push({
+                time: "10:00 - 12:00（停留 2 小時）",
+                title: lastSpot,
+                type: `${tripData.style}晨間景點（點擊看評價）`,
+                clickable: true,
+                spotKey: lastSpot,
+                desc: profile.spots[lastSpot].desc,
+                transport: buildTransportText(tripData.transport, isTokyo, "hotel_out", lastSpot, hotel.name)
+            });
+
+            if (isFastPace) {
+                const lastFood = nextFood();
+                items.push({
+                    time: "12:15 - 13:15（停留 1 小時）",
+                    title: lastFood,
+                    type: "返程前必吃美食（點擊看評價）",
+                    clickable: true,
+                    spotKey: lastFood,
+                    desc: profile.spots[lastFood].desc,
+                    transport: buildTransportText(tripData.transport, isTokyo, "spot", lastFood, hotel.name)
+                });
+            }
+
+            items.push({
+                time: isFastPace ? "13:30 - 15:30（含車程與提前報到）" : "12:15 - 14:30（含車程與提前報到）",
+                title: isTokyo ? "前往成田國際機場 ➔ 辦理登機返國" : `前往${profile.city}機場／車站 ➔ 平安返程`,
+                type: "前往機場",
+                clickable: false,
+                desc: "建議於班機／列車出發前充裕抵達航廈或車站，辦理行李託運與驗票。",
+                transport: buildTransportText(tripData.transport, isTokyo, "to_airport", "", hotel.name)
+            });
+        } else {
+            const spotA = nextSpot();
+            const foodB = nextFood();
+            const spotC = nextSpot();
+
+            items.push({
+                time: isFastPace ? "08:30 - 09:00（車程約 25 分鐘）" : "09:00 - 09:30（車程約 25 分鐘）",
+                title: `從飯店出發：${hotel.name}`,
+                type: "飯店出發",
+                clickable: false,
+                desc: `在飯店享用完活力早餐後，依您設定的「${tripData.pace}」節奏展開今日探索。`,
+                transport: buildTransportText(tripData.transport, isTokyo, "hotel_out", spotA, hotel.name)
+            });
+
+            items.push({
+                time: isFastPace ? "09:10 - 11:30（停留 2 小時 20 分）" : "09:40 - 12:10（停留 2.5 小時）",
+                title: spotA,
+                type: `${tripData.style}核心景點（點擊看評價）`,
+                clickable: true,
+                spotKey: spotA,
+                desc: profile.spots[spotA].desc,
+                transport: buildTransportText(tripData.transport, isTokyo, "spot", spotA, hotel.name)
+            });
+
+            items.push({
+                time: isFastPace ? "11:50 - 13:10（停留 80 分鐘）" : "12:30 - 14:00（停留 1.5 小時）",
+                title: foodB,
+                type: "人氣午餐美食（點擊看評價）",
+                clickable: true,
+                spotKey: foodB,
+                desc: `${profile.spots[foodB].desc}${tripData.specialReq ? `【貼心備註：已註記「${tripData.specialReq}」餐飲偏好】` : ""}`,
+                transport: buildTransportText(tripData.transport, isTokyo, "spot", foodB, hotel.name)
+            });
+
+            items.push({
+                time: isFastPace ? "13:30 - 15:45（停留 2 小時 15 分）" : "14:30 - 17:30（停留 3 小時）",
+                title: spotC,
+                type: `${tripData.style}午後景點（點擊看評價）`,
+                clickable: true,
+                spotKey: spotC,
+                desc: profile.spots[spotC].desc,
+                transport: buildTransportText(tripData.transport, isTokyo, "spot", spotC, hotel.name)
+            });
+
+            if (isFastPace) {
+                const spotD = nextSpot();
+                const foodDinner = nextFood();
+                items.push({
+                    time: "16:10 - 18:00（停留 1 小時 50 分）",
+                    title: spotD,
+                    type: "傍晚精華踩點（點擊看評價）",
+                    clickable: true,
+                    spotKey: spotD,
+                    desc: profile.spots[spotD].desc,
+                    transport: buildTransportText(tripData.transport, isTokyo, "spot", spotD, hotel.name)
+                });
+                items.push({
+                    time: "18:20 - 19:50（停留 1.5 小時）",
+                    title: foodDinner,
+                    type: "晚間特色美饌（點擊看評價）",
+                    clickable: true,
+                    spotKey: foodDinner,
+                    desc: profile.spots[foodDinner].desc,
+                    transport: buildTransportText(tripData.transport, isTokyo, "spot", foodDinner, hotel.name)
+                });
+            }
+
+            items.push({
+                time: isFastPace ? "20:10 - 20:40（車程約 25 分鐘）" : "19:30 - 20:00（車程約 25 分鐘）",
+                title: `返回下榻飯店：${hotel.name}`,
+                type: "返回飯店休息",
+                clickable: false,
+                desc: "結束今日精彩行程，返回飯店整理戰利品並享受舒適休憩。",
+                transport: buildTransportText(tripData.transport, isTokyo, "hotel_back", "", hotel.name)
+            });
+        }
+        daysArray.push({ day: d, items });
+    }
+
+    activePlanData = { profile, tripData, daysArray };
+    currentSelectedDay = 1;
+    
+    // 同步 AI 對話框內的天數選單與當前行程下拉式選單
+    syncAiPromptSelects();
+    
+    renderDayTabs();
+    renderDayTimeline(1);
+
+    // 5. 渲染保險建議（依據國內外、交通方式與人數）
+    const extraInsNote = tripData.transport === "自駕租車"
+        ? `<li><strong>租車自駕第三人責任／車體險補強</strong>：因您選擇「自駕租車」，強烈建議加保租車公司全險（CDW/NOC）或海外自駕車險保障。</li>`
+        : (tripData.style === "冒險體驗"
+            ? `<li><strong>特定活動綜合險</strong>：因您選擇「冒險體驗」主題，建議確認保單是否涵蓋登山、水域或戶外運動保障。</li>`
+            : "");
+
+    document.getElementById("insurancePlanContent").innerHTML = `
+        <p style="margin-bottom: 8px;">針對您的 <strong>${profile.city} ${tripData.days} 日遊</strong>（${tripData.people} 人同行・${tripData.style}），建議投保包含以下保障之方案：</p>
+        <ul style="padding-left: 20px; color: var(--sage-green); line-height: 1.8;">
+            <li><strong>${tripData.region === "國內旅遊" ? "國內旅遊平安險" : "海外旅遊平安險"}</strong>：建議每位旅客保額 NT$ 500 萬～1,000 萬元。</li>
+            <li><strong>${tripData.region === "國內旅遊" ? "傷害醫療實支實付" : "海外突發疾病醫療險"}</strong>：建議含門診與急診實支實付保障（至少 NT$ 50 萬以上）。</li>
+            <li><strong>旅遊不便險</strong>：涵蓋班機／列車延誤、行李延誤與行程取消保障。</li>
+            ${extraInsNote}
+        </ul>
+    `;
+
+    // 6. 渲染醫療資訊
+    document.getElementById("medicalInfoContent").innerHTML = `
+        <p style="margin-bottom: 8px; color: #8a5a00;"><i class="fas fa-phone-volume"></i> ${profile.medical.emergency}</p>
+        <p style="margin-bottom: 10px; color: var(--sage-green);">${profile.medical.notes}</p>
+        ${tripData.specialReq ? `<p style="margin-bottom: 10px; color: var(--dark-forest); background: var(--accent-gold-light); padding: 6px 10px; border-radius: 6px; font-size: 0.88rem;"><i class="fas fa-notes-medical"></i> <strong>特殊需求提醒：</strong>針對「${tripData.specialReq}」，建議隨身攜帶個人專用處方箋與緊急聯絡卡。</p>` : ''}
+        <div style="background: #fafcfa; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 14px;">
+            <strong style="display:block; margin-bottom: 6px; color: var(--dark-forest);"><i class="fas fa-clinic-medical" style="color:var(--accent-gold);"></i> 住宿附近推薦醫療院所：</strong>
+            <ul style="padding-left: 18px; font-size: 0.88rem; color: var(--sage-green);">
+                ${profile.medical.hospitals.map(h => `<li style="margin-bottom: 4px;">${h}</li>`).join('')}
+            </ul>
+        </div>
+    `;
+
+    // 7. 渲染行前須知（含天氣、交通方式與依天數計算行李清單）
+    const clothesCount = Math.min(tripData.days + 1, 8);
+    const transportChecklist = tripData.transport === "自駕租車"
+        ? `<label class="checklist-item"><input type="checkbox" checked> 駕照正本、國際駕照（國外自駕必備）與日文譯本</label>`
+        : `<label class="checklist-item"><input type="checkbox" checked> 交通卡（悠遊卡／Suica／ICOCA）與車票 QR Code</label>`;
+    const specialChecklist = tripData.specialReq
+        ? `<label class="checklist-item"><input type="checkbox" checked> 「${tripData.specialReq}」相關隨身用品與預約確認單</label>`
+        : `<label class="checklist-item"><input type="checkbox"> 保濕乳液、防曬乳與隨身面紙</label>`;
+
+    document.getElementById("preTripContent").innerHTML = `
+        <div class="two-col-grid" style="margin-bottom: 20px;">
+            <div style="background: #fafcfa; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
+                <h4 style="color: var(--dark-forest); margin-bottom: 8px;"><i class="fas fa-cloud-sun" style="color:var(--accent-gold);"></i> ${profile.city}氣象與穿搭預估</h4>
+                <p style="font-size: 0.9rem; color: var(--sage-green);">${profile.weather}</p>
+            </div>
+            <div style="background: #fafcfa; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
+                <h4 style="color: var(--dark-forest); margin-bottom: 8px;"><i class="fas fa-coins" style="color:var(--accent-gold);"></i> 換匯與網路通訊建議</h4>
+                <p style="font-size: 0.9rem; color: var(--sage-green); margin-bottom: 6px;"><strong>換匯與支付：</strong>${profile.currency}</p>
+                <p style="font-size: 0.9rem; color: var(--sage-green);"><strong>上網通訊：</strong>${profile.wifi}</p>
+            </div>
+        </div>
+        <div>
+            <h4 style="color: var(--dark-forest); margin-bottom: 8px;"><i class="fas fa-tasks" style="color:var(--accent-gold);"></i> 依 ${tripData.days} 天「${tripData.style}・${tripData.transport}」量身設計之行李清單</h4>
+            <div class="checklist-grid">
+                <label class="checklist-item"><input type="checkbox" checked> ${tripData.region === "國內旅遊" ? "身分證、健保卡與訂房確認單" : "護照正本、電子機票與入境申報憑證"}</label>
+                ${transportChecklist}
+                <label class="checklist-item"><input type="checkbox"> 換洗衣物（建議準備 ${clothesCount} 套）與薄外套</label>
+                <label class="checklist-item"><input type="checkbox"> 行動電源（務必隨身攜帶、不可託運）</label>
+                <label class="checklist-item"><input type="checkbox"> 充電器組${tripData.region === "國外旅遊" ? "與萬國轉接頭" : "與車用充電線"}</label>
+                <label class="checklist-item"><input type="checkbox"> 個人常備藥品（腸胃藥、止痛藥、暈車藥）</label>
+                <label class="checklist-item"><input type="checkbox"> 折疊晴雨傘與好走的休閒鞋</label>
+                ${specialChecklist}
+            </div>
+        </div>
+    `;
+
+    // 8. 渲染出入境／搭車注意事項
+    document.getElementById("immigrationContent").innerHTML = tripData.region === "國內旅遊"
+        ? `
+        <ul style="padding-left: 20px; color: var(--sage-green);">
+            <li style="margin-bottom: 6px;"><strong>國內航線／雙鐵證件確認：</strong>搭乘國內線班機（如前往花東或離島）請務必攜帶<strong>國民身分證或駕照正本</strong>；兒童須攜帶戶口名簿或健保卡。</li>
+            <li style="margin-bottom: 6px;"><strong>行動電源與隨身行李規範：</strong>搭乘國內航班時，行動電源與備用鋰電池同樣嚴禁託運，須隨身攜帶上機。</li>
+            <li style="margin-bottom: 6px;"><strong>離島免稅與農特產規定：</strong>若行程包含離島地區，每人免稅購物額度與生鮮農產攜帶規定請依財政部關務署及防檢署最新公告為準。</li>
+        </ul>
+        `
+        : `
+        <ul style="padding-left: 20px; color: var(--sage-green);">
+            <li style="margin-bottom: 6px;"><strong>護照效期確認：</strong>出國旅客請確認護照效期須有 <strong>6 個月以上</strong>，並提前填妥目的地入境卡或電子申報（如 Visit Japan Web / K-ETA 等）。</li>
+            <li style="margin-bottom: 6px;"><strong>隨身液體與行動電源規範：</strong>手提行李液體單瓶不得超過 <strong>100ml</strong> 並須裝於 1 公升透明夾鏈袋；鋰電池與行動電源嚴禁放入託運行李。</li>
+            <li style="margin-bottom: 6px;"><strong>動植物檢疫與免稅額度：</strong>嚴禁攜帶肉類製品、生鮮蔬果入境；入境台灣每人免稅額度與菸酒限制請依財政部關務署最新公告為準。</li>
+        </ul>
+        `;
+}
+
+
+// === 讀取並渲染從航班/住宿頁面預訂的資訊 ===
+function renderExternalBookings() {
+    const section = document.getElementById('externalBookedSection');
+    const flightPanel = document.getElementById('externalBookedFlightPanel');
+    const hotelPanel = document.getElementById('externalBookedHotelPanel');
+    const flightInfo = document.getElementById('externalBookedFlightInfo');
+    const hotelInfo = document.getElementById('externalBookedHotelInfo');
+    if (!section) return;
+
+    let savedFlight = null;
+    let savedHotel = null;
+    try {
+        savedFlight = JSON.parse(localStorage.getItem('bookedFlightFromPage'));
+    } catch (e) {}
+    try {
+        savedHotel = JSON.parse(localStorage.getItem('bookedHotelFromPage'));
+    } catch (e) {}
+
+    if (savedFlight) {
+        flightPanel.style.display = 'block';
+        flightInfo.innerHTML = `
+            <h4 style="font-size: 1.12rem; color: var(--dark-forest); margin-bottom: 8px;">${savedFlight.airline}</h4>
+            <p style="font-size: 0.92rem; color: var(--sage-green); margin-bottom: 6px;"><i class="fas fa-exchange-alt" style="color:var(--accent-gold);"></i> ${savedFlight.route}</p>
+            <p style="font-size: 0.9rem; color: var(--sage-green); margin-bottom: 10px;"><i class="fas fa-chair" style="color:var(--accent-gold);"></i> ${savedFlight.seat}</p>
+            <div style="font-size: 1.15rem; font-weight: bold; color: var(--dark-forest);">預估票價：${savedFlight.price}</div>
+        `;
+    } else {
+        flightPanel.style.display = 'none';
+    }
+
+    if (savedHotel) {
+        hotelPanel.style.display = 'block';
+        hotelInfo.innerHTML = `
+            <h4 style="font-size: 1.12rem; color: var(--dark-forest); margin-bottom: 8px;">${savedHotel.name}</h4>
+            <p style="font-size: 0.92rem; color: var(--sage-green); margin-bottom: 6px;"><i class="fas fa-map-pin" style="color:var(--accent-gold);"></i> ${savedHotel.area}</p>
+            <p style="font-size: 0.9rem; color: var(--sage-green); margin-bottom: 10px;"><i class="fas fa-bed" style="color:var(--accent-gold);"></i> ${savedHotel.room}</p>
+            <div style="font-size: 1.15rem; font-weight: bold; color: var(--dark-forest);">參考房價：${savedHotel.price}</div>
+        `;
+    } else {
+        hotelPanel.style.display = 'none';
+    }
+
+    if (savedFlight || savedHotel) {
+        section.style.display = 'grid';
+        section.style.gridTemplateColumns = (savedFlight && savedHotel) ? '1fr 1fr' : '1fr';
+    } else {
+        section.style.display = 'none';
+    }
+}
+
+function cancelExternalBooking(type) {
+    if (type === 'flight') {
+        localStorage.removeItem('bookedFlightFromPage');
+        showToast('已取消已預訂的航班');
+    } else if (type === 'hotel') {
+        localStorage.removeItem('bookedHotelFromPage');
+        showToast('已取消已預訂的住宿');
+    }
+    renderExternalBookings();
+}
+
+// === 4. 預訂與取消預訂切換 ===
+function toggleBooking(type) {
+    bookingState[type] = !bookingState[type];
+    const card = document.getElementById(type === 'flight' ? 'flightBookingCard' : 'hotelBookingCard');
+    const btn = document.getElementById(type === 'flight' ? 'btnBookFlight' : 'btnBookHotel');
+    const label = type === 'flight' ? '航班' : '住宿';
+
+    if (bookingState[type]) {
+        card.classList.add('is-booked');
+        btn.classList.add('cancel-mode');
+        btn.innerHTML = `取消預訂此${label}`;
+        showToast(`🎉 已成功為您預訂推薦${label}！`);
+    } else {
+        card.classList.remove('is-booked');
+        btn.classList.remove('cancel-mode');
+        btn.innerHTML = `立即預訂此${label}`;
+        showToast(`已取消該${label}的預訂狀態`);
+    }
+}
+
+// === 5. 每日行程渲染與景點/美食詳細介紹 Modal ===
+function renderDayTabs() {
+    if (!activePlanData) return;
+    const container = document.getElementById("dayTabsContainer");
+    container.innerHTML = activePlanData.daysArray.map(d => `
+        <button type="button" class="day-tab-btn ${d.day === currentSelectedDay ? 'active' : ''}" onclick="selectPlanDay(${d.day})">
+            第 ${d.day} 天
+        </button>
+    `).join('');
+}
+
+function selectPlanDay(dayNum) {
+    currentSelectedDay = dayNum;
+    renderDayTabs();
+    renderDayTimeline(dayNum);
+}
+
+function renderDayTimeline(dayNum, highlightIdx = -1) {
+    if (!activePlanData) return;
+    const dayObj = activePlanData.daysArray.find(d => d.day === dayNum);
+    const timeline = document.getElementById("itineraryTimeline");
+    if (!dayObj) return;
+
+    timeline.innerHTML = dayObj.items.map((item, idx) => `
+        <div class="timeline-item ${item.clickable ? 'clickable-spot' : ''} ${idx === highlightIdx ? 'ai-updated-highlight' : ''}"
+             ${item.clickable ? `onclick="openSpotModal('${item.spotKey}')"` : ''}>
+            <div class="timeline-time-row">
+                <span class="time-badge"><i class="far fa-clock" style="color:var(--accent-gold);"></i> ${item.time}</span>
+                <span class="type-tag">${item.type}</span>
+            </div>
+            <h4 style="font-size: 1.1rem; color: var(--dark-forest); margin-bottom: 6px;">
+                ${item.title}
+                ${item.clickable ? '<i class="fas fa-search-plus" style="font-size:0.85rem; color:var(--accent-gold); margin-left:6px;"></i>' : ''}
+            </h4>
+            <p style="font-size: 0.92rem; color: var(--sage-green);">${item.desc}</p>
+            <div class="transport-box">
+                <i class="fas fa-route"></i>
+                <div><strong>詳細交通動線：</strong>${item.transport}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openSpotModal(spotKey) {
+    if (!activePlanData) return;
+    const spot = activePlanData.profile.spots[spotKey];
+    if (!spot) return;
+
+    const fallbackImg = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=900&auto=format&fit=crop";
+    document.getElementById("spotModalBody").innerHTML = `
+        <img src="${spot.img || fallbackImg}" alt="${spotKey}" class="spot-modal-img" onerror="this.src='${fallbackImg}'">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <span class="type-tag">${spot.category}</span>
+            <span class="ai-verified-pill"><i class="fas fa-check-circle"></i> ✨ AI 已比對真實性</span>
+        </div>
+        <h3 style="font-size: 1.35rem; color: var(--dark-forest); margin-bottom: 8px;">${spotKey}</h3>
+        <div style="color: #d48806; font-weight: bold; font-size: 0.95rem; margin-bottom: 12px;">${spot.rating}</div>
+        <p style="font-size: 0.95rem; color: var(--sage-green); line-height: 1.8; margin-bottom: 18px;">${spot.desc}</p>
+        <h4 style="font-size: 1rem; color: var(--dark-forest); border-top: 1px dashed var(--border-color); padding-top: 14px; margin-bottom: 8px;">
+            <i class="fas fa-comment-dots" style="color:var(--accent-gold);"></i> 旅客真實評價精選
+        </h4>
+        ${spot.reviews.map(r => `
+            <div class="review-card">
+                <div style="font-weight:bold; color:var(--dark-forest); margin-bottom:4px;">${r.user}</div>
+                <div style="color:var(--sage-green);">「${r.comment}」</div>
+            </div>
+        `).join('')}
+    `;
+    document.getElementById("spotDetailModal").classList.add("active");
+}
+
+function closeSpotModal() {
+    document.getElementById("spotDetailModal").classList.remove("active");
+}
+
+document.getElementById("spotDetailModal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("spotDetailModal")) {
+        closeSpotModal();
+    }
+});
+
+// === 6. AI 助手對話框與即時改動行程邏輯 ===
+let aiChatInitialized = false;
+
+function openAiChat() {
+    const widget = document.getElementById("aiChatWidget");
+    widget.classList.add("active");
+    syncAiPromptSelects();
+
+    if (!aiChatInitialized) {
+        aiChatInitialized = true;
+        appendChatMessage("ai", "您好！我是您的專屬口袋導遊 AI 助手 ✨<br>請問目前的航班或每日行程有需要為您微調的地方嗎？您可以直接使用下方的快捷模板，或直接輸入您的需求！");
+    }
+}
+
+function closeAiChat() {
+    document.getElementById("aiChatWidget").classList.remove("active");
+}
+
+function appendChatMessage(sender, htmlText) {
+    const body = document.getElementById("aiChatBody");
+    const msg = document.createElement("div");
+    msg.className = `chat-msg ${sender}`;
+    msg.innerHTML = htmlText;
+    body.appendChild(msg);
+    body.scrollTop = body.scrollHeight;
+}
+
+function syncAiPromptSelects() {
+    if (!activePlanData) return;
+    // 同步天數選單
+    const daySelect = document.getElementById("promptMealDay");
+    if (daySelect) {
+        const prevDay = daySelect.value;
+        daySelect.innerHTML = activePlanData.daysArray.map(d =>
+            `<option value="${d.day}" ${String(d.day) === prevDay ? 'selected' : ''}>${d.day}</option>`
+        ).join('');
+    }
+
+    // 同步當前所有可替換的行程名稱下拉式選單
+    const spotSelect = document.getElementById("promptReplaceSpotSelect");
+    if (spotSelect) {
+        const options = [];
+        activePlanData.daysArray.forEach(d => {
+            d.items.forEach((item, idx) => {
+                if (item.clickable) {
+                    options.push(`<option value="${d.day}|${idx}">第${d.day}天 · ${item.title}</option>`);
+                }
+            });
+        });
+        spotSelect.innerHTML = options.length > 0
+            ? options.join('')
+            : `<option value="">尚無可更換行程</option>`;
+    }
+}
+
+function applyFlightPrompt() {
+    if (!activePlanData) return;
+    const pref = document.getElementById("promptFlightTime").value;
+    const userText = `請幫我推薦時間${pref}的班機`;
+    appendChatMessage("user", userText);
+
+    const city = activePlanData.profile.city;
+    const isEarlier = pref === "更早";
+    const newFlight = isEarlier
+        ? {
+            airline: "中華航空 CI100（✨ AI 已依需求調整為早去午回）",
+            route: `桃園 TPE (06:55) ➔ ${city} (11:00) ｜ 回程 (12:45) ➔ 桃園 TPE (15:30)`,
+            seat: "經濟艙（含 2 件 23kg 託運行李與機上餐）",
+            price: "NT$ 16,200 / 人"
+        }
+        : {
+            airline: "長榮航空 BR196（✨ AI 已依需求調整為午去晚回）",
+            route: `桃園 TPE (13:50) ➔ ${city} (18:05) ｜ 回程 (20:15) ➔ 桃園 TPE (22:55)`,
+            seat: "經濟艙（含 2 件 23kg 託運行李與機上餐）",
+            price: "NT$ 15,900 / 人"
+        };
+
+    document.getElementById("recommendedFlightInfo").innerHTML = `
+        <h4 style="font-size: 1.12rem; color: var(--dark-forest); margin-bottom: 8px;">${newFlight.airline}</h4>
+        <p style="font-size: 0.92rem; color: var(--sage-green); margin-bottom: 6px;"><i class="fas fa-exchange-alt" style="color:var(--accent-gold);"></i> ${newFlight.route}</p>
+        <p style="font-size: 0.9rem; color: var(--sage-green); margin-bottom: 10px;"><i class="fas fa-chair" style="color:var(--accent-gold);"></i> ${newFlight.seat}</p>
+        <div style="font-size: 1.15rem; font-weight: bold; color: var(--dark-forest);">預估票價：${newFlight.price}</div>
+    `;
+
+    // 同步更新第1天接駁時間與最後一天去機場時間
+    const day1 = activePlanData.daysArray[0];
+    if (day1 && day1.items[0]) {
+        day1.items[0].time = isEarlier ? "11:15 - 12:45（約 90 分鐘）" : "18:20 - 19:50（約 90 分鐘）";
+    }
+    const lastDay = activePlanData.daysArray[activePlanData.daysArray.length - 1];
+    if (lastDay && lastDay.items[lastDay.items.length - 1]) {
+        lastDay.items[lastDay.items.length - 1].time = isEarlier ? "10:15 - 12:45（含車程與提前報到）" : "17:45 - 20:15（含車程與提前報到）";
+    }
+    renderDayTimeline(currentSelectedDay, 0);
+
+    setTimeout(() => {
+        appendChatMessage("ai", `已為您將推薦班機調整為<strong>時間${pref}的班機</strong>，並同步更新了第 1 天機場接駁與最後一天前往機場的時間表！`);
+        showToast(`✨ 已更新為時間${pref}的推薦班機`);
+    }, 350);
+}
+
+function applyMealPrompt() {
+    if (!activePlanData) return;
+    const dayNum = parseInt(document.getElementById("promptMealDay").value) || 1;
+    const mealType = document.getElementById("promptMealType").value;
+    const cuisine = document.getElementById("promptMealCuisine").value.trim() || "在地特色";
+    const userText = `請將第 ${dayNum} 天的${mealType}改成 ${cuisine} 料理`;
+    appendChatMessage("user", userText);
+
+    const newSpotKey = `職人嚴選「${cuisine}料理」專門店`;
+    activePlanData.profile.spots[newSpotKey] = {
+        category: `${mealType}推薦 · ${cuisine}料理`,
+        img: "https://images.unsplash.com/photo-1553621042-f6e147245754?q=80&w=900&auto=format&fit=crop",
+        desc: `依您的需求特別安排的高評價${cuisine}料理名店，嚴選當季新鮮食材現點現做，餐點風味層次豐富且交通便利。`,
+        rating: "4.8 ★ (Google 6,420 則評論)",
+        reviews: [
+            { user: "林小姐 · 1週前", comment: `這家的${cuisine}料理非常道地，份量十足且服務親切，完全不踩雷！` },
+            { user: "陳先生 · 3週前", comment: "離車站步行只要 3 分鐘，環境舒適乾淨，非常適合排進行程中。" }
+        ]
+    };
+
+    const dayObj = activePlanData.daysArray.find(d => d.day === dayNum);
+    if (dayObj) {
+        const mealTimeMap = {
+            "早餐": "08:30 - 09:30（停留 1 小時）",
+            "午餐": "12:30 - 14:00（停留 1.5 小時）",
+            "晚餐": "18:00 - 19:30（停留 1.5 小時）"
+        };
+        let targetIdx = dayObj.items.findIndex(item =>
+            item.type.includes("美食") || item.time.startsWith("12:") || item.time.startsWith("17:") || item.time.startsWith("18:")
+        );
+
+        const newItem = {
+            time: mealTimeMap[mealType] || "12:30 - 14:00（停留 1.5 小時）",
+            title: newSpotKey,
+            type: `${mealType}美食 · AI 已更新（點擊看評價）`,
+            clickable: true,
+            spotKey: newSpotKey,
+            desc: activePlanData.profile.spots[newSpotKey].desc,
+            transport: `搭乘市區地鐵或接駁公車（車程約 12 分鐘）至鄰近站點，出站步行 3 分鐘即可抵達。`
+        };
+
+        if (targetIdx !== -1 && mealType !== "早餐") {
+            dayObj.items[targetIdx] = newItem;
+        } else {
+            const insertPos = mealType === "早餐" ? 0 : Math.max(1, dayObj.items.length - 1);
+            dayObj.items.splice(insertPos, 0, newItem);
+            targetIdx = insertPos;
+        }
+
+        currentSelectedDay = dayNum;
+        renderDayTabs();
+        renderDayTimeline(dayNum, targetIdx);
+        syncAiPromptSelects();
+    }
+
+    setTimeout(() => {
+        appendChatMessage("ai", `已為您將<strong>第 ${dayNum} 天的${mealType}</strong>實際更換為<strong>「${cuisine}料理」</strong>，並已自動切換至第 ${dayNum} 天時間軸標示出來！`);
+        showToast(`✨ 已將第 ${dayNum} 天${mealType}改為 ${cuisine} 料理`);
+    }, 350);
+}
+
+function applyReplaceSpotPrompt() {
+    if (!activePlanData) return;
+    const select = document.getElementById("promptReplaceSpotSelect");
+    if (!select || !select.value) return;
+
+    const [dayStr, idxStr] = select.value.split("|");
+    const dayNum = parseInt(dayStr);
+    const itemIdx = parseInt(idxStr);
+    const dayObj = activePlanData.daysArray.find(d => d.day === dayNum);
+    if (!dayObj || !dayObj.items[itemIdx]) return;
+
+    const oldTitle = dayObj.items[itemIdx].title;
+    appendChatMessage("user", `請幫我更換「${oldTitle}」這個行程`);
+
+    const allSpotKeys = Object.keys(activePlanData.profile.spots);
+    let replacementKey = allSpotKeys.find(k => k !== oldTitle && !dayObj.items.some(it => it.title === k));
+    if (!replacementKey) {
+        replacementKey = `${activePlanData.profile.city}秘境文化藝術館與庭園茶屋`;
+        activePlanData.profile.spots[replacementKey] = {
+            category: "精選替代景點",
+            img: "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=900&auto=format&fit=crop",
+            desc: "遠離喧囂的人文藝術靜謐空間，結合傳統庭園造景與現代美學展覽，可在茶屋內細品手刷抹茶與季節和菓子。",
+            rating: "4.8 ★ (Google 8,950 則評論)",
+            reviews: [
+                { user: "張小姐 · 1週前", comment: "比熱門觀光區清幽很多，庭園景色非常適合拍照與放空！" },
+                { user: "王先生 · 2週前", comment: "交通順暢且動線寬敞，是這次旅程最驚喜的替代景點。" }
+            ]
+        };
+    }
+
+    const repSpot = activePlanData.profile.spots[replacementKey];
+    dayObj.items[itemIdx] = {
+        ...dayObj.items[itemIdx],
+        title: replacementKey,
+        type: "AI 已更換行程（點擊看評價）",
+        clickable: true,
+        spotKey: replacementKey,
+        desc: repSpot.desc,
+        transport: `從上一站搭乘地鐵或市區接駁巴士（車程約 14 分鐘）至「${replacementKey}」站，步行 4 分鐘抵達。`
+    };
+
+    currentSelectedDay = dayNum;
+    renderDayTabs();
+    renderDayTimeline(dayNum, itemIdx);
+    syncAiPromptSelects();
+
+    setTimeout(() => {
+        appendChatMessage("ai", `已為您將第 ${dayNum} 天的「<strong>${oldTitle}</strong>」實際更換為「<strong>${replacementKey}</strong>」，並同步更新了前後交通路線與景點介紹！`);
+        showToast(`✨ 已更換為「${replacementKey}」`);
+    }, 350);
+}
+
+function handleChatSubmit(e) {
+    e.preventDefault();
+    const input = document.getElementById("aiChatInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendChatMessage("user", text);
+    input.value = "";
+
+    setTimeout(() => {
+        if (text.includes("班機") || text.includes("航班") || text.includes("早") || text.includes("晚")) {
+            document.getElementById("promptFlightTime").value = text.includes("晚") ? "更晚" : "更早";
+            applyFlightPrompt();
+        } else if (text.includes("餐") || text.includes("吃") || text.includes("料理")) {
+            applyMealPrompt();
+        } else {
+            appendChatMessage("ai", `收到您的需求：「${text}」！您可以直接使用上方的快捷選單指定要更換的行程或餐別，我會立即為您更新時間軸內容。`);
+        }
+    }, 350);
+}
+
+// === 7. 導覽列與會員登入彈窗互動 ===
+function showToast(message) {
+    const toast = document.getElementById('toastNotification');
+    const text = document.getElementById('toastText');
+    if (!toast || !text) return;
+    text.innerText = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+const authModal = document.getElementById('authModal');
+const openAuthBtn = document.getElementById('openAuthBtn');
+const closeAuthBtn = document.getElementById('closeAuthBtn');
+const tabLogin = document.getElementById('tabLogin');
+const tabRegister = document.getElementById('tabRegister');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+
+if (openAuthBtn) openAuthBtn.addEventListener('click', () => authModal.classList.add('active'));
+if (closeAuthBtn) closeAuthBtn.addEventListener('click', () => authModal.classList.remove('active'));
+if (authModal) {
+    authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) authModal.classList.remove('active');
+    });
+}
+
+if (tabLogin && tabRegister) {
+    tabLogin.addEventListener('click', () => {
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+    });
+    tabRegister.addEventListener('click', () => {
+        tabRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+        registerForm.style.display = 'block';
+        loginForm.style.display = 'none';
+    });
+}
+
+function togglePasswordVisibility(id, el) {
+    const input = document.getElementById(id);
+    if (!input) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        el.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        el.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+function handleAuthSubmit(e, type) {
+    e.preventDefault();
+    let name = "貴賓";
+    if (type === 'login') {
+        const email = document.getElementById('loginEmail').value;
+        name = email.split('@')[0] || "漫旅貴賓";
+    } else {
+        name = document.getElementById('regName').value || "新貴賓";
+    }
+    loginSuccess(name);
+}
+
+function simulateGuestLogin(name) {
+    loginSuccess(name);
+}
+
+function loginSuccess(name) {
+    authModal.classList.remove('active');
+    openAuthBtn.style.display = 'none';
+    const userProfileMenu = document.getElementById('userProfileMenu');
+    userProfileMenu.style.display = 'flex';
+    document.getElementById('userNameDisplay').innerText = name;
+    document.getElementById('avatarInitial').innerText = name.charAt(0);
+    showToast(`登入成功！歡迎回來，${name}`);
+}
+
+const userProfileMenu = document.getElementById('userProfileMenu');
+const userDropdown = document.getElementById('userDropdown');
+if (userProfileMenu && userDropdown) {
+    userProfileMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+    });
+    document.addEventListener('click', () => userDropdown.classList.remove('active'));
+}
+
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        userProfileMenu.style.display = 'none';
+        openAuthBtn.style.display = 'flex';
+        userDropdown.classList.remove('active');
+        showToast('已成功登出帳號');
+    });
+}
+
+// 頁面載入時預先產生一組依據當前表單設定的專屬規劃，確保直接切換到「專屬旅遊規劃」分頁也能完整瀏覽
+function openMyPlanFromMenu(e) {
+    if (e) e.preventDefault();
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown) dropdown.classList.remove('active');
+    switchPlannerTab('plan');
+    const wrapper = document.querySelector('.tab-switcher-wrapper');
+    if (wrapper) {
+        window.scrollTo({ top: wrapper.offsetTop - 80, behavior: 'smooth' });
+    }
+}
+
+window.addEventListener('storage', (e) => { if (e.key === 'bookedFlightFromPage' || e.key === 'bookedHotelFromPage') renderExternalBookings(); });
+window.addEventListener('DOMContentLoaded', () => {
+    const initialData = collectCurrentSetupData();
+    generatePersonalizedPlan(initialData);
+    renderExternalBookings();
+
+    // 若網址帶有 ?tab=plan 參數，自動切換至「專屬旅遊規劃」分頁
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tab') === 'plan') {
+        switchPlannerTab('plan');
+    }
+});
+</script>
+</body>
+</html>
