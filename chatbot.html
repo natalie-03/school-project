@@ -869,7 +869,7 @@ input:focus, select:focus {
 
 <body>
 
-<!-- 頂部導覽列 Navbar -->
+<!-- 頂部導覽列 Navbar：已將 active 指標移至「AI 助手」 -->
 <nav class="navbar" id="mainNavbar">
     <a href="index.html" class="logo">
         <i class="fas fa-paper-plane logo-icon"></i>
@@ -882,9 +882,9 @@ input:focus, select:focus {
             <a href="航班.html"><i class="fas fa-plane"></i> 航班 Search</a>
             <a href="住宿.html"><i class="fas fa-hotel"></i> 住宿 Hotel</a>
             <a href="美食.html"><i class="fas fa-utensils"></i> 美食 Dining</a>
-            <a href="旅遊.html" class="active"><i class="fas fa-compass"></i> 旅遊 Travel</a>
+            <a href="旅遊.html"><i class="fas fa-compass"></i> 旅遊 Travel</a>
             <a href="保險.html"><i class="fas fa-shield-alt"></i> 保險 Insurance</a>
-            <a href="chatbot.html"><i class="fas fa-robot"></i> AI 助手</a>
+            <a href="chatbot.html" class="active"><i class="fas fa-robot"></i> AI 助手</a>
         </div>
     </div>
 
@@ -950,10 +950,10 @@ input:focus, select:focus {
             </div>
 
             <div class="quick-days">
-                <div class="quick-tag" onclick="setDays(1)">1天輕旅行</div>
-                <div class="quick-tag active" onclick="setDays(3)">3天小度假</div>
-                <div class="quick-tag" onclick="setDays(5)">5天深度遊</div>
-                <div class="quick-tag" onclick="setDays(7)">7天大漫遊</div>
+                <div class="quick-tag" onclick="setDays(1, this)">1天輕旅行</div>
+                <div class="quick-tag active" onclick="setDays(3, this)">3天小度假</div>
+                <div class="quick-tag" onclick="setDays(5, this)">5天深度遊</div>
+                <div class="quick-tag" onclick="setDays(7, this)">7天大漫遊</div>
             </div>
         </div>
 
@@ -1109,20 +1109,19 @@ input:focus, select:focus {
         <div class="faq-list">
             <div class="faq-item">
                 <h4><i class="fas fa-chevron-right"></i> 填寫設定後，AI 如何為我規劃？</h4>
-                <p>AI 助手會綜合您選擇的天數、目的地、預算範圍與步調偏好，自動篩選最佳景點、餐館與順暢交通動線，並在「AI 助手」頁面為您量身打造對話與行程建議。</p>
+                <p>AI 助手會綜合您選擇的天數、目的地、預算範圍與步調偏好，自動篩選最佳景點、餐館與順暢交通動線，並在「AI 助手」頁面為您量身打造專屬行程。</p>
             </div>
             <div class="faq-item">
                 <h4><i class="fas fa-chevron-right"></i> 生成的行程可以隨時修改或調整嗎？</h4>
-                <p>當然可以！進入 AI 助手頁面後，您可以隨時與助手對話微調行程、增加景點或重新排版。</p>
+                <p>當然可以！進入 AI 助手頁面後，您可以隨時增加、刪除景點，或是交由 AI 助手針對特定天數重新排版。</p>
             </div>
             <div class="faq-item">
                 <h4><i class="fas fa-chevron-right"></i> 登入會員有什麼專屬好處？</h4>
-                <p>登入會員後，您的所有客製化行程、收藏景點與訂單資訊都會安全同步在雲端。</p>
+                <p>登入會員後，您的所有客製化行程、收藏景點與訂單資訊都會安全同步在雲端，隨時隨地都能在手機或電腦上查看。</p>
             </div>
         </div>
     </section>
 
-    <!-- 這裡將按鈕導向 AI 助手 (chatbot.html) 並把指標聚焦在 AI 助手頁面 -->
     <button class="btn-start" onclick="startPlanning()">
         開始規劃我的專屬旅程 →
     </button>
@@ -1224,7 +1223,7 @@ input:focus, select:focus {
 </footer>
 
 <script>
-// === 1. 初始化與日期計算邏輯 ===
+// === 1. 天數與日期連動邏輯 ===
 let currentDays = parseInt(sessionStorage.getItem("tripDays")) || 3;
 document.getElementById("tripDaysInput").value = currentDays;
 
@@ -1239,9 +1238,7 @@ function updateDays(val) {
     currentDays = days;
     document.getElementById("tripDaysInput").value = currentDays;
     
-    // 更新快速標籤 active 狀態
     document.querySelectorAll('.quick-tag').forEach(tag => tag.classList.remove('active'));
-    
     calculateEndDate();
 }
 
@@ -1253,12 +1250,12 @@ function adjustDays(amount) {
     calculateEndDate();
 }
 
-function setDays(days) {
+function setDays(days, el) {
     currentDays = days;
     document.getElementById("tripDaysInput").value = currentDays;
     
     document.querySelectorAll('.quick-tag').forEach(tag => tag.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+    if (el) el.classList.add('active');
     
     calculateEndDate();
 }
@@ -1268,7 +1265,6 @@ function calculateEndDate() {
     if (!startInput) return;
     
     let startDate = new Date(startInput);
-    // 結束日期 = 出發日期 + (天數 - 1)
     startDate.setDate(startDate.getDate() + (currentDays - 1));
     
     let endStr = startDate.toISOString().split('T')[0];
@@ -1282,9 +1278,8 @@ function selectOption(containerId, element) {
     element.classList.add('active');
 }
 
-// === 3. 開始規劃並將指標引導至 AI 助手頁面 ===
+// === 3. 開始規劃並跳轉至 AI 助手 ===
 function startPlanning() {
-    // 收集所有填寫與選擇的資料
     const region = document.querySelector('#regionOptions .option.active')?.getAttribute('data-value') || '國內旅遊';
     const destination = document.getElementById("destination").value.trim() || '未指定目的地';
     const days = currentDays;
@@ -1297,18 +1292,16 @@ function startPlanning() {
     const transport = document.getElementById("transport").value;
     const specialReq = document.getElementById("specialReq").value.trim();
 
-    // 儲存至 sessionStorage，方便 AI 助手頁面讀取
     const tripData = {
         region, destination, days, startDate, endDate, people, budget, pace, style, transport, specialReq
     };
     sessionStorage.setItem("userTripSettings", JSON.stringify(tripData));
 
-    // 顯示提示並平滑跳轉至 AI 助手頁面（並在網址帶上錨點以確保指標聚焦在助手介面上）
-    showToast(`已成功設定 ${days} 天 ${destination} 行程，正在前往 AI 助手...`);
+    showToast(`已儲存您的 ${days} 天旅程設定，正在前往 AI 助手...`);
     
     setTimeout(() => {
-        window.location.href = "chatbot.html#ai-assistant-container";
-    }, 1000);
+        window.location.href = "chatbot.html";
+    }, 900);
 }
 
 // === 4. 登入 / 註冊彈窗與狀態管理 ===
@@ -1394,7 +1387,6 @@ function updateLoginState(name) {
     }
 }
 
-// 點擊頭像展開/收合下拉選單
 userProfileMenu.addEventListener("click", (e) => {
     e.stopPropagation();
     const dropdown = document.getElementById("userDropdown");
@@ -1406,14 +1398,12 @@ document.addEventListener("click", () => {
     if (dropdown) dropdown.classList.remove("active");
 });
 
-// 登出按鈕
 document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("pocketGuideUser");
     updateLoginState(null);
     showToast("已成功登出帳號");
 });
 
-// Toast 提示框函式
 function showToast(text) {
     const toast = document.getElementById("toastNotification");
     document.getElementById("toastText").textContent = text;
@@ -1423,7 +1413,6 @@ function showToast(text) {
     }, 3000);
 }
 
-// 頁面載入時檢查是否已登入
 window.addEventListener("DOMContentLoaded", () => {
     const savedUser = localStorage.getItem("pocketGuideUser");
     if (savedUser) {
